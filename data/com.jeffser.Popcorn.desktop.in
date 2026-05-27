@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Popcorn
+Exec=popcorn
+Icon=com.jeffser.Popcorn
+Terminal=false
+Type=Application
+Categories=AudioVideo;
+Keywords=GTK;Player;Jellyfin;
+StartupNotify=true
+DBusActivatable=true
+X-Purism-FormFactor=Workstation;Mobile;

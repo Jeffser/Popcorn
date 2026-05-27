@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/jeffser/Popcorn">
+    <file alias="window.ui">ui/window.ui</file>
+    <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
+
+    <file alias="pages/login.ui">ui/pages/login.ui</file>
+  </gresource>
+</gresources>

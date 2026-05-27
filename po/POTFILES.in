@@ -1,0 +1,8 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+data/com.jeffser.Popcorn.desktop.in
+data/com.jeffser.Popcorn.metainfo.xml.in
+data/com.jeffser.Popcorn.gschema.xml
+src/main.py
+src/window.py
+src/window.ui

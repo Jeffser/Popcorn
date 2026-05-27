@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.jeffser.Popcorn</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Popcorn</name>
+  <summary>Enjoy your media</summary>
+  <description>
+    <p>A modern Jellyfin client</p>
+  </description>
+
+  <developer id="com.jeffser">
+    <name>Jeffry Samuel Eduarte Rojas</name>
+  </developer>
+
+  <provides>
+    <binary>popcorn</binary>
+  </provides>
+  <icon type="stock">com.jeffser.Popcorn</icon>
+  <categories>
+    <category>AudioVideo</category>
+  </categories>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+
+  <url type="homepage">https://jeffser.com/popcorn</url>
+  <url type="vcs-browser">https://github.com/Jeffser/Popcorn</url>
+  <url type="bugtracker">https://github.com/Jeffser/Popcorn/issues</url>
+  <url type="help">https://github.com/Jeffser/Popcorn/discussions</url>
+  <url type="donation">https://github.com/sponsors/Jeffser</url>
+  <url type="contribute">https://github.com/Jeffser/Popcorn/blob/main/CONTRIBUTING.md</url>
+
+  <translation type="gettext">popcorn</translation>
+  <launchable type="desktop-id">com.jeffser.Popcorn.desktop</launchable>
+  <content_rating type="oars-1.1" />
+
+  <branding>
+    <color type="primary" scheme_preference="light">#8bf3f5</color>
+    <color type="primary" scheme_preference="dark">#08828a</color>
+  </branding>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://example.org/example1.png</image>
+      <caption>A caption</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://example.org/example2.png</image>
+      <caption>A caption</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.0.1" date="2024-01-18">
+      <url type="details">https://example.org/changelog.html#version_1.0.1</url>
+      <description translate="no">
+        <p>Release description</p>
+        <ul>
+          <li>List of changes</li>
+          <li>List of changes</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+</component>
