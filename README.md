@@ -1,2 +1,3 @@
-# Popcorn
-WIP: 🍿 Jellyfin client
+# popcorn
+
+A description of this project.
