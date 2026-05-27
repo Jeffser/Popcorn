@@ -1,6 +1,6 @@
 # models.py
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject, GLib, Gtk, Gio, Gdk
 
 class BasicModel(GObject.Object):
     __gtype_name__ = 'PopcornBasicModel'
@@ -33,6 +33,18 @@ class UserView(BasicModel):
 
     Id = GObject.Property(type=str)
     Name = GObject.Property(type=str)
-    SortName = GObject.Property(type=str)
     CollectionType = GObject.Property(type=str)
 
+class Series(BasicModel):
+    __gtype_name__ = 'PopcornSeries'
+
+    Id = GObject.Property(type=str)
+    Name = GObject.Property(type=str)
+    CommunityRating = GObject.Property(type=float)
+    ProductionYear = GObject.Property(type=int)
+    OfficialRating = GObject.Property(type=str)
+    SeasonCount = GObject.Property(type=int, default=0)
+    Genres = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
+    Overview = GObject.Property(type=str)
+    logoPaintable = GObject.Property(type=Gdk.Paintable)
+    backdropPaintable = GObject.Property(type=Gdk.Paintable)

@@ -18,13 +18,35 @@ template $PopcornHomePage: Adw.NavigationPage {
       child: Adw.Clamp {
         maximum-size: 2000;
         tightening-threshold: 800;
-        margin-top: 46;
         child: Gtk.Box {
           styles [
             "p10"
           ]
           orientation: vertical;
           spacing: 10;
+
+          Gtk.Overlay {
+            child: Adw.Carousel overview_container {
+              styles [
+                "card"
+              ]
+              allow-long-swipes: true;
+              allow-mouse-drag: true;
+              allow-scroll-wheel: false;
+            };
+
+            [overlay]
+            Adw.CarouselIndicatorDots {
+              styles [
+                "blur-backdrop",
+                "card"
+              ]
+              margin-top: 10;
+              carousel: overview_container;
+              halign: center;
+              valign: start;
+            }
+          }
 
           Adw.WrapBox user_views_container {
             justify: fill;

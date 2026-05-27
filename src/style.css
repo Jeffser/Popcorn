@@ -9,3 +9,23 @@
 button.p0, menubutton.p0 > button, label.ph5 {
   padding: 0 5px 0 5px;
 }
+
+.rounded-corner {
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+.blur-backdrop {
+  backdrop-filter: blur(5px);
+  background: color-mix(in srgb, var(--window-bg-color) 75%, transparent);
+}
+
+.darker {
+  filter: brightness(80%);
+}
+
+.translucent-picture {
+  opacity: 0.5;
+}

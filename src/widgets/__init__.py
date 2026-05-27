@@ -2,3 +2,4 @@
 
 from .pages import LoginPage, HomePage
 from .misc import UserViewButton
+from .series import SeriesOverview

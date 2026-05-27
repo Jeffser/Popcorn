@@ -127,7 +127,53 @@ class Jellyfin(GObject.Object):
             view_models.append(models.UserView(
                 Id=view.get('Id'),
                 Name=view.get('Name'),
-                SortName=view.get('SortName'),
                 CollectionType=view.get('CollectionType')
             ))
         return view_models
+
+    def getPaintable(self, item_id, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
+        try:
+            url = self.getUrl("Items/{item_id}/Images/{image_type}", item_id=item_id, image_type=image_type)
+            response = requests.get(url, params={'maxWidth': max_width, 'quality': 85}, timeout=5)
+            response.raise_for_status()
+            gbytes = GLib.Bytes.new(response.content)
+            return Gdk.Texture.new_from_bytes(gbytes)
+        except:
+            pass
+        return None
+
+    def getFeaturedSeries(self) -> list:
+        # Returns list of Series model
+        series_models = []
+        series_dicts = self.makeRequest(
+            action='Items',
+            params={
+                'userId': self.get_property('userId'),
+                'IncludeItemTypes': 'Series',
+                'Recursive': 'true',
+                'SortBy': 'Random',
+                'Limit': 5,
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount'
+            }
+        ).get('Items', [])
+
+        for series in series_dicts:
+            model = models.Series(
+                Id=series.get('Id'),
+                Name=series.get('Name'),
+                CommunityRating=series.get('CommunityRating'),
+                ProductionYear=series.get('ProductionYear'),
+                OfficialRating=series.get('OfficialRating'),
+                SeasonCount=series.get('ChildCount') or 1,
+                Overview=series.get('Overview'),
+                logoPaintable=self.getPaintable(series.get('Id'), image_type='logo'),
+                backdropPaintable=self.getPaintable(series.get('Id'))
+            )
+            model.get_property('Genres').remove_all()
+            model.get_property('Genres').splice(
+                0,
+                0,
+                [Gtk.StringObject.new(genre) for genre in series.get('Genres', [])]
+            )
+            series_models.append(model)
+        return series_models

@@ -12,7 +12,6 @@ class UserViewButton(Gtk.Button):
 
     def __init__(self, model):
         super().__init__()
-        #self.model = model
         self.set_property('model', model)
         self.model.connect_property('Name', self.name_changed)
         self.model.connect_property('CollectionType', self.type_changed)

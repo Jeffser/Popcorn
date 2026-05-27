@@ -13,6 +13,9 @@
     <file alias="icons/scalable/status/playlist-symbolic.svg">icons/playlist-symbolic.svg</file>
     <file alias="icons/scalable/status/triangular-antenna-symbolic.svg">icons/triangular-antenna-symbolic.svg</file>
     <file alias="icons/scalable/status/video-clip-symbolic.svg">icons/video-clip-symbolic.svg</file>
+    <file alias="icons/scalable/status/starred-symbolic.svg">icons/starred-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
+    <file alias="icons/scalable/status/info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
@@ -21,5 +24,7 @@
     <file alias="pages/home.ui">ui/pages/home.ui</file>
 
     <file alias="misc/user_view_button.ui">ui/misc/user_view_button.ui</file>
+
+    <file alias="series/overview.ui">ui/series/overview.ui</file>
   </gresource>
 </gresources>

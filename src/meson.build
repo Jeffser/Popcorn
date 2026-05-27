@@ -10,6 +10,8 @@ blueprints = files(
   'ui/pages/home.blp',
 
   'ui/misc/user_view_button.blp',
+
+  'ui/series/overview.blp',
 )
 
 blueprints = custom_target('blueprints',
