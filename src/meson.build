@@ -51,8 +51,10 @@ popcorn_sources = [
   '__init__.py',
   'main.py',
   'window.py',
+  'constants.py',
 ]
 
 install_data(popcorn_sources, install_dir: moduledir)
 
 subdir('widgets')
+subdir('integrations')
