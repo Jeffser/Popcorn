@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 20:06-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/com.jeffser.Popcorn.desktop.in:2
+#: data/com.jeffser.Popcorn.metainfo.xml.in:7
+msgid "Popcorn"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.desktop.in:8
+msgid "GTK;Player;Jellyfin;"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:8
+msgid "Enjoy your media"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:10
+msgid "A modern Jellyfin client"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:14
+msgid "Jeffry Samuel Eduarte Rojas"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:52
+#: data/com.jeffser.Popcorn.metainfo.xml.in:56
+msgid "A caption"
+msgstr ""
+
+#: src/main.py:61
+msgid "translator-credits"
+msgstr ""
+
+#: src/ui/pages/login.blp:5 src/ui/pages/login.blp:50 src/ui/pages/login.blp:51
+msgid "Login"
+msgstr ""
+
+#: src/ui/pages/login.blp:16
+msgid "Welcome to Popcorn"
+msgstr ""
+
+#: src/ui/pages/login.blp:17
+msgid "Login to your Jellyfin server"
+msgstr ""
+
+#: src/ui/pages/login.blp:31
+msgid "Url"
+msgstr ""
+
+#: src/ui/pages/login.blp:35
+msgid "User"
+msgstr ""
+
+#: src/ui/pages/login.blp:39
+msgid "Password"
+msgstr ""
+
+#: src/ui/pages/login.blp:60 src/ui/pages/login.blp:61
+msgid "Use Quick Connect"
+msgstr ""
+
+#: src/widgets/pages/login.py:68
+msgid "Quick Connect"
+msgstr ""
+
+#: src/widgets/pages/login.py:69
+msgid "Error getting code"
+msgstr ""
+
+#: src/widgets/pages/login.py:71
+msgid "Quick Connect Page"
+msgstr ""
+
+#: src/widgets/pages/login.py:77
+msgid "Cancel"
+msgstr ""

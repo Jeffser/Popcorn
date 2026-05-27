@@ -5,5 +5,19 @@ template $PopcornWindow: Adw.ApplicationWindow {
   title: "Popcorn";
   width-request: 360;
   height-request: 560;
-  content: $PopcornLoginPage {};
+  content: Adw.NavigationView root_navigationview {
+    Adw.NavigationPage {
+      tag: "loading";
+      title: _("Loading");
+      child: Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {
+          show-title: false;
+        }
+        content: Adw.Spinner {};
+      };
+    }
+    $PopcornLoginPage {}
+    $PopcornHomePage {}
+  };
 }

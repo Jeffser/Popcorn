@@ -1,0 +1,73 @@
+#: data/com.jeffser.Popcorn.desktop.in:2
+#: data/com.jeffser.Popcorn.metainfo.xml.in:7
+msgid "Popcorn"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.desktop.in:8
+msgid "GTK;Player;Jellyfin;"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:8
+msgid "Enjoy your media"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:10
+msgid "A modern Jellyfin client"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:14
+msgid "Jeffry Samuel Eduarte Rojas"
+msgstr ""
+
+#: data/com.jeffser.Popcorn.metainfo.xml.in:52
+#: data/com.jeffser.Popcorn.metainfo.xml.in:56
+msgid "A caption"
+msgstr ""
+
+#: src/main.py:61
+msgid "translator-credits"
+msgstr ""
+
+#: src/ui/pages/login.blp:5 src/ui/pages/login.blp:50 src/ui/pages/login.blp:51
+msgid "Login"
+msgstr ""
+
+#: src/ui/pages/login.blp:16
+msgid "Welcome to Popcorn"
+msgstr ""
+
+#: src/ui/pages/login.blp:17
+msgid "Login to your Jellyfin server"
+msgstr ""
+
+#: src/ui/pages/login.blp:31
+msgid "Url"
+msgstr ""
+
+#: src/ui/pages/login.blp:35
+msgid "User"
+msgstr ""
+
+#: src/ui/pages/login.blp:39
+msgid "Password"
+msgstr ""
+
+#: src/ui/pages/login.blp:60 src/ui/pages/login.blp:61
+msgid "Use Quick Connect"
+msgstr ""
+
+#: src/widgets/pages/login.py:68
+msgid "Quick Connect"
+msgstr ""
+
+#: src/widgets/pages/login.py:69
+msgid "Error getting code"
+msgstr ""
+
+#: src/widgets/pages/login.py:71
+msgid "Quick Connect Page"
+msgstr ""
+
+#: src/widgets/pages/login.py:77
+msgid "Cancel"
+msgstr ""

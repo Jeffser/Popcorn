@@ -1,6 +1,8 @@
 # login.py
 
 from gi.repository import Gtk, Adw, Gio, GLib
+from ...integrations import secret
+import threading, time
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/login.ui')
 class LoginPage(Adw.NavigationPage):
@@ -17,8 +19,9 @@ class LoginPage(Adw.NavigationPage):
         self.reset()
 
     def reset(self):
-        self.url_el.set_text('http://127.0.0.1:8096')
-        self.user_el.set_text('')
+        settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+        self.url_el.set_text(settings.get_value('url').unpack())
+        self.user_el.set_text(settings.get_value('user').unpack())
         self.password_el.set_text('')
         self.entry_changed()
 
@@ -32,8 +35,55 @@ class LoginPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def login_requested(self, widget=None):
-        print('LOGIN!!!')
+        if root := self.get_root():
+            if app := root.get_application():
+                app.jellyfin.set_property('url', self.url_el.get_text())
+                app.jellyfin.set_property('user', self.user_el.get_text())
+                secret.store_password(self.password_el.get_text())
+                threading.Thread(target=self.get_root().get_application().try_login, daemon=True).start()
 
     @Gtk.Template.Callback()
     def quick_connect_requested(self, button):
-        print('QUICK CONNECT!!!')
+        def wait_confirmation(data, dialog, integration):
+            waited_turns = 0
+            is_authenticated = False
+            while not is_authenticated and dialog.get_root():
+                is_authenticated = integration.checkQuickConnect(data.get('Secret'))
+                if is_authenticated:
+                    GLib.idle_add(dialog.close)
+                    threading.Thread(target=self.get_root().get_application().try_login, daemon=True).start()
+                    break
+                time.sleep(5)
+                waited_turns += 1
+                if waited_turns >= 5:
+                    GLib.idle_add(dialog.close)
+                    break
+
+        def run(integration):
+            data = integration.initiateQuickConnect()
+            print(data)
+            dialog = Adw.AlertDialog(
+                heading=_("Quick Connect"),
+                body=data.get("Code") or _("Error getting code"),
+                extra_child=Gtk.LinkButton(
+                    label=_("Quick Connect Page"),
+                    uri="{}/web/#/quickconnect".format(self.url_el.get_text())
+                )
+            )
+            dialog.add_response(
+                "cancel",
+                _("Cancel")
+            )
+            dialog.set_close_response("cancel")
+            GLib.idle_add(dialog.choose,
+                self.get_root(),
+                None,
+                lambda *_: None
+            )
+            GLib.idle_add(threading.Thread(target=wait_confirmation, args=(data, dialog, integration), daemon=True).start)
+
+        if root := self.get_root():
+            if app := root.get_application():
+                integration = app.jellyfin
+                integration.set_property('url', self.url_el.get_text())
+                threading.Thread(target=run, args=(integration,), daemon=True).start()

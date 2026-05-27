@@ -1,8 +1,21 @@
-# List of source files containing translatable strings.
-# Please keep this file sorted alphabetically.
 data/com.jeffser.Popcorn.desktop.in
-data/com.jeffser.Popcorn.metainfo.xml.in
 data/com.jeffser.Popcorn.gschema.xml
+data/com.jeffser.Popcorn.metainfo.xml.in
+data/com.jeffser.Popcorn.service.in
+src/constants.py
+src/__init__.py
+src/integrations/__init__.py
+src/integrations/jellyfin.py
+src/integrations/models.py
+src/integrations/secret.py
+src/jellyfin.py
 src/main.py
+src/popcorn.gresource.xml
+src/popcorn.in
+src/ui/pages/login.blp
+src/ui/shortcuts-dialog.blp
+src/ui/window.blp
+src/widgets/__init__.py
+src/widgets/pages/__init__.py
+src/widgets/pages/login.py
 src/window.py
-src/window.ui

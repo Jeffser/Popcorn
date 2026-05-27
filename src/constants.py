@@ -17,3 +17,15 @@ DATA_DIR = get_xdg_home("XDG_DATA_HOME", "~/.local/share")
 CONFIG_DIR = get_xdg_home("XDG_CONFIG_HOME", "~/.config")
 CACHE_DIR = get_xdg_home("XDG_CACHE_HOME", "~/.cache")
 FALLBACK_PASSWORD_PATH = os.path.join(CONFIG_DIR, 'pass.txt')
+
+USERVIEWS_ICONS = {
+    'movies': 'video-clip-symbolic',
+    'tvshows': 'tv-symbolic',
+    'music': 'folder-music-symbolic',
+    'trailers': 'ticket-symbolic',
+    'homevideos': 'folder-videos-symbolic',
+    'books': 'open-book-symbolic',
+    'photos': 'image-round-symbolic',
+    'livetv': 'triangular-antenna-symbolic',
+    'playlists': 'playlist-symbolic'
+}

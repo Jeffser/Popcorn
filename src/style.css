@@ -1,0 +1,11 @@
+.p0, button.force_p0, menubutton.force_p0 > button {
+  padding: 0;
+}
+
+.p10 {
+  padding: 10px;
+}
+
+button.p0, menubutton.p0 > button, label.ph5 {
+  padding: 0 5px 0 5px;
+}

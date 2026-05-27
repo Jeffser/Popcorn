@@ -7,3 +7,4 @@ widgets = [
 install_data(widgets, install_dir: moduledir)
 
 subdir('pages')
+subdir('misc')

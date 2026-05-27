@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import sys
+import sys, threading
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -27,6 +27,7 @@ gi.require_version('Gst', '1.0')
 
 from gi.repository import Gtk, Gio, Adw, GLib
 from .window import PopcornWindow
+from .integrations import Jellyfin
 
 GLib.set_prgname('com.jeffser.Popcorn')
 GLib.set_application_name("Popcorn")
@@ -36,7 +37,13 @@ class PopcornApplication(Adw.Application):
     """The main application singleton class."""
 
     def __init__(self, version):
+        settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
         self.version = version
+        self.jellyfin = Jellyfin(
+            user=settings.get_value('user').unpack(),
+            url=settings.get_value('url').unpack(),
+            trustServer=settings.get_value('trust-server').unpack()
+        )
         self.main_window = None
         super().__init__(application_id='com.jeffser.Popcorn',
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
@@ -49,6 +56,7 @@ class PopcornApplication(Adw.Application):
     def do_activate(self):
         if not self.main_window:
             self.main_window = PopcornWindow(application=self)
+            threading.Thread(target=self.try_login, daemon=True).start()
         self.main_window.present()
 
     def on_about_action(self, *args):
@@ -63,6 +71,18 @@ class PopcornApplication(Adw.Application):
 
     def on_preferences_action(self, widget, _):
         print('app.preferences action activated')
+
+    def try_login(self):
+        if self.jellyfin.ping():
+            settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+            settings.set_string('url', self.jellyfin.get_property('url'))
+            settings.set_string('user', self.jellyfin.get_property('user'))
+            settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['home'])
+            GLib.idle_add(self.main_window.root_navigationview.find_page('home').reset)
+        else:
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
+            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
 
     def create_action(self, name, callback, shortcuts=None):
         action = Gio.SimpleAction.new(name, None)

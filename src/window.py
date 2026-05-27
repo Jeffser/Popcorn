@@ -25,5 +25,7 @@ from . import widgets as Widgets
 class PopcornWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornWindow'
 
+    root_navigationview = Gtk.Template.Child()
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

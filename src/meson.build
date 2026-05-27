@@ -7,6 +7,9 @@ blueprints = files(
   'ui/shortcuts-dialog.blp',
 
   'ui/pages/login.blp',
+  'ui/pages/home.blp',
+
+  'ui/misc/user_view_button.blp',
 )
 
 blueprints = custom_target('blueprints',

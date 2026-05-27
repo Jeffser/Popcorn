@@ -31,10 +31,10 @@ localedir = '@localedir@'
 
 sys.path.insert(1, pkgdatadir)
 signal.signal(signal.SIGINT, signal.SIG_DFL)
-locale.bindtextdomain('popcorn', localedir)
-locale.textdomain('popcorn')
-gettext.bindtextdomain('popcorn', localedir)
-gettext.textdomain('popcorn')
+if hasattr(locale, 'bindtextdomain'):
+    locale.bindtextdomain('popcorn', localedir)
+    locale.textdomain('popcorn')
+gettext.install('popcorn', localedir, names=['ngettext'])
 
 if __name__ == '__main__':
     import gi
