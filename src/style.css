@@ -29,3 +29,11 @@ button.p0, menubutton.p0 > button, label.ph5 {
 .translucent-picture {
   opacity: 0.5;
 }
+
+.overview > box {
+  background: linear-gradient(0deg, var(--window-bg-color) 0%, transparent 80%);
+}
+
+button.active_appearance_button:disabled {
+  filter: none;
+}

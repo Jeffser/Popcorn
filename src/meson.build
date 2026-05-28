@@ -12,6 +12,8 @@ blueprints = files(
   'ui/misc/user_view_button.blp',
 
   'ui/series/overview.blp',
+
+  'ui/containers/carousel.blp',
 )
 
 blueprints = custom_target('blueprints',

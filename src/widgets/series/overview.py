@@ -61,13 +61,15 @@ class SeriesOverview(Gtk.Overlay):
         self.season_count_label.set_label(_("{} Seasons").format(count) if count > 1 else _("1 Season"))
 
     def overview_changed(self, overview:str):
-        self.overview_label.set_visible(overview)
         self.overview_label.set_label((overview or "").replace('\n', ' '))
 
     def genres_changed(self, genres):
         for genre in [genre.get_string() for genre in list(genres)][:5]:
-            label = Gtk.Label(
-                css_classes=['card', 'blur-backdrop', 'p10'],
-                label=genre
+            self.metadata_container.append(
+                Gtk.Separator()
             )
-            self.metadata_container.append(label)
+            self.metadata_container.append(
+                Gtk.Label(
+                    label=genre
+                )
+            )

@@ -2,6 +2,9 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PopcornSeriesOverview: Gtk.Overlay {
+  styles [
+    "overview"
+  ]
   hexpand: true;
   child: Gtk.Picture backdrop_picture {
     content-fit: cover;
@@ -15,7 +18,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
     styles [
       "p10"
     ]
-    halign: start;
+    hexpand: true;
     valign: end;
     orientation: vertical;
     spacing: 10;
@@ -33,11 +36,6 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       child-spacing: 10;
 
       Gtk.Box {
-        styles [
-          "card",
-          "blur-backdrop",
-          "p10"
-        ]
         spacing: 5;
         Gtk.Image {
           icon-name: "starred-symbolic";
@@ -50,51 +48,37 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         }
       }
 
+      Gtk.Separator {}
+
       Gtk.Label production_year_label {
         styles [
-          "numeric",
-          "card",
-          "blur-backdrop",
-          "p10"
+          "numeric"
         ]
       }
 
-      Gtk.Label official_rating_label {
-        styles [
-          "card",
-          "blur-backdrop",
-          "p10"
-        ]
-      }
+      Gtk.Separator {}
 
-      Gtk.Label season_count_label {
-        styles [
-          "card",
-          "blur-backdrop",
-          "p10"
-        ]
-      }
+      Gtk.Label official_rating_label {}
+
+      Gtk.Separator {}
+
+      Gtk.Label season_count_label {}
     }
 
     Adw.WrapBox {
       wrap-policy: minimum;
       line-spacing: 10;
       child-spacing: 10;
-      justify: fill;
-      justify-last-line: true;
+      hexpand: true;
 
       Gtk.Label overview_label {
-        styles [
-          "card",
-          "blur-backdrop",
-          "p10"
-        ]
         wrap-mode: word_char;
         wrap: true;
         lines: 3;
         ellipsize: end;
         xalign: 0;
         width-request: 100;
+        hexpand: true;
       }
 
       Gtk.Button {

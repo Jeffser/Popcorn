@@ -20,12 +20,5 @@ FALLBACK_PASSWORD_PATH = os.path.join(CONFIG_DIR, 'pass.txt')
 
 USERVIEWS_ICONS = {
     'movies': 'video-clip-symbolic',
-    'tvshows': 'tv-symbolic',
-    'music': 'folder-music-symbolic',
-    'trailers': 'ticket-symbolic',
-    'homevideos': 'folder-videos-symbolic',
-    'books': 'open-book-symbolic',
-    'photos': 'image-round-symbolic',
-    'livetv': 'triangular-antenna-symbolic',
-    'playlists': 'playlist-symbolic'
+    'tvshows': 'tv-symbolic'
 }

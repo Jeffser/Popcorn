@@ -3,19 +3,13 @@
   <gresource prefix="/com/jeffser/Popcorn">
     <file>style.css</file>
 
-    <file alias="icons/scalable/status/folder-music-symbolic.svg">icons/folder-music-symbolic.svg</file>
-    <file alias="icons/scalable/status/folder-videos-symbolic.svg">icons/folder-videos-symbolic.svg</file>
-    <file alias="icons/scalable/status/open-book-symbolic.svg">icons/open-book-symbolic.svg</file>
-    <file alias="icons/scalable/status/ticket-symbolic.svg">icons/ticket-symbolic.svg</file>
     <file alias="icons/scalable/status/tv-symbolic.svg">icons/tv-symbolic.svg</file>
     <file alias="icons/scalable/status/folder-symbolic.svg">icons/folder-symbolic.svg</file>
-    <file alias="icons/scalable/status/image-round-symbolic.svg">icons/image-round-symbolic.svg</file>
-    <file alias="icons/scalable/status/playlist-symbolic.svg">icons/playlist-symbolic.svg</file>
-    <file alias="icons/scalable/status/triangular-antenna-symbolic.svg">icons/triangular-antenna-symbolic.svg</file>
     <file alias="icons/scalable/status/video-clip-symbolic.svg">icons/video-clip-symbolic.svg</file>
     <file alias="icons/scalable/status/starred-symbolic.svg">icons/starred-symbolic.svg</file>
     <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
     <file alias="icons/scalable/status/info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
+    <file alias="icons/scalable/status/playback-symbolic.svg">icons/playback-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
@@ -26,5 +20,8 @@
     <file alias="misc/user_view_button.ui">ui/misc/user_view_button.ui</file>
 
     <file alias="series/overview.ui">ui/series/overview.ui</file>
+
+    <file alias="containers/carousel.ui">ui/containers/carousel.ui</file>
   </gresource>
 </gresources>
+

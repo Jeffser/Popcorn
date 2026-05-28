@@ -20,12 +20,14 @@ class HomePage(Adw.NavigationPage):
             return
 
         for series in jellyfin.getFeaturedSeries():
-            button = SeriesOverview(series)
-            self.overview_container.append(button)
+            self.overview_container.append(
+                SeriesOverview(series)
+            )
 
         for userView in jellyfin.getUserViews():
-            button = UserViewButton(userView)
-            self.user_views_container.append(button)
+            self.user_views_container.append(
+                UserViewButton(userView)
+            )
 
         GLib.timeout_add(5000, self.auto_scroll_overview)
 

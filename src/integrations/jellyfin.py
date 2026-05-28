@@ -119,16 +119,16 @@ class Jellyfin(GObject.Object):
         # Returns list of UserView models
         view_models = []
         view_dicts = self.makeRequest(
-            action='UserViews',
-            params={'userId': self.get_property('userId')}
+            action='Users/{userId}/Views'
         ).get('Items', [])
 
         for view in view_dicts:
-            view_models.append(models.UserView(
-                Id=view.get('Id'),
-                Name=view.get('Name'),
-                CollectionType=view.get('CollectionType')
-            ))
+            if view.get('CollectionType') in ('tvshows', 'movies'):
+                view_models.append(models.UserView(
+                    Id=view.get('Id'),
+                    Name=view.get('Name'),
+                    CollectionType=view.get('CollectionType')
+                ))
         return view_models
 
     def getPaintable(self, item_id, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
@@ -146,9 +146,8 @@ class Jellyfin(GObject.Object):
         # Returns list of Series model
         series_models = []
         series_dicts = self.makeRequest(
-            action='Items',
+            action='Users/{userId}/Items',
             params={
-                'userId': self.get_property('userId'),
                 'IncludeItemTypes': 'Series',
                 'Recursive': 'true',
                 'SortBy': 'Random',
@@ -177,3 +176,4 @@ class Jellyfin(GObject.Object):
             )
             series_models.append(model)
         return series_models
+
