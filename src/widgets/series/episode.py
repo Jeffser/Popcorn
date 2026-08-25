@@ -1,6 +1,6 @@
 # episode.py
 
-from gi.repository import Gtk, Adw, Gio, GLib, GObject
+from gi.repository import Gtk, GLib, GObject
 from ...integrations import models
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/series/episode.ui')
@@ -10,6 +10,6 @@ class Episode(Gtk.Button):
     model = GObject.Property(type=models.Episode)
 
     @Gtk.Template.Callback()
-    def format_subtitle(self, obj, season, episode) -> str:
-        return _("S{} E{}").format(season, episode)
+    def format_subtitle(self, obj, season, episode, episode_name) -> str:
+        return "<b>{}</b> | {}".format(_("S{} E{}").format(season, episode), GLib.markup_escape_text(episode_name))
         

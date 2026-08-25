@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Jellyfin(GObject.Object):
     __gtype_name__ = 'PopcornIntegrationJellyfin'
 
-    AUTH_HEADER = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="1.0.0"'.format(platform.node(), str(abs(hash(platform.node()))))
+    AUTH_HEADER = 'MediaBrowser Client="Popcorn", Device="{}", DeviceId="{}", Version="1.0.0"'.format(platform.node(), str(abs(hash(platform.node()))))
 
     # Loaded when login
     trustServer = GObject.Property(type=bool, default=False)

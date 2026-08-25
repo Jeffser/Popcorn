@@ -13,10 +13,6 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
   [overlay]
   Gtk.Box {
-    styles [
-      "p10",
-      "gradient-background"
-    ]
     hexpand: true;
     vexpand: true;
     valign: end;
@@ -28,6 +24,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       maximum-size: 360;
       child: Adw.Clamp {
         halign: start;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
         maximum-size: 360;
         child: Gtk.Picture logo_picture {
           paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
@@ -35,96 +34,108 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       };
     }
 
-    Adw.WrapBox {
-      line-spacing: 10;
-      child-spacing: 10;
+    Gtk.Box {
+      orientation: vertical;
+      spacing: 10;
+      margin-start: 10;
+      margin-end: 10;
+      margin-bottom: 10;
+      styles [
+        "blur-backdrop",
+        "p10",
+        "card"
+      ]
+      Adw.WrapBox {
+        line-spacing: 10;
+        child-spacing: 10;
 
-      Gtk.Box {
-        spacing: 5;
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
-        Gtk.Image {
-          icon-name: "starred-symbolic";
+        Gtk.Box {
+          spacing: 5;
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
+          Gtk.Image {
+            icon-name: "starred-symbolic";
+          }
+          Gtk.Label {
+            styles [
+              "numeric"
+            ]
+            label: bind $format_one_decimal(template.model as <$PopcornSeries> .CommunityRating);
+          }
         }
+
+        Gtk.Separator {
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
+        }
+
         Gtk.Label {
           styles [
             "numeric"
           ]
-          label: bind $format_one_decimal(template.model as <$PopcornSeries> .CommunityRating);
+          label: bind template.model as <$PopcornSeries> .ProductionYear;
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
+        }
+
+        Gtk.Separator {
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
+        }
+
+        Gtk.Label {
+          label: bind template.model as <$PopcornSeries> .OfficialRating;
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
+        }
+
+        Gtk.Separator {
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
+        }
+
+        Gtk.Label {
+          label: bind $format_season_count(template.model as <$PopcornSeries> .SeasonCount);
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .SeasonCount);
         }
       }
 
-      Gtk.Separator {
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
-      }
-
-      Gtk.Label {
-        styles [
-          "numeric"
-        ]
-        label: bind template.model as <$PopcornSeries> .ProductionYear;
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
-      }
-
-      Gtk.Separator {
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
-      }
-
-      Gtk.Label {
-        label: bind template.model as <$PopcornSeries> .OfficialRating;
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
-      }
-
-      Gtk.Separator {
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
-      }
-
-      Gtk.Label {
-        label: bind $format_season_count(template.model as <$PopcornSeries> .SeasonCount);
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .SeasonCount);
-      }
-    }
-
-    Adw.WrapBox {
-      wrap-policy: minimum;
-      line-spacing: 10;
-      child-spacing: 10;
-      wrap-reverse: true;
-      hexpand: true;
-
-      Gtk.Label {
-        wrap-mode: word;
-        wrap: true;
-        lines: 3;
-        ellipsize: end;
-        xalign: 0;
-        width-request: 240;
+      Adw.WrapBox {
+        wrap-policy: minimum;
+        justify: fill;
+        justify-last-line: true;
+        line-spacing: 10;
+        child-spacing: 10;
         hexpand: true;
-        label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
-        visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
-      }
 
-      Gtk.Button {
-        styles [
-          "circular"
-        ]
-        valign: center;
-        tooltip-text: _("More Information");
-        icon-name: "info-outline-symbolic";
-      }
+        Gtk.Label {
+          wrap-mode: word;
+          wrap: true;
+          lines: 3;
+          ellipsize: end;
+          xalign: 0;
+          width-request: 240;
+          hexpand: true;
+          label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
+          visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
+        }
 
-      Gtk.Button {
-        styles [
-          "pill",
-          "suggested-action"
-        ]
-        valign: center;
-        halign: center;
-        hexpand: true;
-        tooltip-text: _("Continue Watching");
-        child: Adw.ButtonContent {
-          icon-name: "media-playback-start-symbolic";
-          label: _("Continue Watching");
-        };
+        Gtk.Button {
+          styles [
+            "circular"
+          ]
+          valign: center;
+          tooltip-text: _("More Information");
+          icon-name: "info-outline-symbolic";
+        }
+
+        Gtk.Button {
+          styles [
+            "pill",
+            "suggested-action"
+          ]
+          valign: center;
+          halign: center;
+          tooltip-text: _("Continue Watching");
+          child: Adw.ButtonContent {
+            icon-name: "media-playback-start-symbolic";
+            label: _("Continue Watching");
+          };
+        }
       }
     }
   }

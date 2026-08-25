@@ -7,6 +7,7 @@ template $PopcornSeriesEpisode: Gtk.Button {
     "force_p0"
   ]
   overflow: hidden;
+  tooltip-text: _("Play Episode");
 
   child: Gtk.Overlay {
     child: Gtk.Picture {
@@ -15,55 +16,39 @@ template $PopcornSeriesEpisode: Gtk.Button {
     };
 
     [overlay]
-    Adw.Bin {
+    Gtk.Box {
+      orientation: vertical;
+      spacing: 5;
+      valign: end;
+      hexpand: true;
+      margin-start: 5;
+      margin-end: 5;
+      margin-bottom: 5;
       styles [
-        "gradient-background"
+        "p10",
+        "blur-backdrop",
+        "card"
       ]
-      vexpand: true;
-      child: Gtk.Box {
-        orientation: vertical;
-        spacing: 5;
-        valign: end;
-        hexpand: true;
+
+      Gtk.Label {
+        ellipsize: end;
+        xalign: 0;
+        label: bind template.model as <$PopcornEpisode> .SeriesName;
         styles [
-          "p10"
+          "title-3"
         ]
+      }
 
-        Gtk.Label {
-          ellipsize: end;
-          xalign: 0;
-          label: bind template.model as <$PopcornEpisode> .SeriesName;
-          styles [
-            "title-3"
-          ]
-        }
-
-        Adw.WrapBox {
-          line-spacing: 5;
-          child-spacing: 5;
-
-          Gtk.Label {
-            ellipsize: end;
-            xalign: 0;
-            label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber);
-            styles [
-              "title-4"
-            ]
-          }
-
-          Gtk.Separator {}
-
-          Gtk.Label episode_label {
-            ellipsize: end;
-            xalign: 0;
-            label: bind template.model as <$PopcornEpisode> .Name;
-            styles [
-              "title-4",
-              "dimmed"
-            ]
-          }
-        }
-      };
+      Gtk.Label {
+        ellipsize: end;
+        xalign: 0;
+        use-markup: true;
+        label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber, template.model as <$PopcornEpisode> .Name);
+        styles [
+          "title-4",
+          "dimmed"
+        ]
+      }
     }
 
     [overlay]

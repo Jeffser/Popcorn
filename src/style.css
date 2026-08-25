@@ -18,8 +18,8 @@ button.p0, menubutton.p0 > button, label.ph5 {
 }
 
 .blur-backdrop {
-  backdrop-filter: blur(5px);
-  background: color-mix(in srgb, var(--window-bg-color) 75%, transparent);
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--view-bg-color) 75%, transparent);
 }
 
 button.blur-backdrop {
@@ -27,15 +27,11 @@ button.blur-backdrop {
 }
 
 button.blur-backdrop:hover {
-  background: color-mix(in srgb, var(--window-bg-color) 50%, transparent);
+  background: color-mix(in srgb, var(--view-bg-color) 50%, transparent);
 }
 
 .translucent-picture {
   opacity: 0.5;
-}
-
-.gradient-background {
-  background: linear-gradient(0deg, color-mix(in srgb, var(--window-bg-color), transparent 20%) 20%, transparent 50%);
 }
 
 button.active_appearance_button:disabled {

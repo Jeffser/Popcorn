@@ -5,7 +5,7 @@ import hashlib, secrets, string
 from ..constants import FALLBACK_PASSWORD_PATH
 
 BASE_SCHEMA = Secret.Schema.new(
-    "com.jeffser.Nocturne.Password",
+    "com.jeffser.Popcorn.Password",
     Secret.SchemaFlags.NONE,
     {
         "type": Secret.SchemaAttributeType.STRING
@@ -20,7 +20,7 @@ def store_password(password:str, schema_type:str="password"):
             BASE_SCHEMA,
             attributes,
             Secret.COLLECTION_DEFAULT,
-            "Nocturne Login",
+            "Popcorn Login",
             password,
             None
         )

@@ -45,7 +45,7 @@ class HomePage(Adw.NavigationPage):
             )
         self.next_up_container.set_widgets(episode_widgets)
 
-        #GLib.timeout_add(5000, self.auto_scroll_overview)
+        GLib.timeout_add(15000, self.auto_scroll_overview)
 
     def auto_scroll_overview(self):
         position_float = self.overview_container.get_position()
