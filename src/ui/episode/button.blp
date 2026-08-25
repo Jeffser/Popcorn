@@ -1,0 +1,77 @@
+using Gtk 4.0;
+
+template $PopcornEpisodeButton: Gtk.Box {
+  styles [
+    "watch_button"
+  ]
+  orientation: vertical;
+
+  Gtk.Button {
+    styles [
+      "force_p0"
+    ]
+    margin-bottom: 5;
+    overflow: hidden;
+    tooltip-text: _("Play Episode");
+    child: Gtk.Overlay {
+      child: Gtk.Picture {
+        content-fit: cover;
+        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .BackdropPaintable, template.model as <$PopcornEpisode> .PrimaryPaintable);
+        height-request: bind $format_paintable_height(template.is_tall);
+      };
+      [overlay]
+      Gtk.ProgressBar {
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
+        valign: end;
+        fraction: bind template.model as <$PopcornEpisode> .Progress;
+        visible: bind $format_to_bool(template.model as <$PopcornEpisode> .Progress);
+      }
+      [overlay]
+      Gtk.Image {
+        icon-name: "media-playback-start-symbolic";
+        icon-size: large;
+        hexpand: true;
+        vexpand: true;
+      }
+    };
+  }
+
+  Gtk.Button {
+    styles [
+      "flat",
+      "p0"
+    ]
+    tooltip-text: bind template.model as <$PopcornEpisode> .SeriesName;
+    child: Gtk.Label {
+      ellipsize: end;
+      justify: center;
+      label: bind template.model as <$PopcornEpisode> .SeriesName;
+      max-width-chars: 12;
+      styles [
+        "title-4"
+      ]
+    };
+  }
+
+  Gtk.Button {
+    styles [
+      "flat",
+      "p0"
+    ]
+    tooltip-text: bind template.model as <$PopcornEpisode> .Name;
+    child: Gtk.Label {
+      ellipsize: end;
+      justify: center;
+      use-markup: true;
+      hexpand: true;
+      max-width-chars: 12;
+      label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber, template.model as <$PopcornEpisode> .Name);
+      styles [
+        "dimmed"
+      ]
+    };
+  }
+}

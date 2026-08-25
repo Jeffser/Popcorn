@@ -1,0 +1,64 @@
+using Gtk 4.0;
+
+template $PopcornSeriesButton: Gtk.Box {
+  styles [
+    "watch_button"
+  ]
+  orientation: vertical;
+  spacing: 5;
+
+  Gtk.Button {
+    styles [
+      "force_p0"
+    ]
+    overflow: hidden;
+    tooltip-text: _("Play Series");
+    child: Gtk.Overlay {
+      child: Gtk.Picture {
+        content-fit: cover;
+        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornSeries> .BackdropPaintable, template.model as <$PopcornSeries> .PrimaryPaintable);
+        height-request: bind $format_paintable_height(template.is_tall);
+      };
+      [overlay]
+      Gtk.Image {
+        icon-name: "media-playback-start-symbolic";
+        icon-size: large;
+        hexpand: true;
+        vexpand: true;
+      }
+    };
+  }
+
+  Gtk.Button {
+    styles [
+      "flat",
+      "p0"
+    ]
+    tooltip-text: _("View Series");
+    child: Gtk.Box {
+      orientation: vertical;
+      spacing: 5;
+      Gtk.Label {
+        ellipsize: end;
+        justify: center;
+        label: bind template.model as <$PopcornSeries> .Name;
+        max-width-chars: 12;
+        styles [
+          "title-4"
+        ]
+      }
+
+      Gtk.Label {
+        ellipsize: end;
+        justify: center;
+        use-markup: true;
+        hexpand: true;
+        max-width-chars: 12;
+        label: bind template.model as <$PopcornSeries> .ProductionYear;
+        styles [
+          "dimmed"
+        ]
+      }
+    };
+  }
+}

@@ -79,10 +79,10 @@ class PopcornApplication(Adw.Application):
             settings.set_string('user', self.jellyfin.get_property('user'))
             settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['home'])
-            GLib.idle_add(self.main_window.root_navigationview.find_page('home').reset)
+            threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
         else:
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
-            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
+            threading.Thread(target=self.main_window.root_navigationview.find_page('login').reset).start()
 
     def create_action(self, name, callback, shortcuts=None):
         action = Gio.SimpleAction.new(name, None)

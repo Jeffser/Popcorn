@@ -21,7 +21,9 @@
     <file alias="misc/user_view_button.ui">ui/misc/user_view_button.ui</file>
 
     <file alias="series/overview.ui">ui/series/overview.ui</file>
-    <file alias="series/episode.ui">ui/series/episode.ui</file>
+    <file alias="series/button.ui">ui/series/button.ui</file>
+
+    <file alias="episode/button.ui">ui/episode/button.ui</file>
 
     <file alias="containers/carousel.ui">ui/containers/carousel.ui</file>
   </gresource>

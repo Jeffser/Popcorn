@@ -12,7 +12,9 @@ blueprints = files(
   'ui/misc/user_view_button.blp',
 
   'ui/series/overview.blp',
-  'ui/series/episode.blp',
+  'ui/series/button.blp',
+
+  'ui/episode/button.blp',
 
   'ui/containers/carousel.blp',
 )

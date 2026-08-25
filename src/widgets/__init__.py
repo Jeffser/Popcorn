@@ -2,5 +2,6 @@
 
 from .pages import LoginPage, HomePage
 from .misc import UserViewButton
-from .series import SeriesOverview
+from .series import SeriesOverview, SeriesButton
 from .containers import Carousel
+from .episode import EpisodeButton

@@ -38,16 +38,14 @@ button.active_appearance_button:disabled {
   filter: none;
 }
 
-button.episode {
-  transition: filter .2s;
+.watch_button overlay .large-icons {
+  transition: opacity .2s;
+  opacity: 0;
+  backdrop-filter: brightness(70%);
 }
 
-button.episode:hover {
-  filter: brightness(80%);
-}
-
-.episode label.dimmed {
-  font-weight: normal;
+.watch_button overlay:hover .large-icons {
+  opacity: 1;
 }
 
 .carousel-overlay-right {
@@ -63,3 +61,8 @@ button.episode:hover {
     transparent 100%
   );
 }
+
+.no-bold {
+  font-weight: normal;
+}
+
