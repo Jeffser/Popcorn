@@ -26,6 +26,7 @@ template $PopcornHomePage: Adw.NavigationPage {
     content: Gtk.ScrolledWindow {
       vexpand: true;
       hexpand: true;
+      hscrollbar-policy: never;
       child: Adw.Clamp {
         maximum-size: 2000;
         tightening-threshold: 800;

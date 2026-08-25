@@ -25,6 +25,8 @@
 
     <file alias="episode/button.ui">ui/episode/button.ui</file>
 
+    <file alias="movie/button.ui">ui/movie/button.ui</file>
+
     <file alias="containers/carousel.ui">ui/containers/carousel.ui</file>
   </gresource>
 </gresources>

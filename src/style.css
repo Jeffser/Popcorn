@@ -66,3 +66,6 @@ button.active_appearance_button:disabled {
   font-weight: normal;
 }
 
+.logo {
+  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
+}

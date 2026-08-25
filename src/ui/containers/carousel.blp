@@ -19,6 +19,8 @@ template $PopcornCarousel: Gtk.Box {
         icon-name: bind template.icon_name;
       }
       Gtk.Label {
+        xalign: 0;
+        ellipsize: middle;
         label: bind template.title;
         styles [
           "title-2"

@@ -1,6 +1,6 @@
 using Gtk 4.0;
 
-template $PopcornSeriesButton: Gtk.Box {
+template $PopcornMovieButton: Gtk.Box {
   styles [
     "watch_button"
   ]
@@ -12,11 +12,11 @@ template $PopcornSeriesButton: Gtk.Box {
       "force_p0"
     ]
     overflow: hidden;
-    tooltip-text: _("Play Series");
+    tooltip-text: _("Play Movie");
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;
-        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornSeries> .BackdropPaintable, template.model as <$PopcornSeries> .PrimaryPaintable);
+        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornMovie> .BackdropPaintable, template.model as <$PopcornMovie> .PrimaryPaintable);
         height-request: bind $format_paintable_height(template.is_tall);
       };
       [overlay]
@@ -34,14 +34,14 @@ template $PopcornSeriesButton: Gtk.Box {
       "flat",
       "p0"
     ]
-    tooltip-text: bind template.model as <$PopcornSeries> .Name;
+    tooltip-text:  bind template.model as <$PopcornMovie> .Name;
     child: Gtk.Box {
       orientation: vertical;
       spacing: 5;
       Gtk.Label {
         ellipsize: end;
         justify: center;
-        label: bind template.model as <$PopcornSeries> .Name;
+        label: bind template.model as <$PopcornMovie> .Name;
         max-width-chars: 12;
         styles [
           "title-4"
@@ -54,7 +54,7 @@ template $PopcornSeriesButton: Gtk.Box {
         use-markup: true;
         hexpand: true;
         max-width-chars: 12;
-        label: bind template.model as <$PopcornSeries> .ProductionYear;
+        label: bind template.model as <$PopcornMovie> .ProductionYear;
         styles [
           "dimmed"
         ]

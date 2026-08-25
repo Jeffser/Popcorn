@@ -4,6 +4,7 @@ from gi.repository import Gtk, Adw, Gio, GLib
 from ..misc import UserViewButton
 from ..series import SeriesOverview, SeriesButton
 from ..episode import EpisodeButton
+from ..movie import MovieButton
 from ..containers import Carousel
 from ... import constants
 
@@ -70,7 +71,13 @@ class HomePage(Adw.NavigationPage):
                     )
                 )
 
-            #for movie_model in latest_dict.get('Movie'):
+            for movie_model in latest_dict.get('Movie'):
+                latest_widgets.append(
+                    MovieButton(
+                        model=movie_model,
+                        is_tall=True
+                    )
+                )
 
             if len(latest_widgets) > 0:
                 new_carousel = Carousel(

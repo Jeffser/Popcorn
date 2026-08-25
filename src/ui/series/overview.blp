@@ -21,7 +21,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
     Adw.Clamp {
       orientation: vertical;
       halign: start;
-      maximum-size: 360;
+      maximum-size: 240;
       child: Adw.Clamp {
         halign: start;
         margin-start: 10;
@@ -29,6 +29,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         margin-top: 10;
         maximum-size: 360;
         child: Gtk.Picture logo_picture {
+          styles [
+            "logo"
+          ]
           paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
         };
       };
