@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, Gio, GLib
 from ..misc import UserViewButton
-from ..series import SeriesOverview
+from ..series import SeriesOverview, Episode
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/home.ui')
 class HomePage(Adw.NavigationPage):
@@ -10,6 +10,7 @@ class HomePage(Adw.NavigationPage):
 
     overview_container = Gtk.Template.Child()
     user_views_container = Gtk.Template.Child()
+    continue_watching_container = Gtk.Template.Child()
 
     def reset(self):
         jellyfin = None
@@ -21,15 +22,22 @@ class HomePage(Adw.NavigationPage):
 
         for series in jellyfin.getFeaturedSeries():
             self.overview_container.append(
-                SeriesOverview(series)
+                SeriesOverview(model=series)
             )
 
         for userView in jellyfin.getUserViews():
             self.user_views_container.append(
-                UserViewButton(userView)
+                UserViewButton(model=userView)
             )
 
-        GLib.timeout_add(5000, self.auto_scroll_overview)
+        episode_widgets = []
+        for episode in jellyfin.getResume():
+            episode_widgets.append(
+                Episode(model=episode)
+            )
+        self.continue_watching_container.set_widgets(episode_widgets)
+
+        #GLib.timeout_add(5000, self.auto_scroll_overview)
 
     def auto_scroll_overview(self):
         position_float = self.overview_container.get_position()

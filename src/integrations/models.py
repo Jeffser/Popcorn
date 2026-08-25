@@ -48,3 +48,14 @@ class Series(BasicModel):
     Overview = GObject.Property(type=str)
     logoPaintable = GObject.Property(type=Gdk.Paintable)
     backdropPaintable = GObject.Property(type=Gdk.Paintable)
+
+class Episode(BasicModel):
+    __gtype_name__ = 'PopcornEpisode'
+
+    Id = GObject.Property(type=str)
+    Name = GObject.Property(type=str)
+    SeriesName = GObject.Property(type=str)
+    SeriesId = GObject.Property(type=str)
+    SeasonNumber = GObject.Property(type=int)
+    EpisodeNumber = GObject.Property(type=int)
+    backdropPaintable = GObject.Property(type=Gdk.Paintable)

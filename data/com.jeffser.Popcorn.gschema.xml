@@ -10,9 +10,7 @@
     <key name="trust-server" type="b">
       <default>false</default>
     </key>
-	  <key name="show-carousel-pan-buttons" type="b">
-	    <default>false</default>
-	  </key>
 	</schema>
 </schemalist>
+
 

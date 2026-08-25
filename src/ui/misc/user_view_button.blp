@@ -2,7 +2,10 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PopcornUserViewButton: Gtk.Button {
-  child: Adw.ButtonContent {};
+  child: Adw.ButtonContent {
+    label: bind template.model as <$PopcornUserView> .Name;
+    icon-name: bind $format_icon_name(template.model as <$PopcornUserView> .CollectionType);
+  };
   action-name: "app.show_user_view";
-  action-target: "''";
+  action-target: bind template.model as <$PopcornUserView> .Id;
 }

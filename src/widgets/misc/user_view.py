@@ -10,22 +10,6 @@ class UserViewButton(Gtk.Button):
 
     model = GObject.Property(type=models.UserView)
 
-    def __init__(self, model):
-        super().__init__()
-        self.set_property('model', model)
-        self.model.connect_property('Name', self.name_changed)
-        self.model.connect_property('CollectionType', self.type_changed)
-        self.model.connect_property('Id', self.id_changed)
-
-    def id_changed(self, model_id:str):
-        self.set_action_target_value(GLib.Variant.new_string(model_id))
-        self.set_sensitive(model_id)
-
-    def name_changed(self, name:str):
-        self.get_child().set_label(name)
-        self.set_tooltip_text(name)
-
-    def type_changed(self, collectionType:str):
-        self.get_child().set_icon_name(
-            constants.USERVIEWS_ICONS.get(collectionType, 'folder-symbolic')
-        )
+    @Gtk.Template.Callback()
+    def format_icon_name(self, obj, value) -> str:
+        return constants.USERVIEWS_ICONS.get(value) or 'folder-symbolic'

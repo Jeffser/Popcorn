@@ -7,43 +7,11 @@ class Carousel(Gtk.Box):
     __gtype_name__ = 'PopcornCarousel'
 
     title = GObject.Property(type=str)
-    show_header = GObject.Property(type=bool, default=False)
     icon_name = GObject.Property(type=str)
 
-    header_button = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
     pan_start_el = Gtk.Template.Child()
     pan_end_el = Gtk.Template.Child()
-
-    def __init__(self):
-        super().__init__()
-        self.bind_property(
-            "title",
-            self.header_button,
-            "tooltip-text",
-            Gio.SettingsBindFlags.DEFAULT
-        )
-        self.bind_property(
-            "title",
-            self.header_button.get_child(),
-            "label",
-            Gio.SettingsBindFlags.DEFAULT
-        )
-        self.bind_property(
-            "show-header",
-            self.header_button,
-            "visible",
-            Gio.SettingsBindFlags.DEFAULT
-        )
-        self.bind_property(
-            "icon-name",
-            self.header_button.get_child(),
-            "icon-name",
-            Gio.SettingsBindFlags.DEFAULT
-        )
-
-        self.settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
-        self.settings.connect("changed::show-carousel-pan-buttons", self.update_pan_button_visibility)
 
     def remove_all(self):
         for page in list(self.list_el):
@@ -63,13 +31,6 @@ class Carousel(Gtk.Box):
         for i, page in enumerate(widgets):
             GLib.idle_add(self.list_el.append, page)
         GLib.timeout_add(200, scroll_to_middle)
-
-        GLib.idle_add(self.update_pan_button_visibility, self.settings, "show-carousel-pan-buttons")
-
-    def update_pan_button_visibility(self, settings, key):
-        visible = self.list_el.get_n_pages() >= 5 and settings.get_value(key).unpack()
-        self.pan_start_el.set_visible(visible)
-        self.pan_end_el.set_visible(visible)
 
     @Gtk.Template.Callback()
     def on_scroll(self, controller, dx, dy):

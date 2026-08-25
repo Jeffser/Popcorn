@@ -5,19 +5,54 @@ template $PopcornCarousel: Gtk.Box {
   orientation: vertical;
   spacing: 10;
 
-  Gtk.Button header_button {
-    styles [
-      "flat",
-      "title-2",
-      "active_appearance_button"
-    ]
-    halign: start;
-    sensitive: false;
-    child: Adw.ButtonContent {
-      label: _("List");
-    };
-    tooltip-text: _("List");
-    visible: false;
+  Gtk.Box {
+    orientation: horizontal;
+    spacing: 10;
+
+    Gtk.Box {
+      orientation: horizontal;
+      spacing: 5;
+      halign: start;
+      valign: center;
+      hexpand: true;
+      Gtk.Image {
+        icon-name: bind template.icon_name;
+      }
+      Gtk.Label {
+        label: bind template.title;
+        styles [
+          "title-2"
+        ]
+      }
+    }
+
+    Gtk.Button pan_start_el {
+      tooltip-text: _("Pan to the Left");
+      icon-name: "pan-start-symbolic";
+      valign: center;
+      halign: end;
+      margin-start: 10;
+      margin-bottom: 10;
+      clicked => $pan_start();
+      styles [
+        "circular",
+        "accent"
+      ]
+    }
+
+    Gtk.Button pan_end_el {
+      tooltip-text: _("Pan to the Right");
+      icon-name: "pan-end-symbolic";
+      valign: center;
+      halign: end;
+      margin-end: 10;
+      margin-bottom: 10;
+      clicked => $pan_end();
+      styles [
+        "circular",
+        "accent"
+      ]
+    }
   }
 
   Gtk.Overlay {
@@ -32,44 +67,12 @@ template $PopcornCarousel: Gtk.Box {
     }
 
     [overlay]
-    Gtk.Button pan_start_el {
-      tooltip-text: _("Pan to the Left");
-      icon-name: "pan-start-symbolic";
-      valign: end;
-      halign: start;
-      margin-start: 10;
-      margin-bottom: 10;
-      visible: false;
-      clicked => $pan_start();
-      styles [
-        "circular",
-        "accent"
-      ]
-    }
-
-    [overlay]
     Adw.Bin {
       halign: end;
       vexpand: true;
       width-request: 10;
       styles [
         "carousel-overlay-right"
-      ]
-    }
-
-    [overlay]
-    Gtk.Button pan_end_el {
-      tooltip-text: _("Pan to the Right");
-      icon-name: "pan-end-symbolic";
-      valign: end;
-      halign: end;
-      margin-end: 10;
-      margin-bottom: 10;
-      visible: false;
-      clicked => $pan_end();
-      styles [
-        "circular",
-        "accent"
       ]
     }
 

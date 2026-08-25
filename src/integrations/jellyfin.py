@@ -21,6 +21,8 @@ class Jellyfin(GObject.Object):
     accessToken = GObject.Property(type=str)
     userId = GObject.Property(type=str)
 
+    loaded_models = {}
+
     def getBaseHeader(self) -> dict:
         headers = {
             "Authorization": self.AUTH_HEADER
@@ -152,7 +154,7 @@ class Jellyfin(GObject.Object):
                 'Recursive': 'true',
                 'SortBy': 'Random',
                 'Limit': 5,
-                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount'
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
             }
         ).get('Items', [])
 
@@ -160,7 +162,7 @@ class Jellyfin(GObject.Object):
             model = models.Series(
                 Id=series.get('Id'),
                 Name=series.get('Name'),
-                CommunityRating=series.get('CommunityRating'),
+                CommunityRating=round(series.get('CommunityRating') or 0, 1),
                 ProductionYear=series.get('ProductionYear'),
                 OfficialRating=series.get('OfficialRating'),
                 SeasonCount=series.get('ChildCount') or 1,
@@ -177,3 +179,26 @@ class Jellyfin(GObject.Object):
             series_models.append(model)
         return series_models
 
+    def getResume(self) -> list:
+        # Returns list of episode model
+        episode_models = []
+        episode_dicts = self.makeRequest(
+            action='Users/{userId}/Items/Resume',
+            params={
+                'limit': 10,
+                'mediaTypes': 'Video',
+                'Types': 'Episode'
+            }
+        ).get('Items', [])
+        for episode in episode_dicts:
+            print(episode.get('ParentIndexNumber'))
+            episode_models.append(models.Episode(
+                Id=episode.get('Id'),
+                Name=episode.get('Name'),
+                SeriesName=episode.get('SeriesName'),
+                SeriesId=episode.get('SeriesId'),
+                SeasonNumber=episode.get('ParentIndexNumber'),
+                EpisodeNumber=episode.get('IndexNumber'),
+                backdropPaintable=self.getPaintable(episode.get('SeriesId'))
+            ))
+        return episode_models

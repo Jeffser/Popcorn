@@ -30,10 +30,36 @@ button.p0, menubutton.p0 > button, label.ph5 {
   opacity: 0.5;
 }
 
-.overview > box {
+.overview > box, .episode > overlay > box {
   background: linear-gradient(0deg, var(--window-bg-color) 0%, transparent 80%);
 }
 
 button.active_appearance_button:disabled {
   filter: none;
+}
+
+button.episode {
+  transition: filter .2s;
+}
+
+button.episode:hover {
+  filter: brightness(125%);
+}
+
+.episode label.dimmed {
+  font-weight: normal;
+}
+
+.carousel-overlay-right {
+  background: linear-gradient(to left,
+    @window_bg_color 0%,
+    transparent 100%
+  );
+}
+
+.carousel-overlay-left {
+  background: linear-gradient(to right,
+    @window_bg_color 0%,
+    transparent 100%
+  );
 }

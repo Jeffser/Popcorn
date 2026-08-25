@@ -1,0 +1,67 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornSeriesEpisode: Gtk.Button {
+  styles [
+    "episode",
+    "force_p0"
+  ]
+  overflow: hidden;
+
+  child: Gtk.Overlay {
+    child: Gtk.Picture {
+      content-fit: cover;
+      paintable: bind template.model as <$PopcornEpisode> .backdropPaintable;
+      styles [
+        "darker"
+      ]
+    };
+
+    [overlay]
+    Gtk.Box {
+      orientation: vertical;
+      spacing: 5;
+      valign: end;
+      hexpand: true;
+      styles [
+        "p10"
+      ]
+
+      Gtk.Label {
+        ellipsize: end;
+        xalign: 0;
+        label: bind template.model as <$PopcornEpisode> .SeriesName;
+        styles [
+          "title-3"
+        ]
+      }
+
+      Adw.WrapBox {
+        line-spacing: 5;
+        child-spacing: 5;
+
+        Gtk.Label {
+          ellipsize: end;
+          xalign: 0;
+          label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber);
+          styles [
+            "title-4"
+          ]
+        }
+
+        Gtk.Separator {}
+
+        Gtk.Label episode_label {
+          ellipsize: end;
+          xalign: 0;
+          label: bind template.model as <$PopcornEpisode> .Name;
+          styles [
+            "title-4",
+            "dimmed"
+          ]
+        }
+
+      }
+    }
+  };
+}
