@@ -8,16 +8,14 @@ template $PopcornSeriesOverview: Gtk.Overlay {
   hexpand: true;
   child: Gtk.Picture {
     content-fit: cover;
-    paintable: bind template.model as <$PopcornSeries> .backdropPaintable;
-    styles [
-      "darker"
-    ]
+    paintable: bind template.model as <$PopcornSeries> .BackdropPaintable;
   };
 
   [overlay]
   Gtk.Box {
     styles [
-      "p10"
+      "p10",
+      "gradient-background"
     ]
     hexpand: true;
     vexpand: true;
@@ -32,7 +30,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         halign: start;
         maximum-size: 360;
         child: Gtk.Picture logo_picture {
-          paintable: bind template.model as <$PopcornSeries> .logoPaintable;
+          paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
         };
       };
     }
@@ -90,17 +88,18 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       wrap-policy: minimum;
       line-spacing: 10;
       child-spacing: 10;
+      wrap-reverse: true;
       hexpand: true;
 
       Gtk.Label {
-        wrap-mode: word_char;
+        wrap-mode: word;
         wrap: true;
         lines: 3;
         ellipsize: end;
         xalign: 0;
-        width-request: 100;
+        width-request: 240;
         hexpand: true;
-        label: bind $format_season_count(template.model as <$PopcornSeries> .Overview);
+        label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
         visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
       }
 
@@ -119,6 +118,8 @@ template $PopcornSeriesOverview: Gtk.Overlay {
           "suggested-action"
         ]
         valign: center;
+        halign: center;
+        hexpand: true;
         tooltip-text: _("Continue Watching");
         child: Adw.ButtonContent {
           icon-name: "media-playback-start-symbolic";

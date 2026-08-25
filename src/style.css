@@ -22,16 +22,20 @@ button.p0, menubutton.p0 > button, label.ph5 {
   background: color-mix(in srgb, var(--window-bg-color) 75%, transparent);
 }
 
-.darker {
-  filter: brightness(80%);
+button.blur-backdrop {
+  transition: background .2s;
+}
+
+button.blur-backdrop:hover {
+  background: color-mix(in srgb, var(--window-bg-color) 50%, transparent);
 }
 
 .translucent-picture {
   opacity: 0.5;
 }
 
-.overview > box, .episode > overlay > box {
-  background: linear-gradient(0deg, var(--window-bg-color) 0%, transparent 80%);
+.gradient-background {
+  background: linear-gradient(0deg, color-mix(in srgb, var(--window-bg-color), transparent 20%) 20%, transparent 50%);
 }
 
 button.active_appearance_button:disabled {
@@ -43,7 +47,7 @@ button.episode {
 }
 
 button.episode:hover {
-  filter: brightness(125%);
+  filter: brightness(80%);
 }
 
 .episode label.dimmed {

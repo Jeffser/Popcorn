@@ -167,8 +167,8 @@ class Jellyfin(GObject.Object):
                 OfficialRating=series.get('OfficialRating'),
                 SeasonCount=series.get('ChildCount') or 1,
                 Overview=series.get('Overview'),
-                logoPaintable=self.getPaintable(series.get('Id'), image_type='logo'),
-                backdropPaintable=self.getPaintable(series.get('Id'))
+                LogoPaintable=self.getPaintable(series.get('Id'), image_type='logo'),
+                BackdropPaintable=self.getPaintable(series.get('Id'))
             )
             model.get_property('Genres').remove_all()
             model.get_property('Genres').splice(
@@ -191,7 +191,6 @@ class Jellyfin(GObject.Object):
             }
         ).get('Items', [])
         for episode in episode_dicts:
-            print(episode.get('ParentIndexNumber'))
             episode_models.append(models.Episode(
                 Id=episode.get('Id'),
                 Name=episode.get('Name'),
@@ -199,6 +198,30 @@ class Jellyfin(GObject.Object):
                 SeriesId=episode.get('SeriesId'),
                 SeasonNumber=episode.get('ParentIndexNumber'),
                 EpisodeNumber=episode.get('IndexNumber'),
-                backdropPaintable=self.getPaintable(episode.get('SeriesId'))
+                BackdropPaintable=self.getPaintable(episode.get('SeriesId')),
+                Progress=episode.get('UserData', {}).get('PlayedPercentage', 0) / 100
             ))
         return episode_models
+
+    def getNextUp(self) -> list:
+        # Returns list of episode model
+        episode_models = []
+        episode_dicts = self.makeRequest(
+            action='Shows/NextUp',
+            params={
+                'limit': 10,
+                'mediaTypes': 'Video',
+                'Types': 'Episode'
+            }
+        ).get('Items', [])
+        for episode in episode_dicts:
+            episode_models.append(models.Episode(
+                Id=episode.get('Id'),
+                Name=episode.get('Name'),
+                SeriesName=episode.get('SeriesName'),
+                SeriesId=episode.get('SeriesId'),
+                SeasonNumber=episode.get('ParentIndexNumber'),
+                EpisodeNumber=episode.get('IndexNumber'),
+                BackdropPaintable=self.getPaintable(episode.get('SeriesId'))
+            ))
+            return episode_models

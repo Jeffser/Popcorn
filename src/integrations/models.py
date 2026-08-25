@@ -20,14 +20,6 @@ class BasicModel(GObject.Object):
                 else:
                     self.set_property(prop.get_name(), prop.get_default_value())
 
-    def connect_property(self, parameter:str, callback:callable) -> str:
-        connection_id = self.connect(
-            'notify::{}'.format(parameter),
-            lambda *_, parameter=parameter, callback=callback: GLib.idle_add(callback, self.get_property(parameter))
-        )
-        GLib.idle_add(callback, self.get_property(parameter))
-        return connection_id
-
 class UserView(BasicModel):
     __gtype_name__ = 'PopcornUserView'
 
@@ -46,8 +38,8 @@ class Series(BasicModel):
     SeasonCount = GObject.Property(type=int, default=0)
     Genres = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
     Overview = GObject.Property(type=str)
-    logoPaintable = GObject.Property(type=Gdk.Paintable)
-    backdropPaintable = GObject.Property(type=Gdk.Paintable)
+    LogoPaintable = GObject.Property(type=Gdk.Paintable)
+    BackdropPaintable = GObject.Property(type=Gdk.Paintable)
 
 class Episode(BasicModel):
     __gtype_name__ = 'PopcornEpisode'
@@ -58,4 +50,5 @@ class Episode(BasicModel):
     SeriesId = GObject.Property(type=str)
     SeasonNumber = GObject.Property(type=int)
     EpisodeNumber = GObject.Property(type=int)
-    backdropPaintable = GObject.Property(type=Gdk.Paintable)
+    BackdropPaintable = GObject.Property(type=Gdk.Paintable)
+    Progress = GObject.Property(type=float, default=0) # 0 - 1

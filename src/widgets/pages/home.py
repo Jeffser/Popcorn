@@ -11,6 +11,7 @@ class HomePage(Adw.NavigationPage):
     overview_container = Gtk.Template.Child()
     user_views_container = Gtk.Template.Child()
     continue_watching_container = Gtk.Template.Child()
+    next_up_container = Gtk.Template.Child()
 
     def reset(self):
         jellyfin = None
@@ -37,6 +38,13 @@ class HomePage(Adw.NavigationPage):
             )
         self.continue_watching_container.set_widgets(episode_widgets)
 
+        episode_widgets = []
+        for episode in jellyfin.getNextUp():
+            episode_widgets.append(
+                Episode(model=episode)
+            )
+        self.next_up_container.set_widgets(episode_widgets)
+
         #GLib.timeout_add(5000, self.auto_scroll_overview)
 
     def auto_scroll_overview(self):
@@ -48,3 +56,20 @@ class HomePage(Adw.NavigationPage):
                 next_index = 0
             self.overview_container.scroll_to(self.overview_container.get_nth_page(next_index), True)
         return True
+
+    def pan_overview(self, position_modifier:int):
+        current_position = int(self.overview_container.get_position() + position_modifier)
+        if current_position >= self.overview_container.get_n_pages():
+            current_position = 0
+        elif current_position < 0:
+            current_position = self.overview_container.get_n_pages() - 1
+        self.overview_container.scroll_to(self.overview_container.get_nth_page(current_position), True)
+
+    @Gtk.Template.Callback()
+    def pan_overview_start(self, btn):
+        self.pan_overview(-1)
+
+    @Gtk.Template.Callback()
+    def pan_overview_end(self, btn):
+        self.pan_overview(1)
+

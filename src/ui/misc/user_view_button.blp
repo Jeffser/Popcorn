@@ -7,5 +7,5 @@ template $PopcornUserViewButton: Gtk.Button {
     icon-name: bind $format_icon_name(template.model as <$PopcornUserView> .CollectionType);
   };
   action-name: "app.show_user_view";
-  action-target: bind template.model as <$PopcornUserView> .Id;
+  action-target: bind $format_action_target(template.model as <$PopcornUserView> .Id);
 }

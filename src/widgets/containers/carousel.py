@@ -31,6 +31,8 @@ class Carousel(Gtk.Box):
         for i, page in enumerate(widgets):
             GLib.idle_add(self.list_el.append, page)
         GLib.timeout_add(200, scroll_to_middle)
+        GLib.idle_add(self.pan_start_el.set_visible, len(widgets) > 1)
+        GLib.idle_add(self.pan_end_el.set_visible, len(widgets) > 1)
 
     @Gtk.Template.Callback()
     def on_scroll(self, controller, dx, dy):
