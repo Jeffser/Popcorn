@@ -24,3 +24,7 @@ class SeriesOverview(Gtk.Overlay):
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
+
+    @Gtk.Template.Callback()
+    def format_stack_visible_child_name(self, obj, paintable) -> str:
+        return 'logo' if paintable else 'label'

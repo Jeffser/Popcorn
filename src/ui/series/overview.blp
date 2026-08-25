@@ -28,11 +28,38 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         margin-end: 10;
         margin-top: 10;
         maximum-size: 360;
-        child: Gtk.Picture logo_picture {
+        child: Gtk.Button {
           styles [
-            "logo"
+            "flat"
           ]
-          paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
+          tooltip-text: bind template.model as <$PopcornSeries> .Name;
+          child: Gtk.Stack {
+            hhomogeneous: false;
+            vhomogeneous: false;
+            visible-child-name: bind $format_stack_visible_child_name(template.model as <$PopcornSeries> .LogoPaintable);
+            Gtk.StackPage {
+              name: "logo";
+              child: Gtk.Picture logo_picture {
+                styles [
+                  "logo"
+                ]
+                paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
+              };
+            }
+            Gtk.StackPage {
+              name: "label";
+              child: Gtk.Label {
+                styles [
+                  "title-1"
+                ]
+                ellipsize: end;
+                wrap: true;
+                wrap-mode: word_char;
+                lines: 2;
+                label: bind template.model as <$PopcornSeries> .Name;
+              };
+            }
+          };
         };
       };
     }
@@ -115,15 +142,6 @@ template $PopcornSeriesOverview: Gtk.Overlay {
           hexpand: true;
           label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
-        }
-
-        Gtk.Button {
-          styles [
-            "circular"
-          ]
-          valign: center;
-          tooltip-text: _("More Information");
-          icon-name: "info-outline-symbolic";
         }
 
         Gtk.Button {
