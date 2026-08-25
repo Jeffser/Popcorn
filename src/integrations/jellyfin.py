@@ -224,4 +224,15 @@ class Jellyfin(GObject.Object):
                 EpisodeNumber=episode.get('IndexNumber'),
                 BackdropPaintable=self.getPaintable(episode.get('SeriesId'))
             ))
-            return episode_models
+        return episode_models
+
+    def getUserAvatar(self) -> Gdk.Paintable | None:
+        try:
+            url = self.getUrl("Users/{userId}/Images/Primary")
+            response = requests.get(url, params={'quality': 85}, timeout=5)
+            response.raise_for_status()
+            gbytes = GLib.Bytes.new(response.content)
+            return Gdk.Texture.new_from_bytes(gbytes)
+        except:
+            pass
+        return None

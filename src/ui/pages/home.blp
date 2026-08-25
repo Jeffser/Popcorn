@@ -10,6 +10,17 @@ template $PopcornHomePage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {
       show-title: false;
+
+      Gtk.MenuButton {
+        styles [
+          "flat"
+        ]
+        primary: true;
+        icon-name: "open-menu-symbolic";
+        popover: Gtk.PopoverMenu {
+          menu-model: primary_menu;
+        };
+      }
     }
 
     content: Gtk.ScrolledWindow {
@@ -99,4 +110,21 @@ template $PopcornHomePage: Adw.NavigationPage {
       };
     };
   };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+    item {
+      label: _("About Popcorn");
+      action: "app.about";
+    }
+  }
 }
