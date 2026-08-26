@@ -9,22 +9,32 @@ template $PopcornSeriesButton: Gtk.Box {
 
   Gtk.Button {
     styles [
-      "force_p0"
+      "force_p0",
+      "card"
     ]
     overflow: hidden;
-    tooltip-text: _("Play Series");
+    tooltip-text: bind template.model as <$PopcornSeries> .Name;
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;
         paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornSeries> .BackdropPaintable, template.model as <$PopcornSeries> .PrimaryPaintable);
         height-request: bind $format_paintable_height(template.is_tall);
       };
+
       [overlay]
-      Gtk.Image {
+      Gtk.Button {
+        styles [
+          "osd",
+          "circular"
+        ]
+        tooltip-text: _("Play Series");
         icon-name: "media-playback-start-symbolic";
-        icon-size: large;
-        hexpand: true;
-        vexpand: true;
+        valign: end;
+        halign: start;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
       }
     };
   }

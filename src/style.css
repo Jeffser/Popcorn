@@ -38,14 +38,21 @@ button.active_appearance_button:disabled {
   filter: none;
 }
 
-.watch_button overlay .large-icons {
+.watch_button overlay button.osd {
   transition: opacity .2s;
   opacity: 0;
-  background: color-mix(in srgb, var(--window-bg-color) 50%, transparent);
 }
 
-.watch_button overlay:hover .large-icons {
+.watch_button overlay:hover button.osd {
   opacity: 1;
+}
+
+.watch_button overlay picture {
+  transition: filter .2s;
+}
+
+.watch_button overlay:hover picture {
+  filter: brightness(75%)
 }
 
 .carousel-overlay-right {

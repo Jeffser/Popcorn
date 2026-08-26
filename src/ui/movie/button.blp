@@ -9,10 +9,11 @@ template $PopcornMovieButton: Gtk.Box {
 
   Gtk.Button {
     styles [
-      "force_p0"
+      "force_p0",
+      "card"
     ]
     overflow: hidden;
-    tooltip-text: _("Play Movie");
+    tooltip-text:  bind template.model as <$PopcornMovie> .Name;
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;
@@ -20,11 +21,19 @@ template $PopcornMovieButton: Gtk.Box {
         height-request: bind $format_paintable_height(template.is_tall);
       };
       [overlay]
-      Gtk.Image {
+      Gtk.Button {
+        styles [
+          "osd",
+          "circular"
+        ]
+        tooltip-text: _("Play Movie");
         icon-name: "media-playback-start-symbolic";
-        icon-size: large;
-        hexpand: true;
-        vexpand: true;
+        valign: end;
+        halign: start;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
       }
     };
   }
