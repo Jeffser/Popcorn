@@ -55,6 +55,8 @@ template $PopcornEpisodeButton: Gtk.Box {
       "p0"
     ]
     tooltip-text: bind template.model as <$PopcornEpisode> .SeriesName;
+    action-name: "app.show_series";
+    action-target: bind $format_action_target(template.model as <$PopcornEpisode> .SeriesId, 's');
     child: Gtk.Label {
       ellipsize: end;
       justify: center;

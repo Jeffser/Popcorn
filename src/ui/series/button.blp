@@ -14,6 +14,8 @@ template $PopcornSeriesButton: Gtk.Box {
     ]
     overflow: hidden;
     tooltip-text: bind template.model as <$PopcornSeries> .Name;
+    action-name: "app.show_series";
+    action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;
@@ -45,6 +47,8 @@ template $PopcornSeriesButton: Gtk.Box {
       "p0"
     ]
     tooltip-text: bind template.model as <$PopcornSeries> .Name;
+    action-name: "app.show_series";
+    action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
     child: Gtk.Box {
       orientation: vertical;
       spacing: 5;

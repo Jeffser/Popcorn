@@ -52,7 +52,7 @@ button.active_appearance_button:disabled {
 }
 
 .watch_button overlay:hover picture {
-  filter: brightness(75%)
+  filter: brightness(75%);
 }
 
 .carousel-overlay-right {
