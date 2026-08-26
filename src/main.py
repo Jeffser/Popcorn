@@ -84,8 +84,8 @@ class PopcornApplication(Adw.Application):
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
             threading.Thread(target=self.main_window.root_navigationview.find_page('login').reset).start()
 
-    def create_action(self, name, callback, shortcuts=None):
-        action = Gio.SimpleAction.new(name, None)
+    def create_action(self, name, callback, shortcuts=None, parameter_type=None):
+        action = Gio.SimpleAction.new(name, parameter_type)
         action.connect("activate", callback)
         self.add_action(action)
         if shortcuts:

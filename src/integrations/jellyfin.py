@@ -308,4 +308,62 @@ class Jellyfin(GObject.Object):
                 result_models['Movie'].append(model)
         return result_models
 
+    def getModel(self, modelId:str) -> models.BasicModel | None:
+        item = self.makeRequest(
+            action='Users/{userId}/Items/{itemId}',
+            action_keys={
+                'itemId': modelId
+            }
+        )
+        if item.get('Type') == 'Series':
+            model = models.Series(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                CommunityRating=round(item.get('CommunityRating') or 0, 1),
+                ProductionYear=item.get('ProductionYear'),
+                OfficialRating=item.get('OfficialRating'),
+                SeasonCount=item.get('ChildCount') or 1,
+                Overview=item.get('Overview'),
+                LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
+                BackdropPaintable=self.getPaintable(item.get('Id')),
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+            )
+            model.get_property('Genres').remove_all()
+            model.get_property('Genres').splice(
+                0,
+                0,
+                [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
+            )
+            return model
+        elif item.get('Type') == 'Episode':
+            return models.Episode(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                SeriesName=item.get('SeriesName'),
+                SeriesId=item.get('SeriesId'),
+                SeasonNumber=item.get('ParentIndexNumber'),
+                EpisodeNumber=item.get('IndexNumber'),
+                BackdropPaintable=self.getPaintable(item.get('SeriesId')),
+                PrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary')
+            )
+        elif item.get('Type') == 'Movie':
+            model = models.Movie(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                CommunityRating=round(item.get('CommunityRating') or 0, 1),
+                ProductionYear=item.get('ProductionYear'),
+                OfficialRating=item.get('OfficialRating'),
+                Overview=item.get('Overview'),
+                LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
+                BackdropPaintable=self.getPaintable(item.get('Id')),
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+            )
+            model.get_property('Genres').remove_all()
+            model.get_property('Genres').splice(
+                0,
+                0,
+                [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
+            )
+            return model
+
 

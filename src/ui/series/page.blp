@@ -1,0 +1,174 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornSeriesPage: Adw.NavigationPage {
+  title: bind template.model as <$PopcornSeries> .Name;
+  tag: bind template.model as <$PopcornSeries> .Id;
+
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      styles [
+        "osd"
+      ]
+    }
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hexpand: true;
+      hscrollbar-policy: never;
+      child: Gtk.Box {
+        vexpand: true;
+        hexpand: true;
+        orientation: vertical;
+        spacing: 10;
+
+        Adw.Clamp {
+          valign: start;
+          orientation: vertical;
+          maximum-size: 1200;
+          tightening-threshold: 2000;
+          child: Gtk.Overlay {
+            hexpand: true;
+            child: Gtk.Picture {
+              paintable: bind template.model as <$PopcornSeries> .BackdropPaintable;
+              content-fit: cover;
+            };
+
+            [overlay]
+            Gtk.Box {
+              styles [
+                "p10",
+                "gradient-background"
+              ]
+              valign: end;
+              hexpand: true;
+              orientation: vertical;
+              spacing: 10;
+
+
+              Adw.Clamp {
+                halign: center;
+                orientation: vertical;
+                maximum-size: 360;
+                child: Adw.Clamp {
+                  maximum-size: 480;
+                  child: Gtk.Stack {
+                    margin-top: 70;
+                    hhomogeneous: false;
+                    vhomogeneous: false;
+                    visible-child-name: bind $format_stack_visible_child_name(template.model as <$PopcornSeries> .LogoPaintable);
+                    Gtk.StackPage {
+                      name: "logo";
+                      child: Gtk.Picture logo_picture {
+                        styles [
+                          "logo"
+                        ]
+                        paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
+                      };
+                    }
+                    Gtk.StackPage {
+                      name: "label";
+                      child: Gtk.Label {
+                        styles [
+                          "title-1"
+                        ]
+                        ellipsize: end;
+                        wrap: true;
+                        wrap-mode: word_char;
+                        lines: 2;
+                        label: bind template.model as <$PopcornSeries> .Name;
+                      };
+                    }
+                  };
+                };
+              }
+
+              Adw.WrapBox {
+                line-spacing: 10;
+                child-spacing: 10;
+                halign: center;
+                Gtk.Box {
+                  spacing: 5;
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
+                  Gtk.Image {
+                    icon-name: "starred-symbolic";
+                  }
+                  Gtk.Label {
+                    styles [
+                      "numeric"
+                    ]
+                    label: bind $format_one_decimal(template.model as <$PopcornSeries> .CommunityRating);
+                  }
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
+                }
+
+                Gtk.Label {
+                  styles [
+                    "numeric"
+                  ]
+                  label: bind template.model as <$PopcornSeries> .ProductionYear;
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
+                }
+
+                Gtk.Label {
+                  styles [
+                    "monospace"
+                  ]
+                  label: bind template.model as <$PopcornSeries> .OfficialRating;
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
+                }
+
+                Gtk.Label {
+                  label: bind $format_season_count(template.model as <$PopcornSeries> .SeasonCount);
+                  visible: bind $format_to_bool(template.model as <$PopcornSeries> .SeasonCount);
+                }
+              }
+            }
+          };
+        }
+        Adw.Clamp {
+          maximum-size: 2000;
+          tightening-threshold: 800;
+          vexpand: true;
+          child: Gtk.Box {
+            styles [
+              "p10"
+            ]
+            orientation: vertical;
+            spacing: 10;
+
+            Gtk.Label {
+              styles [
+                "card",
+                "body",
+                "p10"
+              ]
+              wrap-mode: word;
+              wrap: true;
+              lines: 4;
+              ellipsize: end;
+              xalign: 0;
+              hexpand: true;
+              label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
+              visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
+            }
+          };
+        }
+      };
+    };
+  };
+}

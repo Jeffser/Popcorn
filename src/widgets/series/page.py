@@ -1,11 +1,11 @@
-# overview.py
+# page.py
 
 from gi.repository import Gtk, Adw, Gio, GLib, GObject
 from ...integrations import models
 
-@Gtk.Template(resource_path='/com/jeffser/Popcorn/series/overview.ui')
-class SeriesOverview(Gtk.Overlay):
-    __gtype_name__ = 'PopcornSeriesOverview'
+@Gtk.Template(resource_path='/com/jeffser/Popcorn/series/page.ui')
+class SeriesPage(Adw.NavigationPage):
+    __gtype_name__ = 'PopcornSeriesPage'
 
     model = GObject.Property(type=models.Series)
 
@@ -28,7 +28,3 @@ class SeriesOverview(Gtk.Overlay):
     @Gtk.Template.Callback()
     def format_stack_visible_child_name(self, obj, paintable) -> str:
         return 'logo' if paintable else 'label'
-
-    @Gtk.Template.Callback()
-    def format_action_target(self, obj, value, variant) -> GLib.Variant:
-        return GLib.Variant(variant, value)

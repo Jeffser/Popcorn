@@ -41,7 +41,7 @@ button.active_appearance_button:disabled {
 .watch_button overlay .large-icons {
   transition: opacity .2s;
   opacity: 0;
-  backdrop-filter: brightness(70%);
+  background: color-mix(in srgb, var(--window-bg-color) 50%, transparent);
 }
 
 .watch_button overlay:hover .large-icons {
@@ -68,4 +68,8 @@ button.active_appearance_button:disabled {
 
 .logo {
   filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
+}
+
+.gradient-background {
+  background: linear-gradient(0deg, var(--window-bg-color), transparent);
 }

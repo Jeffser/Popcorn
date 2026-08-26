@@ -4,6 +4,7 @@ widgets = [
   '__init__.py',
   'overview.py',
   'button.py',
+  'page.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

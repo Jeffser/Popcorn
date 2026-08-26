@@ -13,6 +13,7 @@ blueprints = files(
 
   'ui/series/overview.blp',
   'ui/series/button.blp',
+  'ui/series/page.blp',
 
   'ui/episode/button.blp',
 
@@ -64,6 +65,7 @@ popcorn_sources = [
   'main.py',
   'window.py',
   'constants.py',
+  'actions.py',
 ]
 
 install_data(popcorn_sources, install_dir: moduledir)

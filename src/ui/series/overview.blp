@@ -33,6 +33,8 @@ template $PopcornSeriesOverview: Gtk.Overlay {
             "flat"
           ]
           tooltip-text: bind template.model as <$PopcornSeries> .Name;
+          action-name: "app.show_series";
+          action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
           child: Gtk.Stack {
             hhomogeneous: false;
             vhomogeneous: false;
@@ -110,6 +112,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         }
 
         Gtk.Label {
+          styles [
+            "monospace"
+          ]
           label: bind template.model as <$PopcornSeries> .OfficialRating;
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
         }
@@ -133,6 +138,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         hexpand: true;
 
         Gtk.Label {
+          styles [
+            "body"
+          ]
           wrap-mode: word;
           wrap: true;
           lines: 3;

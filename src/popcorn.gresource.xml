@@ -22,6 +22,7 @@
 
     <file alias="series/overview.ui">ui/series/overview.ui</file>
     <file alias="series/button.ui">ui/series/button.ui</file>
+    <file alias="series/page.ui">ui/series/page.ui</file>
 
     <file alias="episode/button.ui">ui/episode/button.ui</file>
 

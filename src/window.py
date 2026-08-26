@@ -17,9 +17,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Gtk, Adw, GLib
 from . import widgets as Widgets
+from . import actions
+import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/window.ui')
 class PopcornWindow(Adw.ApplicationWindow):
@@ -27,5 +28,21 @@ class PopcornWindow(Adw.ApplicationWindow):
 
     root_navigationview = Gtk.Template.Child()
 
+    def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
+        def call_action(cb, va):
+            if va is None:
+                cb(self)
+            else:
+                cb(self, va.unpack())
+
+        self.get_application().create_action(
+            name=callback.__name__,
+            callback=lambda at, va, cb=callback: threading.Thread(target=call_action, args=(cb, va), daemon=True).start(),
+            shortcuts=shortcuts,
+            parameter_type=GLib.VariantType.new(parameter_type) if parameter_type else None
+        )
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.create_action(actions.show_series)
