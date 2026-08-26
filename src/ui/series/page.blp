@@ -30,7 +30,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
           orientation: vertical;
           maximum-size: 1200;
           tightening-threshold: 2000;
-          child: Gtk.Overlay {
+          child: Gtk.Overlay top_overlay {
             hexpand: true;
             child: Gtk.Picture {
               paintable: bind template.model as <$PopcornSeries> .BackdropPaintable;
@@ -38,7 +38,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
             };
 
             [overlay]
-            Gtk.Box {
+            Gtk.Box top_overlay_content {
               styles [
                 "p10",
                 "gradient-background"
@@ -47,7 +47,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
               hexpand: true;
               orientation: vertical;
               spacing: 10;
-
+              margin-top: 240;
 
               Adw.Clamp {
                 halign: center;
@@ -56,7 +56,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                 child: Adw.Clamp {
                   maximum-size: 480;
                   child: Gtk.Stack {
-                    margin-top: 70;
+                    height-request: 100;
                     hhomogeneous: false;
                     vhomogeneous: false;
                     visible-child-name: bind $format_stack_visible_child_name(template.model as <$PopcornSeries> .LogoPaintable);
@@ -83,6 +83,19 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                       };
                     }
                   };
+                };
+              }
+
+              Gtk.Button {
+                styles [
+                  "pill",
+                  "suggested-action"
+                ]
+                halign: center;
+                tooltip-text: _("Play");
+                child: Adw.ButtonContent {
+                  icon-name: "media-playback-start-symbolic";
+                  label: _("Play");
                 };
               }
 
@@ -151,20 +164,58 @@ template $PopcornSeriesPage: Adw.NavigationPage {
             orientation: vertical;
             spacing: 10;
 
-            Gtk.Label {
+            Gtk.Box {
               styles [
                 "card",
-                "body",
                 "p10"
               ]
-              wrap-mode: word;
-              wrap: true;
-              lines: 4;
-              ellipsize: end;
-              xalign: 0;
               hexpand: true;
-              label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
+              orientation: vertical;
+              spacing: 5;
               visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
+              Gtk.Box {
+                orientation: horizontal;
+                spacing: 5;
+                Gtk.Label {
+                  styles [
+                    "heading"
+                  ]
+                  ellipsize: end;
+                  xalign: 0;
+                  hexpand: true;
+                  label: _("Overview");
+                }
+
+                Gtk.ToggleButton overview_toggle_button {
+                  styles [
+                    "p0",
+                    "flat"
+                  ]
+                  icon-name: bind $format_overview_button_icon_name(overview_toggle_button.active);
+                }
+              }
+
+              Gtk.Label overview_label {
+                styles [
+                  "body"
+                ]
+                wrap-mode: word;
+                wrap: true;
+                lines: 1;
+                ellipsize: bind $format_overview_ellipsize(overview_toggle_button.active);
+                xalign: 0;
+                label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
+              }
+            }
+
+            $PopcornCarousel seasons_container {
+              title: _("Seasons");
+              icon-name: "playback-symbolic";
+            }
+
+            $PopcornCarousel recommendations_container {
+              title: _("Recommendations");
+              icon-name: "playback-symbolic";
             }
           };
         }

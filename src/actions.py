@@ -2,13 +2,16 @@
 
 from gi.repository import Adw, GLib
 from . import widgets as Widgets
+import threading
 
 # -- Helpers --
 
 def __show_page(window, page:Adw.NavigationPage):
     if app := window.get_application():
         if main_window := app.main_window:
+            thread = threading.Thread(target=page.reset)
             GLib.idle_add(main_window.root_navigationview.push, page)
+            GLib.idle_add(thread.start)
 
 # -- Series --
 

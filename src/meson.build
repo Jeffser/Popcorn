@@ -19,6 +19,8 @@ blueprints = files(
 
   'ui/movie/button.blp',
 
+  'ui/season/button.blp',
+
   'ui/containers/carousel.blp',
 )
 

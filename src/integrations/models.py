@@ -68,3 +68,13 @@ class Movie(BasicModel):
     LogoPaintable = GObject.Property(type=Gdk.Paintable)
     BackdropPaintable = GObject.Property(type=Gdk.Paintable)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
+
+class Season(BasicModel):
+    __gtype_name__ = 'PopcornSeason'
+
+    Id = GObject.Property(type=str)
+    Name = GObject.Property(type=str)
+    SeriesId = GObject.Property(type=str)
+    IndexNumber = GObject.Property(type=int)
+    PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
+

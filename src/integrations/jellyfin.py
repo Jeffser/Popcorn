@@ -366,4 +366,81 @@ class Jellyfin(GObject.Object):
             )
             return model
 
+    def getSeasons(self, seriesId:str) -> list:
+        # Returns list of season models
+        season_models = []
+        items = self.makeRequest(
+            action='Shows/{seriesId}/Seasons',
+            action_keys={
+                'seriesId': seriesId
+            },
+            params={
+                'fields': 'ChildCount'
+            }
+        ).get('Items', [])
+        for item in items:
+            season_models.append(models.Season(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                SeriesId=item.get('SeriesId'),
+                IndexNumber=item.get('IndexNumber'),
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary') or self.getPaintable(item.get('SeriesId'), image_type='Primary')
+            ))
+        return season_models
 
+    def getRecommendations(self, seriesId:str) -> list:
+        # Returns list of Series/Movies models
+        result_models = {
+            'Series': [],
+            'Movie': []
+        }
+        items = self.makeRequest(
+            action='Items/{seriesId}/Similar',
+            action_keys={
+                'seriesId': seriesId
+            },
+            params={
+                'limit': 10
+            }
+        ).get('Items', [])
+        for item in items:
+            if item.get('Type') == 'Series':
+                model = models.Series(
+                    Id=item.get('Id'),
+                    Name=item.get('Name'),
+                    CommunityRating=round(item.get('CommunityRating') or 0, 1),
+                    ProductionYear=item.get('ProductionYear'),
+                    OfficialRating=item.get('OfficialRating'),
+                    SeasonCount=item.get('ChildCount') or 1,
+                    Overview=item.get('Overview'),
+                    LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
+                    BackdropPaintable=self.getPaintable(item.get('Id')),
+                    PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+                )
+                model.get_property('Genres').remove_all()
+                model.get_property('Genres').splice(
+                    0,
+                    0,
+                    [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
+                )
+                result_models['Series'].append(model)
+            elif item.get('Type') == 'Movie':
+                model = models.Movie(
+                    Id=item.get('Id'),
+                    Name=item.get('Name'),
+                    CommunityRating=round(item.get('CommunityRating') or 0, 1),
+                    ProductionYear=item.get('ProductionYear'),
+                    OfficialRating=item.get('OfficialRating'),
+                    Overview=item.get('Overview'),
+                    LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
+                    BackdropPaintable=self.getPaintable(item.get('Id')),
+                    PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+                )
+                model.get_property('Genres').remove_all()
+                model.get_property('Genres').splice(
+                    0,
+                    0,
+                    [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
+                )
+                result_models['Movie'].append(model)
+        return result_models

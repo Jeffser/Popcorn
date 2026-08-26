@@ -6,3 +6,4 @@ from .series import SeriesOverview, SeriesButton, SeriesPage
 from .containers import Carousel
 from .episode import EpisodeButton
 from .movie import MovieButton
+from .season import SeasonButton

@@ -1,0 +1,48 @@
+using Gtk 4.0;
+
+template $PopcornSeasonButton: Gtk.Box {
+  styles [
+    "watch_button"
+  ]
+  orientation: vertical;
+  spacing: 5;
+
+  Gtk.Button {
+    styles [
+      "force_p0"
+    ]
+    overflow: hidden;
+    tooltip-text: _("Play Season");
+    child: Gtk.Overlay {
+      child: Gtk.Picture {
+        content-fit: cover;
+        paintable: bind template.model as <$PopcornSeason> .PrimaryPaintable;
+        height-request: 360;
+      };
+      [overlay]
+      Gtk.Image {
+        icon-name: "media-playback-start-symbolic";
+        icon-size: large;
+        hexpand: true;
+        vexpand: true;
+      }
+    };
+  }
+
+  Gtk.Button {
+    styles [
+      "flat",
+      "p0"
+    ]
+    tooltip-text: bind template.model as <$PopcornSeason> .Name;
+    child: Gtk.Label {
+      ellipsize: end;
+      justify: center;
+      label: bind template.model as <$PopcornSeason> .Name;
+      max-width-chars: 12;
+      styles [
+        "title-4"
+      ]
+    };
+  }
+}
