@@ -27,6 +27,7 @@ gi.require_version('Gst', '1.0')
 
 from gi.repository import Gtk, Gio, Adw, GLib
 from .window import PopcornWindow
+from . import widgets as Widgets
 from .integrations import Jellyfin
 
 GLib.set_prgname('com.jeffser.Popcorn')
@@ -38,16 +39,17 @@ class PopcornApplication(Adw.Application):
 
     def __init__(self, version):
         settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+        super().__init__(application_id='com.jeffser.Popcorn',
+             flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
+             resource_base_path='/com/jeffser/Popcorn')
         self.version = version
+        self.player = Widgets.Player(application=self)
         self.jellyfin = Jellyfin(
             user=settings.get_value('user').unpack(),
             url=settings.get_value('url').unpack(),
             trustServer=settings.get_value('trust-server').unpack()
         )
         self.main_window = None
-        super().__init__(application_id='com.jeffser.Popcorn',
-                         flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
-                         resource_base_path='/com/jeffser/Popcorn')
 
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)

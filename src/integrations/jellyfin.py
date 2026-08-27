@@ -124,7 +124,9 @@ class Jellyfin(GObject.Object):
                 LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
                 BackdropPaintable=self.getPaintable(item.get('Id')),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
-                Played=item.get('UserData', {}).get('Played', False)
+                Played=item.get('UserData', {}).get('Played', False),
+                Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
+                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2)
             )
             model.get_property('Genres').remove_all()
             model.get_property('Genres').splice(

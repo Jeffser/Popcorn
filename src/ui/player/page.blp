@@ -1,0 +1,16 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornPlayerPage: Adw.NavigationPage {
+  title: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Name;
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      styles [
+        "osd"
+      ]
+    }
+  };
+}

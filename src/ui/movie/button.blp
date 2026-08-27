@@ -15,7 +15,7 @@ template $PopcornMovieButton: Gtk.Box {
     ]
     overflow: hidden;
     tooltip-text:  bind template.model as <$PopcornMovie> .Name;
-    action-name: "app.show_movie";
+    action-name: "app.play_movie";
     action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
     child: Gtk.Overlay {
       child: Gtk.Picture {
@@ -47,6 +47,8 @@ template $PopcornMovieButton: Gtk.Box {
           "circular"
         ]
         tooltip-text: _("Play Movie");
+        action-name: "app.play_movie";
+        action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
         icon-name: "media-playback-start-symbolic";
         valign: end;
         halign: start;
