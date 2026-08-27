@@ -3,7 +3,6 @@ using Adw 1;
 
 template $PopcornEpisodePage: Adw.NavigationPage {
   title: bind template.series-model as <$PopcornSeries> .Name;
-  tag: bind template.model as <$PopcornEpisode> .Id;
 
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
@@ -53,7 +52,6 @@ template $PopcornEpisodePage: Adw.NavigationPage {
               spacing: 10;
               margin-top: 240;
 
-
               Adw.Clamp {
                 halign: center;
                 orientation: vertical;
@@ -74,7 +72,7 @@ template $PopcornEpisodePage: Adw.NavigationPage {
                         ]
                         paintable: bind template.model as <$PopcornEpisode> .PrimaryPaintable;
                         halign: center;
-                        valign: end;
+                        valign: center;
                       };
                     }
                     Gtk.StackPage {

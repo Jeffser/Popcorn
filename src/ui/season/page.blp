@@ -3,7 +3,6 @@ using Adw 1;
 
 template $PopcornSeasonPage: Adw.NavigationPage {
   title: bind template.series-model as <$PopcornSeries> .Name;
-  tag: bind template.model as <$PopcornSeason> .Id;
 
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
@@ -51,6 +50,7 @@ template $PopcornSeasonPage: Adw.NavigationPage {
               hexpand: true;
               orientation: vertical;
               spacing: 10;
+              margin-top: 50;
 
               Adw.Clamp {
                 halign: center;
