@@ -21,8 +21,8 @@ template $PopcornSeriesButton: Gtk.Box {
       child: Gtk.Picture {
         content-fit: cover;
         paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornSeries> .BackdropPaintable, template.model as <$PopcornSeries> .PrimaryPaintable);
-        height-request: 360;
-        width-request: 220;
+        height-request: bind $format_picture_height(template.is_tall);
+        width-request: bind $format_picture_width(template.is_tall);
       };
 
       [overlay]

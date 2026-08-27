@@ -15,3 +15,4 @@ class SeasonButton(Gtk.Box):
             'series': series_id,
             'season': season_id
         })
+

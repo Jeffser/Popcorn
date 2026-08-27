@@ -17,3 +17,11 @@ class SeriesButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
+
+    @Gtk.Template.Callback()
+    def format_picture_height(self, obj, is_tall:bool) -> int:
+        return 360 if is_tall else 240
+
+    @Gtk.Template.Callback()
+    def format_picture_width(self, obj, is_tall:bool) -> int:
+        return 220 if is_tall else 420
