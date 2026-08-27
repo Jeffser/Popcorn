@@ -5,5 +5,5 @@ from .misc import UserViewButton
 from .series import SeriesOverview, SeriesButton, SeriesPage
 from .containers import Carousel, Wrapbox
 from .episode import EpisodeButton, EpisodePage
-from .movie import MovieButton
+from .movie import MovieButton, MoviePage
 from .season import SeasonButton, SeasonPage

@@ -31,6 +31,7 @@
     <file alias="episode/page.ui">ui/episode/page.ui</file>
 
     <file alias="movie/button.ui">ui/movie/button.ui</file>
+    <file alias="movie/page.ui">ui/movie/page.ui</file>
 
     <file alias="season/button.ui">ui/season/button.ui</file>
     <file alias="season/page.ui">ui/season/page.ui</file>

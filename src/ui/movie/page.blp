@@ -1,0 +1,215 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornMoviePage: Adw.NavigationPage {
+  title: bind template.model as <$PopcornMovie> .Name;
+  tag: bind template.model as <$PopcornMovie> .Id;
+
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      styles [
+        "osd"
+      ]
+    }
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hexpand: true;
+      hscrollbar-policy: never;
+      child: Gtk.Box {
+        vexpand: true;
+        hexpand: true;
+        orientation: vertical;
+        spacing: 10;
+
+        Adw.Clamp {
+          valign: start;
+          orientation: vertical;
+          maximum-size: 1200;
+          tightening-threshold: 2000;
+          child: Gtk.Overlay top_overlay {
+            hexpand: true;
+            child: Gtk.Picture {
+              paintable: bind template.model as <$PopcornMovie> .BackdropPaintable;
+              content-fit: cover;
+            };
+
+            [overlay]
+            Gtk.Box top_overlay_content {
+              styles [
+                "p10",
+                "gradient-background"
+              ]
+              valign: end;
+              hexpand: true;
+              orientation: vertical;
+              spacing: 10;
+              margin-top: 240;
+
+              Adw.Clamp {
+                halign: center;
+                orientation: vertical;
+                maximum-size: 360;
+                child: Adw.Clamp {
+                  maximum-size: 480;
+                  child: Gtk.Stack {
+                    height-request: 100;
+                    hhomogeneous: false;
+                    vhomogeneous: false;
+                    visible-child-name: bind $format_stack_visible_child_name(template.model as <$PopcornMovie> .LogoPaintable);
+                    Gtk.StackPage {
+                      name: "logo";
+                      child: Gtk.Picture logo_picture {
+                        styles [
+                          "logo"
+                        ]
+                        paintable: bind template.model as <$PopcornMovie> .LogoPaintable;
+                      };
+                    }
+                    Gtk.StackPage {
+                      name: "label";
+                      child: Gtk.Label {
+                        styles [
+                          "title-1"
+                        ]
+                        ellipsize: end;
+                        wrap: true;
+                        wrap-mode: word_char;
+                        lines: 2;
+                        label: bind template.model as <$PopcornMovie> .Name;
+                      };
+                    }
+                  };
+                };
+              }
+
+              Gtk.Button {
+                styles [
+                  "pill",
+                  "suggested-action"
+                ]
+                halign: center;
+                tooltip-text: _("Play");
+                child: Adw.ButtonContent {
+                  icon-name: "media-playback-start-symbolic";
+                  label: _("Play");
+                };
+              }
+
+              Adw.WrapBox {
+                line-spacing: 10;
+                child-spacing: 10;
+                halign: center;
+                Gtk.Box {
+                  spacing: 5;
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .CommunityRating);
+                  Gtk.Image {
+                    icon-name: "starred-symbolic";
+                  }
+                  Gtk.Label {
+                    styles [
+                      "numeric"
+                    ]
+                    label: bind $format_one_decimal(template.model as <$PopcornMovie> .CommunityRating);
+                  }
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .CommunityRating);
+                }
+
+                Gtk.Label {
+                  styles [
+                    "numeric"
+                  ]
+                  label: bind template.model as <$PopcornMovie> .ProductionYear;
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .ProductionYear);
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .ProductionYear);
+                }
+
+                Gtk.Label {
+                  styles [
+                    "monospace"
+                  ]
+                  label: bind template.model as <$PopcornMovie> .OfficialRating;
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .OfficialRating);
+                }
+
+                Gtk.Separator {
+                  visible: bind $format_to_bool(template.model as <$PopcornMovie> .OfficialRating);
+                }
+              }
+            }
+          };
+        }
+        Adw.Clamp {
+          maximum-size: 2000;
+          tightening-threshold: 800;
+          vexpand: true;
+          child: Gtk.Box {
+            styles [
+              "p10"
+            ]
+            orientation: vertical;
+            spacing: 10;
+
+            Gtk.Box {
+              styles [
+                "card",
+                "p10"
+              ]
+              hexpand: true;
+              orientation: vertical;
+              spacing: 5;
+              visible: bind $format_to_bool(template.model as <$PopcornMovie> .Overview);
+              Gtk.Box {
+                orientation: horizontal;
+                spacing: 5;
+                Gtk.Label {
+                  styles [
+                    "heading"
+                  ]
+                  ellipsize: end;
+                  xalign: 0;
+                  hexpand: true;
+                  label: _("Overview");
+                }
+
+                Gtk.ToggleButton overview_toggle_button {
+                  styles [
+                    "p0",
+                    "flat"
+                  ]
+                  icon-name: bind $format_overview_button_icon_name(overview_toggle_button.active);
+                }
+              }
+
+              Gtk.Label overview_label {
+                styles [
+                  "body"
+                ]
+                wrap-mode: word;
+                wrap: true;
+                lines: 1;
+                ellipsize: bind $format_overview_ellipsize(overview_toggle_button.active);
+                xalign: 0;
+                label: bind template.model as <$PopcornMovie> .Overview;
+              }
+            }
+
+            $PopcornCarousel recommendations_container {
+              title: _("Recommendations");
+              icon-name: "playback-symbolic";
+            }
+          };
+        }
+      };
+    };
+  };
+}

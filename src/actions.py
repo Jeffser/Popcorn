@@ -23,7 +23,7 @@ def show_series(window, series_id:str):
 
 # -- Seasons --
 
-def show_season(window, season_id:dict):
+def show_season(window, season_id:str):
     if app := window.get_application():
         if jellyfin := app.jellyfin:
             if season_model := jellyfin.getModel(season_id):
@@ -46,3 +46,14 @@ def show_episode(window, episode_id:dict):
                         series_model=series_model
                     )
                     __show_page(window, page)
+
+# -- Movie --
+
+def show_movie(window, movie_id:str):
+    if app := window.get_application():
+        if jellyfin := app.jellyfin:
+            if movie_model := jellyfin.getModel(movie_id):
+                page = Widgets.MoviePage(
+                    model=movie_model
+                )
+                __show_page(window, page)

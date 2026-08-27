@@ -48,3 +48,4 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.show_series)
         self.create_action(actions.show_season)
         self.create_action(actions.show_episode)
+        self.create_action(actions.show_movie)
