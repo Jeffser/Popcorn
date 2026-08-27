@@ -47,7 +47,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
               hexpand: true;
               orientation: vertical;
               spacing: 10;
-              margin-top: 240;
+              margin-top: 120;
 
               Adw.Clamp {
                 halign: center;
@@ -67,6 +67,8 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                           "logo"
                         ]
                         paintable: bind template.model as <$PopcornSeries> .LogoPaintable;
+                        width-request: 420;
+                        height-request: 360;
                       };
                     }
                     Gtk.StackPage {
