@@ -15,9 +15,5 @@ class SeriesButton(Gtk.Box):
         return tall_paintable if is_tall else wide_paintable
 
     @Gtk.Template.Callback()
-    def format_paintable_height(self, obj, is_tall:bool) -> int:
-        return 360 if is_tall else 280
-
-    @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)

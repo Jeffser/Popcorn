@@ -4,6 +4,7 @@ template $PopcornEpisodeButton: Gtk.Box {
   styles [
     "watch_button"
   ]
+  halign: center;
   orientation: vertical;
 
   Gtk.Button {
@@ -18,7 +19,8 @@ template $PopcornEpisodeButton: Gtk.Box {
       child: Gtk.Picture {
         content-fit: cover;
         paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .BackdropPaintable, template.model as <$PopcornEpisode> .PrimaryPaintable);
-        height-request: bind $format_paintable_height(template.is_tall);
+        height-request: 360;
+        width-request: 220;
       };
       [overlay]
       Gtk.Box {

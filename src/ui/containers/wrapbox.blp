@@ -34,6 +34,9 @@ template $PopcornWrapbox: Gtk.Box {
     child-spacing: 10;
     line-spacing: 10;
     line-homogeneous: true;
+    wrap-policy: minimum;
+    justify: spread;
+
     Adw.Spinner {
       height-request: 240;
       width-request: 240;

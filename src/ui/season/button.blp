@@ -4,6 +4,7 @@ template $PopcornSeasonButton: Gtk.Box {
   styles [
     "watch_button"
   ]
+  halign: center;
   orientation: vertical;
   spacing: 5;
 
@@ -19,6 +20,7 @@ template $PopcornSeasonButton: Gtk.Box {
         content-fit: cover;
         paintable: bind template.model as <$PopcornSeason> .PrimaryPaintable;
         height-request: 360;
+        width-request: 220;
       };
       [overlay]
       Gtk.Button {
