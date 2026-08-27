@@ -383,7 +383,8 @@ class Jellyfin(GObject.Object):
             }
         ).get('Items', [])
         if len(items) > 0:
-            return self.__makeModel(items[0])
+            if model := self.__makeModel(items[0]):
+                return model
 
         # Just send the first episode
         items = self.makeRequest(
@@ -393,7 +394,7 @@ class Jellyfin(GObject.Object):
                 'recursive': True,
                 'IncludeItemTypes': 'Episode',
                 'fields': 'Overview',
-                'sortBy': 'ParentIndexNumber,IndexNumber',
+                'sortBy': 'IndexNumber',
                 'sortOrder': 'Ascending',
                 'limit': 1
             }
@@ -401,3 +402,33 @@ class Jellyfin(GObject.Object):
         if len(items) > 0:
             return self.__makeModel(items[0])
 
+    def getSeasonNextUp(self, season_id:str) -> models.Episode | None:
+        items = self.makeRequest(
+            action='Users/{userId}/Items',
+            params={
+                'parentId': season_id,
+                'IncludeItemTypes': 'Episode',
+                'fields': 'Overview',
+                'sortBy': 'ParentIndexNumber,IndexNumber',
+                'sortOrder': 'Ascending'
+            }
+        ).get('Items', [])
+        for item in items:
+            if 0 < item.get('UserData', {}).get('PlaybackPositionTicks', 0) < 1 or not item.get('UserData', {}).get('Played'):
+                if model := self.__makeModel(item):
+                    return model
+
+        items = self.makeRequest(
+            action='Users/{userId}/Items',
+            params={
+                'parentId': season_id,
+                'recursive': True,
+                'IncludeItemTypes': 'Episode',
+                'fields': 'Overview',
+                'sortBy': 'IndexNumber',
+                'sortOrder': 'Ascending',
+                'limit': 1
+            }
+        ).get('Items', [])
+        if len(items) > 0:
+            return self.__makeModel(items[0])

@@ -41,3 +41,7 @@ class SeasonPage(Adw.NavigationPage):
     def format_stack_visible_child_name(self, obj, paintable) -> str:
         return 'logo' if paintable else 'label'
 
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)
+

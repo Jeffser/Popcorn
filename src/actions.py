@@ -46,6 +46,11 @@ def show_season(app, season_id:str):
                 )
                 __show_page(app, page)
 
+def play_season(app, season_id:str):
+    if jellyfin := app.jellyfin:
+        if episode_model := jellyfin.getSeasonNextUp(season_id):
+            __play_model(app, episode_model)
+
 # -- Episodes --
 
 def show_episode(app, episode_id:str):
