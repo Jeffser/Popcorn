@@ -2,6 +2,9 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PopcornPlayerPage: Adw.NavigationPage {
+  styles [
+    "black-background"
+  ]
   title: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Name;
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
@@ -12,5 +15,100 @@ template $PopcornPlayerPage: Adw.NavigationPage {
         "osd"
       ]
     }
+
+    content: Gtk.Overlay {
+      child: Gtk.Picture {
+        paintable: bind template.player as <$PopcornPlayer> .paintable;
+      };
+
+      [overlay]
+      Gtk.Box {
+        styles [
+          "osd",
+          "player-controls-container"
+        ]
+        margin-top: 10;
+        margin-bottom: 10;
+        margin-start: 10;
+        margin-end: 10;
+        valign: end;
+        hexpand: true;
+        orientation: vertical;
+        spacing: 5;
+
+        Gtk.Box {
+          orientation: horizontal;
+          spacing: 10;
+
+          Gtk.Button {
+            styles [
+              "circular",
+              "flat"
+            ]
+            tooltip-text: _("Previous");
+            icon-name: "media-skip-backward-symbolic";
+          }
+
+          Gtk.Button {
+            styles [
+              "circular",
+              "flat"
+            ]
+            tooltip-text: _("Pause");
+            icon-name: "media-playback-pause-symbolic";
+          }
+
+          Gtk.Button {
+            styles [
+              "circular",
+              "flat"
+            ]
+            tooltip-text: _("Next");
+            icon-name: "media-skip-forward-symbolic";
+          }
+
+          Gtk.Label {
+            label: bind template.end-time;
+            xalign: 0;
+          }
+        }
+
+        Gtk.Box {
+          orientation: horizontal;
+          spacing: 5;
+
+          Gtk.Label {
+            styles [
+              "numeric"
+            ]
+            label: bind $format_time_ellapsed(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+          }
+
+          Gtk.Scale {
+            Gtk.GestureClick {
+                pressed => $scale_pressed();
+                unpaired-release => $scale_released();
+            }
+            hexpand: true;
+            value-changed => $adjustment_changed();
+            adjustment: Gtk.Adjustment {
+              lower: 0;
+              upper: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration;
+              value: bind template.position;
+            };
+          }
+
+          Gtk.Label {
+            styles [
+              "numeric"
+            ]
+            label: bind $format_time_remaining(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+          }
+
+
+        }
+
+      }
+    };
   };
 }

@@ -8,24 +8,26 @@ template $PopcornEpisodeButton: Gtk.Box {
   halign: center;
   orientation: vertical;
 
-  Gtk.Button {
-    styles [
-      "force_p0",
-      "card"
-    ]
-    margin-bottom: 5;
-    overflow: hidden;
-    tooltip-text: bind template.model as <$PopcornEpisode> .Name;
-    action-name: "app.show_episode";
-    action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-    child: Gtk.Overlay {
+  Gtk.Overlay {
+    child: Gtk.Button {
+      styles [
+        "force_p0",
+        "card"
+      ]
+      margin-bottom: 5;
+      overflow: hidden;
+      tooltip-text: bind template.model as <$PopcornEpisode> .Name;
+      action-name: "app.show_episode";
+      action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
       child: Gtk.Picture {
         content-fit: cover;
-        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .PrimaryPaintable, template.model as <$PopcornEpisode> .SeriesPrimaryPaintable, template.model as <$PopcornEpisode> .SeriesBackdropPaintable);
+        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .PrimaryPaintable, template.model as <$PopcornEpisode> .SeriesPrimaryPaintable, template.model as <$PopcornEpisode> .BackdropPaintable);
         height-request: bind $format_picture_height(template.is_tall);
         width-request: bind $format_picture_width(template.is_tall);
       };
-      [overlay]
+    };
+
+    [overlay]
       Gtk.Image {
         styles [
           "played-indicator"
@@ -67,7 +69,6 @@ template $PopcornEpisodeButton: Gtk.Box {
           visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
         }
       }
-    };
   }
 
   Gtk.Stack {

@@ -43,3 +43,12 @@ def get_future_time(seconds:float) -> str:
         return future_time.strftime("%H:%M")
     else:
         return future_time.strftime("%I:%M %p")
+
+def format_time_display(total_seconds:float, force_include_hours:bool) -> str:
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = int(total_seconds % 60)
+    if hours > 0 or force_include_hours:
+        return f"{hours}:{minutes:02d}:{seconds:02d}"
+    else:
+        return f"{minutes}:{seconds:02d}"

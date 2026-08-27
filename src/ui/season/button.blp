@@ -8,54 +8,54 @@ template $PopcornSeasonButton: Gtk.Box {
   orientation: vertical;
   spacing: 5;
 
-  Gtk.Button {
-    styles [
-      "force_p0",
-      "card"
-    ]
-    overflow: hidden;
-    tooltip-text: bind template.model as <$PopcornSeason> .Name;
-    action-name: "app.show_season";
-    action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
-    child: Gtk.Overlay {
+  Gtk.Overlay {
+    child: Gtk.Button {
+      styles [
+        "force_p0",
+        "card"
+      ]
+      overflow: hidden;
+      tooltip-text: bind template.model as <$PopcornSeason> .Name;
+      action-name: "app.show_season";
+      action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
       child: Gtk.Picture {
         content-fit: cover;
         paintable: bind template.model as <$PopcornSeason> .PrimaryPaintable;
         height-request: 360;
         width-request: 220;
       };
-      [overlay]
-      Gtk.Image {
-        styles [
-          "played-indicator"
-        ]
-        icon-name: "checkmark-symbolic";
-        valign: start;
-        halign: end;
-        margin-start: 10;
-        margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
-        visible: bind template.model as <$PopcornSeason> .Played;
-        tooltip-text: _("Played");
-      }
-
-      [overlay]
-      Gtk.Button {
-        styles [
-          "osd",
-          "circular"
-        ]
-        tooltip-text: _("Play Season");
-        icon-name: "media-playback-start-symbolic";
-        valign: end;
-        halign: start;
-        margin-start: 10;
-        margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
-      }
     };
+    [overlay]
+    Gtk.Image {
+      styles [
+        "played-indicator"
+      ]
+      icon-name: "checkmark-symbolic";
+      valign: start;
+      halign: end;
+      margin-start: 10;
+      margin-end: 10;
+      margin-top: 10;
+      margin-bottom: 10;
+      visible: bind template.model as <$PopcornSeason> .Played;
+      tooltip-text: _("Played");
+    }
+
+    [overlay]
+    Gtk.Button {
+      styles [
+        "osd",
+        "circular"
+      ]
+      tooltip-text: _("Play Season");
+      icon-name: "media-playback-start-symbolic";
+      valign: end;
+      halign: start;
+      margin-start: 10;
+      margin-end: 10;
+      margin-top: 10;
+      margin-bottom: 10;
+    }
   }
 
   Gtk.Button {
@@ -64,6 +64,8 @@ template $PopcornSeasonButton: Gtk.Box {
       "p0"
     ]
     tooltip-text: bind template.model as <$PopcornSeason> .Name;
+    action-name: "app.show_season";
+    action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
     child: Gtk.Label {
       ellipsize: end;
       justify: center;

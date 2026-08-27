@@ -7,13 +7,16 @@
     <file alias="icons/scalable/status/folder-symbolic.svg">icons/folder-symbolic.svg</file>
     <file alias="icons/scalable/status/video-clip-symbolic.svg">icons/video-clip-symbolic.svg</file>
     <file alias="icons/scalable/status/starred-symbolic.svg">icons/starred-symbolic.svg</file>
-    <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
     <file alias="icons/scalable/status/info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
     <file alias="icons/scalable/status/playback-symbolic.svg">icons/playback-symbolic.svg</file>
     <file alias="icons/scalable/status/media-playlist-consecutive-symbolic.svg">icons/media-playlist-consecutive-symbolic.svg</file>
     <file alias="icons/scalable/status/pan-down-symbolic.svg">icons/pan-down-symbolic.svg</file>
     <file alias="icons/scalable/status/pan-up-symbolic.svg">icons/pan-up-symbolic.svg</file>
     <file alias="icons/scalable/status/checkmark-symbolic.svg">icons/checkmark-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-playback-pause-symbolic.svg">icons/media-playback-pause-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-skip-backward-symbolic.svg">icons/media-skip-backward-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-skip-forward-symbolic.svg">icons/media-skip-forward-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>

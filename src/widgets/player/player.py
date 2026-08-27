@@ -1,6 +1,6 @@
 # player.py
 
-from gi.repository import Adw, GLib, GObject, Gst, Gio
+from gi.repository import Gtk, Adw, GLib, Gdk, GObject, Gst, Gio
 
 from mpris_server.adapters import MprisAdapter
 from mpris_server.events import EventAdapter
@@ -213,6 +213,8 @@ class Player(GObject.Object):
     application = GObject.Property(type=Adw.Application)
     gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin", "player"))
     model = GObject.Property(type=models.Playable)
+    paintable = GObject.Property(type=Gdk.Paintable)
+    position = GObject.Property(type=float)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -226,3 +228,20 @@ class Player(GObject.Object):
         self.bus.connect("message::eos", print) # Video ended
         self.bus.connect("message::error", lambda bus, msg: logger.error(msg.parse_error()[0]))
         self.bus.connect("message::state-changed", print)
+        self.connect("notify::model", self.model_changed)
+        self.set_property('paintable', self.get_property('gst').get_property('video-sink').get_property('paintable'))
+        GLib.timeout_add(64, self.update_stream_progress)
+
+    def model_changed(self, player, pspec):
+        if model := player.get_property(pspec.name):
+            if jellyfin := self.get_property('application').jellyfin:
+                if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
+                    self.get_property('gst').set_state(Gst.State.READY)
+                    self.get_property('gst').set_property('uri', stream_url)
+                    self.get_property('gst').set_state(Gst.State.PLAYING)
+
+    def update_stream_progress(self):
+        success, position = self.get_property('gst').query_position(Gst.Format.TIME)
+        self.set_property('position', position / Gst.SECOND)
+        return True
+

@@ -60,6 +60,7 @@ class Playable(BasicModel):
     Played = GObject.Property(type=bool, default=False)
     Progress = GObject.Property(type=float, default=0) # 0 - 1
     Duration = GObject.Property(type=float) # Seconds with decimals
+    BackdropPaintable = GObject.Property(type=Gdk.Paintable)
 
 class Episode(Playable):
     __gtype_name__ = 'PopcornEpisode'
@@ -69,7 +70,6 @@ class Episode(Playable):
     SeasonNumber = GObject.Property(type=int)
     EpisodeNumber = GObject.Property(type=int)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
-    SeriesBackdropPaintable = GObject.Property(type=Gdk.Paintable)
     SeriesPrimaryPaintable = GObject.Property(type=Gdk.Paintable)
     Overview = GObject.Property(type=str)
     CommunityRating = GObject.Property(type=float)
@@ -83,6 +83,5 @@ class Movie(Playable):
     Genres = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
     Overview = GObject.Property(type=str)
     LogoPaintable = GObject.Property(type=Gdk.Paintable)
-    BackdropPaintable = GObject.Property(type=Gdk.Paintable)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
 

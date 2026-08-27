@@ -35,6 +35,10 @@ class Jellyfin(GObject.Object):
         action = action.format(userId=self.get_property('userId'), **keys)
         return '{}/{}'.format(self.get_property('url').strip('/'), action)
 
+    def getStreamUrl(self, model_id:str) -> str:
+        return self.getUrl('Videos/{model_id}/stream?static=true&api_key={api_key}', model_id=model_id, api_key=self.get_property('accessToken'))
+        #return self.getUrl('Videos/{model_id}/master.m3u8?api_key={api_key}', model_id=model_id, api_key=self.get_property('accessToken'))
+
     def makeRequest(self, action:str, json:dict={}, params:dict={}, mode:str="GET", action_keys:dict={}) -> dict:
         headers = {
             **self.getBaseHeader(),
@@ -105,7 +109,7 @@ class Jellyfin(GObject.Object):
                 SeasonNumber=item.get('ParentIndexNumber'),
                 EpisodeNumber=item.get('IndexNumber'),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
-                SeriesBackdropPaintable=self.getPaintable(item.get('SeriesId')),
+                BackdropPaintable=self.getPaintable(item.get('SeriesId')),
                 SeriesPrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary'),
                 Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
                 Overview=item.get('Overview'),
