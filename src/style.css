@@ -80,3 +80,9 @@ button.active_appearance_button:disabled {
 .gradient-background {
   background: linear-gradient(0deg, var(--window-bg-color), transparent);
 }
+
+.played-indicator {
+  padding: 5px;
+  border-radius: 100%;
+  background: var(--accent-bg-color);
+}

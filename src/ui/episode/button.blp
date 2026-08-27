@@ -26,6 +26,22 @@ template $PopcornEpisodeButton: Gtk.Box {
         width-request: bind $format_picture_width(template.is_tall);
       };
       [overlay]
+      Gtk.Image {
+        styles [
+          "played-indicator"
+        ]
+        icon-name: "checkmark-symbolic";
+        valign: start;
+        halign: end;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
+        visible: bind template.model as <$PopcornEpisode> .Played;
+        tooltip-text: _("Played");
+      }
+
+      [overlay]
       Gtk.Box {
         orientation: vertical;
         spacing: 10;

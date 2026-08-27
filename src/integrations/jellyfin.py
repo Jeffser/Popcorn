@@ -86,7 +86,8 @@ class Jellyfin(GObject.Object):
                 Overview=item.get('Overview'),
                 LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
                 BackdropPaintable=self.getPaintable(item.get('Id')),
-                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
+                Played=item.get('UserData', {}).get('Played', False)
             )
             model.get_property('Genres').remove_all()
             model.get_property('Genres').splice(
@@ -109,7 +110,8 @@ class Jellyfin(GObject.Object):
                 Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
                 Overview=item.get('Overview'),
                 CommunityRating=round(item.get('CommunityRating') or 0, 1),
-                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2)
+                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2),
+                Played=item.get('UserData', {}).get('Played', False)
             )
         elif item.get('Type') == 'Movie':
             model = models.Movie(
@@ -121,7 +123,8 @@ class Jellyfin(GObject.Object):
                 Overview=item.get('Overview'),
                 LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
                 BackdropPaintable=self.getPaintable(item.get('Id')),
-                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
+                Played=item.get('UserData', {}).get('Played', False)
             )
             model.get_property('Genres').remove_all()
             model.get_property('Genres').splice(
@@ -136,7 +139,8 @@ class Jellyfin(GObject.Object):
                 Name=item.get('Name'),
                 SeriesId=item.get('SeriesId'),
                 IndexNumber=item.get('IndexNumber'),
-                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary') or self.getPaintable(item.get('SeriesId'), image_type='Primary')
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary') or self.getPaintable(item.get('SeriesId'), image_type='Primary'),
+                Played=item.get('UserData', {}).get('Played', False)
             )
         elif item.get('Type') in ('CollectionFolder', 'UserView'):
             if item.get('CollectionType') in ('tvshows', 'movies'):

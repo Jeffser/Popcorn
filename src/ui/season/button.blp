@@ -25,6 +25,22 @@ template $PopcornSeasonButton: Gtk.Box {
         width-request: 220;
       };
       [overlay]
+      Gtk.Image {
+        styles [
+          "played-indicator"
+        ]
+        icon-name: "checkmark-symbolic";
+        valign: start;
+        halign: end;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
+        visible: bind template.model as <$PopcornSeason> .Played;
+        tooltip-text: _("Played");
+      }
+
+      [overlay]
       Gtk.Button {
         styles [
           "osd",
