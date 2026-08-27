@@ -16,7 +16,7 @@ template $PopcornSeasonButton: Gtk.Box {
     overflow: hidden;
     tooltip-text: bind template.model as <$PopcornSeason> .Name;
     action-name: "app.show_season";
-    action-target: bind $format_action_target(template.model as <$PopcornSeason> .SeriesId, template.model as <$PopcornSeason> .Id);
+    action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;

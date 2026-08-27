@@ -1,7 +1,5 @@
 # page.py
 
-# page.py
-
 from gi.repository import Gtk, Adw, Gio, GLib, GObject, Pango
 from ...integrations import models
 from ..episode import EpisodeButton

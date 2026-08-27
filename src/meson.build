@@ -16,6 +16,7 @@ blueprints = files(
   'ui/series/page.blp',
 
   'ui/episode/button.blp',
+  'ui/episode/page.blp',
 
   'ui/movie/button.blp',
 

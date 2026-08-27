@@ -10,9 +10,6 @@ class SeasonButton(Gtk.Box):
     model = GObject.Property(type=models.Season)
 
     @Gtk.Template.Callback()
-    def format_action_target(self, obj, series_id:str, season_id:str) -> GLib.Variant:
-        return GLib.Variant('a{ss}', {
-            'series': series_id,
-            'season': season_id
-        })
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)
 

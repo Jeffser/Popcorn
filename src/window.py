@@ -46,4 +46,5 @@ class PopcornWindow(Adw.ApplicationWindow):
         super().__init__(**kwargs)
 
         self.create_action(actions.show_series)
-        self.create_action(actions.show_season, parameter_type='a{ss}')
+        self.create_action(actions.show_season)
+        self.create_action(actions.show_episode)

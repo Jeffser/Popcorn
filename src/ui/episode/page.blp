@@ -1,0 +1,118 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornEpisodePage: Adw.NavigationPage {
+  title: bind template.series-model as <$PopcornSeries> .Name;
+  tag: bind template.model as <$PopcornEpisode> .Id;
+
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      styles [
+        "osd"
+      ]
+      title-widget: Adw.WindowTitle {
+        title: bind template.series-model as <$PopcornSeries> .Name;
+        subtitle: bind template.model as <$PopcornEpisode> .Name;
+      };
+    }
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hexpand: true;
+      hscrollbar-policy: never;
+      child: Gtk.Box {
+        vexpand: true;
+        hexpand: true;
+        orientation: vertical;
+        spacing: 10;
+
+        Adw.Clamp {
+          valign: start;
+          orientation: vertical;
+          maximum-size: 1200;
+          tightening-threshold: 2000;
+          child: Gtk.Overlay top_overlay {
+            hexpand: true;
+            child: Gtk.Picture {
+              paintable: bind template.series-model as <$PopcornSeries> .BackdropPaintable;
+              content-fit: cover;
+            };
+
+            [overlay]
+            Gtk.Box top_overlay_content {
+              styles [
+                "p10",
+                "gradient-background"
+              ]
+              valign: end;
+              hexpand: true;
+              orientation: vertical;
+              spacing: 10;
+              margin-top: 240;
+
+              Adw.Clamp {
+                halign: center;
+                orientation: vertical;
+                maximum-size: 360;
+                child: Adw.Clamp {
+                  maximum-size: 480;
+                  child: Gtk.Picture logo_picture {
+                    styles [
+                      "card"
+                    ]
+                    paintable: bind template.model as <$PopcornEpisode> .PrimaryPaintable;
+                  };
+                };
+              }
+
+              Gtk.Label {
+                styles [
+                  "title-3"
+                ]
+                ellipsize: end;
+                wrap: true;
+                wrap-mode: word_char;
+                lines: 2;
+                label: bind template.series-model as <$PopcornSeries> .Name;
+              }
+
+              Gtk.Label {
+                styles [
+                  "title-4",
+                  "dimmed"
+                ]
+                ellipsize: end;
+                wrap: true;
+                wrap-mode: word_char;
+                lines: 2;
+                label: bind $format_name_number(template.model as <$PopcornEpisode> .Name, template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber);
+              }
+
+              Gtk.Button {
+                styles [
+                  "pill",
+                  "suggested-action"
+                ]
+                halign: center;
+                tooltip-text: _("Play");
+                child: Adw.ButtonContent {
+                  icon-name: "media-playback-start-symbolic";
+                  label: _("Play");
+                };
+              }
+            }
+          };
+        }
+        Adw.Clamp {
+          maximum-size: 2000;
+          tightening-threshold: 800;
+          vexpand: true;
+          child: Adw.Bin {};
+        }
+      };
+    };
+  };
+}

@@ -23,14 +23,26 @@ def show_series(window, series_id:str):
 
 # -- Seasons --
 
-def show_season(window, id_dict:dict):
-    series_id = id_dict.get('series')
-    season_id = id_dict.get('season')
-    if series_id and season_id:
-        if app := window.get_application():
-            if jellyfin := app.jellyfin:
-                page = Widgets.SeasonPage(
-                    model=jellyfin.getModel(season_id),
-                    series_model=jellyfin.getModel(series_id)
-                )
-                __show_page(window, page)
+def show_season(window, season_id:dict):
+    if app := window.get_application():
+        if jellyfin := app.jellyfin:
+            if season_model := jellyfin.getModel(season_id):
+                if series_model := jellyfin.getModel(season_model.get_property('SeriesId')):
+                    page = Widgets.SeasonPage(
+                        model=season_model,
+                        series_model=series_model
+                    )
+                    __show_page(window, page)
+
+# -- Episodes --
+
+def show_episode(window, episode_id:dict):
+    if app := window.get_application():
+        if jellyfin := app.jellyfin:
+            if episode_model := jellyfin.getModel(episode_id):
+                if series_model := jellyfin.getModel(episode_model.get_property('SeriesId')):
+                    page = Widgets.EpisodePage(
+                        model=episode_model,
+                        series_model=series_model
+                    )
+                    __show_page(window, page)
