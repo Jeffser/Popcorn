@@ -1,4 +1,5 @@
 using Gtk 4.0;
+using Adw 1;
 
 template $PopcornEpisodeButton: Gtk.Box {
   styles [
@@ -45,47 +46,129 @@ template $PopcornEpisodeButton: Gtk.Box {
 
         Gtk.ProgressBar {
           fraction: bind template.model as <$PopcornEpisode> .Progress;
-          visible: bind $format_to_bool(template.model as <$PopcornEpisode> .Progress);
+          visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
         }
       }
     };
   }
 
-  Gtk.Button {
-    styles [
-      "flat",
-      "p0"
-    ]
-    tooltip-text: bind template.model as <$PopcornEpisode> .SeriesName;
-    action-name: "app.show_series";
-    action-target: bind $format_action_target(template.model as <$PopcornEpisode> .SeriesId, 's');
-    child: Gtk.Label {
-      ellipsize: end;
-      justify: center;
-      label: bind template.model as <$PopcornEpisode> .SeriesName;
-      max-width-chars: 12;
-      styles [
-        "title-4"
-      ]
-    };
-  }
+  Gtk.Stack {
+    visible-child-name: bind template.mode;
 
-  Gtk.Button {
-    styles [
-      "flat",
-      "p0"
-    ]
-    tooltip-text: bind template.model as <$PopcornEpisode> .Name;
-    child: Gtk.Label {
-      ellipsize: end;
-      justify: center;
-      use-markup: true;
-      hexpand: true;
-      max-width-chars: 12;
-      label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber, template.model as <$PopcornEpisode> .Name);
-      styles [
-        "dimmed"
-      ]
-    };
+    Gtk.StackPage {
+      name: "simple";
+      child: Gtk.Box {
+        orientation: vertical;
+        Gtk.Button {
+          styles [
+            "flat",
+            "p0"
+          ]
+          tooltip-text: bind template.model as <$PopcornEpisode> .SeriesName;
+          action-name: "app.show_series";
+          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .SeriesId, 's');
+          child: Gtk.Label {
+            ellipsize: end;
+            justify: center;
+            label: bind template.model as <$PopcornEpisode> .SeriesName;
+            max-width-chars: 12;
+            styles [
+              "title-4"
+            ]
+          };
+        }
+
+        Gtk.Button {
+          styles [
+            "flat",
+            "p0"
+          ]
+          tooltip-text: bind template.model as <$PopcornEpisode> .Name;
+          child: Gtk.Label {
+            ellipsize: end;
+            justify: center;
+            use-markup: true;
+            hexpand: true;
+            max-width-chars: 12;
+            label: bind $format_subtitle(template.model as <$PopcornEpisode> .SeasonNumber, template.model as <$PopcornEpisode> .EpisodeNumber, template.model as <$PopcornEpisode> .Name);
+            styles [
+              "dimmed"
+            ]
+          };
+        }
+      };
+    }
+
+    Gtk.StackPage {
+      name: "details";
+      child: Gtk.Button {
+        styles [
+          "flat",
+          "p0"
+        ]
+        tooltip-text: bind template.model as <$PopcornEpisode> .Name;
+        child: Gtk.Box {
+          orientation: vertical;
+          spacing: 5;
+
+          Gtk.Label {
+            ellipsize: end;
+            label: bind $format_name_number(template.model as <$PopcornEpisode> .Name, template.model as <$PopcornEpisode> .EpisodeNumber);
+            wrap: true;
+            wrap-mode: word;
+            lines: 3;
+            max-width-chars: 12;
+            xalign: 0;
+            styles [
+              "title-4"
+            ]
+          }
+
+          Adw.WrapBox {
+            line-spacing: 5;
+            child-spacing: 5;
+            styles [
+              "dimmed",
+              "no-bold"
+            ]
+
+            Gtk.Label {
+              visible: bind $format_to_bool(template.model as <$PopcornEpisode> .Duration);
+              label: bind $format_duration(template.model as <$PopcornEpisode> .Duration);
+              xalign: 0;
+            }
+
+            Gtk.Separator {
+              visible: bind $format_to_bool(template.model as <$PopcornEpisode> .Duration);
+            }
+
+            Gtk.Box {
+              spacing: 5;
+              visible: bind $format_to_bool(template.model as <$PopcornEpisode> .CommunityRating);
+              Gtk.Image {
+                icon-name: "starred-symbolic";
+              }
+              Gtk.Label {
+                styles [
+                  "numeric"
+                ]
+                label: bind $format_one_decimal(template.model as <$PopcornEpisode> .CommunityRating);
+                xalign: 0;
+              }
+            }
+
+            Gtk.Separator {
+              visible: bind $format_to_bool(template.model as <$PopcornEpisode> .CommunityRating);
+            }
+
+            Gtk.Label {
+              label: bind $format_end_time(template.model as <$PopcornEpisode> .Duration);
+              xalign: 0;
+            }
+
+          }
+        };
+      };
+    }
   }
 }

@@ -55,6 +55,9 @@ class Episode(BasicModel):
     SeriesBackdropPaintable = GObject.Property(type=Gdk.Paintable)
     SeriesPrimaryPaintable = GObject.Property(type=Gdk.Paintable)
     Progress = GObject.Property(type=float, default=0) # 0 - 1
+    Overview = GObject.Property(type=str)
+    CommunityRating = GObject.Property(type=float)
+    Duration = GObject.Property(type=float) # Seconds with decimals
 
 class Movie(BasicModel):
     __gtype_name__ = 'PopcornMovie'

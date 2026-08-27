@@ -105,7 +105,11 @@ class Jellyfin(GObject.Object):
                 EpisodeNumber=item.get('IndexNumber'),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
                 SeriesBackdropPaintable=self.getPaintable(item.get('SeriesId')),
-                SeriesPrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary')
+                SeriesPrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary'),
+                Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
+                Overview=item.get('Overview'),
+                CommunityRating=round(item.get('CommunityRating') or 0, 1),
+                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2)
             )
         elif item.get('Type') == 'Movie':
             model = models.Movie(
@@ -235,7 +239,8 @@ class Jellyfin(GObject.Object):
             params={
                 'limit': 10,
                 'mediaTypes': 'Video',
-                'Types': 'Episode'
+                'Types': 'Episode',
+                'fields': 'Overview'
             }
         ).get('Items', [])
         for item in items:
@@ -251,7 +256,8 @@ class Jellyfin(GObject.Object):
             params={
                 'limit': 10,
                 'mediaTypes': 'Video',
-                'Types': 'Episode'
+                'Types': 'Episode',
+                'fields': 'Overview'
             }
         ).get('Items', [])
         for item in items:
@@ -282,7 +288,8 @@ class Jellyfin(GObject.Object):
             params={
                 'limit': 10,
                 'mediaTypes': 'Video',
-                'parentId': libraryId
+                'parentId': libraryId,
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
             }
         )
         for item in items:
@@ -329,7 +336,8 @@ class Jellyfin(GObject.Object):
                 'seriesId': seriesId
             },
             params={
-                'limit': 10
+                'limit': 10,
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
             }
         ).get('Items', [])
         for item in items:
@@ -345,7 +353,8 @@ class Jellyfin(GObject.Object):
             action='Users/{userId}/Items',
             params={
                 'ParentId': season_id,
-                'IncludeItemTypes': 'Episode'
+                'IncludeItemTypes': 'Episode',
+                'fields': 'Overview'
             }
         ).get('Items', [])
         for item in items:

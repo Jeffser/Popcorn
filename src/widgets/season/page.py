@@ -33,7 +33,10 @@ class SeasonPage(Adw.NavigationPage):
 
         episode_widgets = []
         for episode_model in jellyfin.getEpisodesFromSeason(model_id):
-            episode_widgets.append(EpisodeButton(model=episode_model))
+            episode_widgets.append(EpisodeButton(
+                model=episode_model,
+                mode='details'
+            ))
         GLib.idle_add(self.episodes_container.set_widgets, episode_widgets)
 
     @Gtk.Template.Callback()

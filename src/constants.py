@@ -1,6 +1,7 @@
 # constants.py
 
 import os
+from datetime import datetime, timedelta
 
 IN_FLATPAK = bool(os.getenv("FLATPAK_ID"))
 
@@ -22,3 +23,23 @@ USERVIEWS_ICONS = {
     'movies': 'video-clip-symbolic',
     'tvshows': 'tv-symbolic'
 }
+
+def format_duration_display(seconds:float) -> str:
+    if seconds < 60:
+        return f"{round(seconds)}s"
+    minutes = round(seconds / 60)
+    if minutes < 60:
+        return f"{minutes}m"
+    hours = minutes // 60
+    minutes = minutes % 60
+    if minutes == 0:
+        return f"{hours}h"
+    return f"{hours}h {minutes}m"
+
+def get_future_time(seconds:float) -> str:
+    future_time = datetime.now() + timedelta(seconds=seconds)
+    #TODO check if system format asks for 24h or 12h time
+    if True:
+        return future_time.strftime("%H:%M")
+    else:
+        return future_time.strftime("%I:%M %p")

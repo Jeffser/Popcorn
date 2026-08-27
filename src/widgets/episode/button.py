@@ -2,6 +2,7 @@
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from ...integrations import models
+from ...constants import format_duration_display, get_future_time
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/episode/button.ui')
 class EpisodeButton(Gtk.Box):
@@ -9,6 +10,7 @@ class EpisodeButton(Gtk.Box):
 
     model = GObject.Property(type=models.Episode)
     is_tall = GObject.Property(type=bool, default=False)
+    mode = GObject.Property(type=str, default='simple')
 
     @Gtk.Template.Callback()
     def format_subtitle(self, obj, season, episode, episode_name) -> str:
@@ -17,6 +19,10 @@ class EpisodeButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
+
+    @Gtk.Template.Callback()
+    def format_progressbar_visible(self, obj, progress:float) -> bool:
+        return 0 < progress < 1
 
     @Gtk.Template.Callback()
     def format_paintable(self, obj, is_tall:bool, primary, series_primary, series_backdrop) -> Gdk.Paintable:
@@ -33,3 +39,19 @@ class EpisodeButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_picture_width(self, obj, is_tall:bool) -> int:
         return 220 if is_tall else 420
+
+    @Gtk.Template.Callback()
+    def format_name_number(self, obj, name:str, number:int) -> str:
+        return "{}. {}".format(number, name)
+
+    @Gtk.Template.Callback()
+    def format_duration(self, obj, duration:float) -> str:
+        return format_duration_display(duration)
+
+    @Gtk.Template.Callback()
+    def format_one_decimal(self, obj, value) -> str:
+        return f"{value:.1f}"
+
+    @Gtk.Template.Callback()
+    def format_end_time(self, obj, duration:float) -> str:
+        return _("Ends at {}").format(get_future_time(duration))
