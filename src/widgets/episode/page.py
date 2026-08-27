@@ -3,6 +3,7 @@
 from gi.repository import Gtk, Adw, Gio, GLib, GObject, Pango
 from ...integrations import models
 from ..episode import EpisodeButton
+from ...constants import format_duration_display, get_future_time
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/episode/page.ui')
 class EpisodePage(Adw.NavigationPage):
@@ -36,3 +37,14 @@ class EpisodePage(Adw.NavigationPage):
     def format_overview_button_icon_name(self, obj, active:bool) -> str:
         return "pan-up-symbolic" if active else "pan-down-symbolic"
 
+    @Gtk.Template.Callback()
+    def format_duration(self, obj, duration:float) -> str:
+        return format_duration_display(duration)
+
+    @Gtk.Template.Callback()
+    def format_one_decimal(self, obj, value) -> str:
+        return f"{value:.1f}"
+
+    @Gtk.Template.Callback()
+    def format_end_time(self, obj, duration:float) -> str:
+        return _("Ends at {}").format(get_future_time(duration))
