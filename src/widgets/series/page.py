@@ -34,7 +34,7 @@ class SeriesPage(Adw.NavigationPage):
         season_widgets = []
         for season_model in jellyfin.getSeasons(model_id):
             season_widgets.append(SeasonButton(model=season_model))
-        self.seasons_container.set_widgets(season_widgets)
+        GLib.idle_add(self.seasons_container.set_widgets, season_widgets)
 
         recommendation_widgets = []
         recommendation_dict = jellyfin.getRecommendations(model_id)
@@ -48,7 +48,7 @@ class SeriesPage(Adw.NavigationPage):
                 model=movie_model,
                 is_tall=True
             ))
-        self.recommendations_container.set_widgets(recommendation_widgets)
+        GLib.idle_add(self.recommendations_container.set_widgets, recommendation_widgets)
 
     @Gtk.Template.Callback()
     def format_one_decimal(self, obj, value) -> str:

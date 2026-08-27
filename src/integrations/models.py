@@ -78,3 +78,4 @@ class Season(BasicModel):
     IndexNumber = GObject.Property(type=int)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
 
+

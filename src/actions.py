@@ -21,3 +21,16 @@ def show_series(window, series_id:str):
             page = Widgets.SeriesPage(model=jellyfin.getModel(series_id))
             __show_page(window, page)
 
+# -- Seasons --
+
+def show_season(window, id_dict:dict):
+    series_id = id_dict.get('series')
+    season_id = id_dict.get('season')
+    if series_id and season_id:
+        if app := window.get_application():
+            if jellyfin := app.jellyfin:
+                page = Widgets.SeasonPage(
+                    model=jellyfin.getModel(season_id),
+                    series_model=jellyfin.getModel(series_id)
+                )
+                __show_page(window, page)

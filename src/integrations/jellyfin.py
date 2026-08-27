@@ -365,6 +365,14 @@ class Jellyfin(GObject.Object):
                 [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
             )
             return model
+        elif item.get('Type') == 'Season':
+            return models.Season(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                SeriesId=item.get('SeriesId'),
+                IndexNumber=item.get('IndexNumber'),
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary') or self.getPaintable(item.get('SeriesId'), image_type='Primary')
+            )
 
     def getSeasons(self, seriesId:str) -> list:
         # Returns list of season models
@@ -444,3 +452,26 @@ class Jellyfin(GObject.Object):
                 )
                 result_models['Movie'].append(model)
         return result_models
+
+    def getEpisodesFromSeason(self, season_id:str) -> list:
+        # Returns list of episode model
+        episode_models = []
+        items = self.makeRequest(
+            action='Users/{userId}/Items',
+            params={
+                'ParentId': season_id,
+                'IncludeItemTypes': 'Episode'
+            }
+        ).get('Items', [])
+        for item in items:
+            episode_models.append(models.Episode(
+                Id=item.get('Id'),
+                Name=item.get('Name'),
+                SeriesName=item.get('SeriesName'),
+                SeriesId=item.get('SeriesId'),
+                SeasonNumber=item.get('ParentIndexNumber'),
+                EpisodeNumber=item.get('IndexNumber'),
+                BackdropPaintable=self.getPaintable(item.get('SeriesId')),
+                PrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary')
+            ))
+        return episode_models

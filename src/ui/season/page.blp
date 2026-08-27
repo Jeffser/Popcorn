@@ -1,0 +1,134 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornSeasonPage: Adw.NavigationPage {
+  title: bind template.series-model as <$PopcornSeries> .Name;
+  tag: bind template.model as <$PopcornSeason> .Id;
+
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      styles [
+        "osd"
+      ]
+      title-widget: Adw.WindowTitle {
+        title: bind template.series-model as <$PopcornSeries> .Name;
+        subtitle: bind template.model as <$PopcornSeason> .Name;
+      };
+    }
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hexpand: true;
+      hscrollbar-policy: never;
+      child: Gtk.Box {
+        vexpand: true;
+        hexpand: true;
+        orientation: vertical;
+        spacing: 10;
+
+        Adw.Clamp {
+          valign: start;
+          orientation: vertical;
+          maximum-size: 1200;
+          tightening-threshold: 2000;
+          child: Gtk.Overlay top_overlay {
+            hexpand: true;
+            child: Gtk.Picture {
+              paintable: bind template.series-model as <$PopcornSeries> .BackdropPaintable;
+              content-fit: cover;
+            };
+
+            [overlay]
+            Gtk.Box top_overlay_content {
+              styles [
+                "p10",
+                "gradient-background"
+              ]
+              valign: end;
+              hexpand: true;
+              orientation: vertical;
+              spacing: 10;
+              margin-top: 240;
+
+              Adw.Clamp {
+                halign: center;
+                orientation: vertical;
+                maximum-size: 360;
+                child: Adw.Clamp {
+                  maximum-size: 480;
+                  child: Gtk.Stack {
+                    height-request: 100;
+                    hhomogeneous: false;
+                    vhomogeneous: false;
+                    visible-child-name: bind $format_stack_visible_child_name(template.series-model as <$PopcornSeries> .LogoPaintable);
+                    Gtk.StackPage {
+                      name: "logo";
+                      child: Gtk.Picture logo_picture {
+                        styles [
+                          "logo"
+                        ]
+                        paintable: bind template.series-model as <$PopcornSeries> .LogoPaintable;
+                      };
+                    }
+                    Gtk.StackPage {
+                      name: "label";
+                      child: Gtk.Label {
+                        styles [
+                          "title-1"
+                        ]
+                        ellipsize: end;
+                        wrap: true;
+                        wrap-mode: word_char;
+                        lines: 2;
+                        label: bind template.series-model as <$PopcornSeries> .Name;
+                      };
+                    }
+                  };
+                };
+              }
+
+              Gtk.Label {
+                styles [
+                  "title-3"
+                ]
+                ellipsize: end;
+                wrap: true;
+                wrap-mode: word_char;
+                lines: 2;
+                label: bind template.model as <$PopcornSeason> .Name;
+              }
+
+              Gtk.Button {
+                styles [
+                  "pill",
+                  "suggested-action"
+                ]
+                halign: center;
+                tooltip-text: _("Play");
+                child: Adw.ButtonContent {
+                  icon-name: "media-playback-start-symbolic";
+                  label: _("Play");
+                };
+              }
+            }
+          };
+        }
+        Adw.Clamp {
+          maximum-size: 2000;
+          tightening-threshold: 800;
+          vexpand: true;
+          child: $PopcornWrapbox episodes_container {
+            styles [
+              "p10"
+            ]
+            title: _("Episodes");
+            icon-name: "playback-symbolic";
+          };
+        }
+      };
+    };
+  };
+}
