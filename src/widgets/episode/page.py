@@ -30,6 +30,10 @@ class EpisodePage(Adw.NavigationPage):
         return bool(value)
 
     @Gtk.Template.Callback()
+    def format_stack_visible_child_name(self, obj, paintable) -> str:
+        return 'logo' if paintable else 'label'
+
+    @Gtk.Template.Callback()
     def format_overview_ellipsize(self, obj, active:bool) -> Pango.EllipsizeMode:
         return Pango.EllipsizeMode.NONE if active else Pango.EllipsizeMode.END
 

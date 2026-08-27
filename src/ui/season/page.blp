@@ -51,7 +51,6 @@ template $PopcornSeasonPage: Adw.NavigationPage {
               hexpand: true;
               orientation: vertical;
               spacing: 10;
-              margin-top: 240;
 
               Adw.Clamp {
                 halign: center;
@@ -60,7 +59,8 @@ template $PopcornSeasonPage: Adw.NavigationPage {
                 child: Adw.Clamp {
                   maximum-size: 480;
                   child: Gtk.Stack {
-                    height-request: 100;
+                    width-request: 420;
+                    height-request: 420;
                     hhomogeneous: false;
                     vhomogeneous: false;
                     visible-child-name: bind $format_stack_visible_child_name(template.series-model as <$PopcornSeries> .LogoPaintable);
@@ -71,8 +71,8 @@ template $PopcornSeasonPage: Adw.NavigationPage {
                           "logo"
                         ]
                         paintable: bind template.series-model as <$PopcornSeries> .LogoPaintable;
-                        width-request: 420;
-                        height-request: 360;
+                        halign: center;
+                        valign: end;
                       };
                     }
                     Gtk.StackPage {
@@ -86,6 +86,8 @@ template $PopcornSeasonPage: Adw.NavigationPage {
                         wrap-mode: word_char;
                         lines: 2;
                         label: bind template.series-model as <$PopcornSeries> .Name;
+                        halign: center;
+                        valign: end;
                       };
                     }
                   };
