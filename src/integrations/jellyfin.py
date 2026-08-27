@@ -109,6 +109,8 @@ class Jellyfin(GObject.Object):
             self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
+                PlayerTitle=item.get('SeriesName'),
+                PlayerSubtitle='{} - {}. {}'.format(_("Season {}").format(item.get('ParentIndexNumber')), item.get('IndexNumber'), item.get('Name')),
                 SeriesName=item.get('SeriesName'),
                 SeriesId=item.get('SeriesId'),
                 SeasonNumber=item.get('ParentIndexNumber'),
@@ -128,6 +130,8 @@ class Jellyfin(GObject.Object):
             self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
+                PlayerTitle=item.get('Name'),
+                PlayerSubtitle='({})'.format(item.get('ProductionYear')),
                 CommunityRating=round(item.get('CommunityRating') or 0, 1),
                 ProductionYear=item.get('ProductionYear'),
                 OfficialRating=item.get('OfficialRating'),

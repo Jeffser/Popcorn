@@ -222,6 +222,7 @@ class Player(GObject.Object):
 
         # GST stuff
         self.get_property('gst').set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
+        self.get_property('gst').connect("source-setup", self.on_source_setup)
         self.bus = self.get_property('gst').get_bus()
         self.bus.connect("message::eos", print) # Video ended
         self.bus.connect("message::error", lambda bus, msg: logger.error(msg.parse_error()[0]))
@@ -237,6 +238,23 @@ class Player(GObject.Object):
                     self.get_property('gst').set_state(Gst.State.READY)
                     self.get_property('gst').set_property('uri', stream_url)
                     self.get_property('gst').set_state(Gst.State.PLAYING)
+                    progress = model.get_property('Progress')
+                    duration = model.get_property('Duration')
+                    if 0 < progress < 1:
+                        GLib.timeout_add(500, lambda: self.get_property('gst').seek_simple(
+                            Gst.Format.TIME,
+                            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                            int(duration * progress * Gst.SECOND)
+                        ) and False)
+
+    def on_source_setup(self, playbin, source):
+        try:
+            if GObject.type_is_a(source, Gst.ElementFactory.find("souphttpsrc").get_element_type()):
+                if app := self.get_property('application'):
+                    if jellyfin := app.jellyfin:
+                        source.set_property("ssl-strict", not jellyfin.get_property('trustServer'))
+        except:
+            pass
 
     def update_stream_progress(self):
         success, position = self.get_property('gst').query_position(Gst.Format.TIME)

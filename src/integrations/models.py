@@ -54,6 +54,8 @@ class Playable(BasicModel):
     __gtype_name__ = 'PopcornPlayable'
     Id = GObject.Property(type=str)
     Name = GObject.Property(type=str)
+    PlayerTitle = GObject.Property(type=str)
+    PlayerSubtitle = GObject.Property(type=str)
     Played = GObject.Property(type=bool, default=False)
     Progress = GObject.Property(type=float, default=0) # 0 - 1
     Duration = GObject.Property(type=float) # Seconds with decimals
