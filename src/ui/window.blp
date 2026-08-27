@@ -7,6 +7,7 @@ template $PopcornWindow: Adw.ApplicationWindow {
   height-request: 560;
   default-width: 1000;
   default-height: 900;
+  close-request => $on_close();
   content: Adw.NavigationView root_navigationview {
     Adw.NavigationPage {
       tag: "loading";

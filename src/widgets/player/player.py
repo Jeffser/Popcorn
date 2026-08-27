@@ -199,10 +199,8 @@ class PlayerEventAdapter(EventAdapter):
         self.mpris = Server("com.jeffser.Popcorn", adapter=self.adapter)
         super().__init__(root=self.mpris.root, player=self.mpris.player)
         self.interface = MprisInterface("Popcorn", self.adapter)
-        self.mpris_published = False
         try:
             self.mpris.publish()
-            self.mpris_published = True
         except Exception as e:
             logger.error(e)
 

@@ -12,6 +12,15 @@ def __show_page(app, page:Adw.NavigationPage):
         GLib.idle_add(main_window.root_navigationview.push, page)
         GLib.idle_add(thread.start)
 
+def __play_model(app, model):
+    if player := app.get_property('player'):
+        player.set_property('model', model)
+        if not app.pip_window.get_visible():
+            page = Widgets.PlayerPage(
+                player=player
+            )
+            __show_page(app, page)
+
 # -- Series --
 
 def show_series(app, series_id:str):
@@ -34,7 +43,7 @@ def show_season(app, season_id:str):
 
 # -- Episodes --
 
-def show_episode(app, episode_id:dict):
+def show_episode(app, episode_id:str):
     if jellyfin := app.jellyfin:
         if episode_model := jellyfin.getModel(episode_id):
             if series_model := jellyfin.getModel(episode_model.get_property('SeriesId')):
@@ -43,6 +52,11 @@ def show_episode(app, episode_id:dict):
                     series_model=series_model
                 )
                 __show_page(app, page)
+
+def play_episode(app, episode_id:str):
+    if jellyfin := app.jellyfin:
+        if episode_model := jellyfin.getModel(episode_id):
+            __play_model(app, episode_model)
 
 # -- Movie --
 
@@ -57,9 +71,4 @@ def show_movie(app, movie_id:str):
 def play_movie(app, movie_id:str):
     if jellyfin := app.jellyfin:
         if movie_model := jellyfin.getModel(movie_id):
-            if player := app.get_property('player'):
-                player.set_property('model', movie_model)
-                page = Widgets.PlayerPage(
-                    player=player
-                )
-                __show_page(app, page)
+            __play_model(app, movie_model)

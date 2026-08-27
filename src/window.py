@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GLib
+from gi.repository import Gtk, Adw, GLib, Gst
 from . import widgets as Widgets
 from . import actions
 import threading
@@ -27,6 +27,15 @@ class PopcornWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornWindow'
 
     root_navigationview = Gtk.Template.Child()
+
+    @Gtk.Template.Callback()
+    def on_close(self, window):
+        if app := self.get_application():
+            if app.pip_window.get_visible():
+                app.pip_window.close()
+            app.get_property('player').get_property('gst').set_state(Gst.State.NULL)
+            app.get_property('player').event_adapter.mpris.unpublish()
+            app.quit()
 
     def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
         def call_action(cb, va):
@@ -48,5 +57,6 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.show_series)
         self.create_action(actions.show_season)
         self.create_action(actions.show_episode)
+        self.create_action(actions.play_episode)
         self.create_action(actions.show_movie)
         self.create_action(actions.play_movie)

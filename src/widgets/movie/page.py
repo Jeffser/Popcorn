@@ -63,3 +63,7 @@ class MoviePage(Adw.NavigationPage):
     def format_overview_button_icon_name(self, obj, active:bool) -> str:
         return "pan-up-symbolic" if active else "pan-down-symbolic"
 
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)
+

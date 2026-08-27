@@ -52,3 +52,7 @@ class EpisodePage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def format_end_time(self, obj, duration:float) -> str:
         return _("Ends at {}").format(get_future_time(duration))
+
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)
