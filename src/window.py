@@ -31,9 +31,9 @@ class PopcornWindow(Adw.ApplicationWindow):
     def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
         def call_action(cb, va):
             if va is None:
-                cb(self)
+                cb(self.get_application())
             else:
-                cb(self, va.unpack())
+                cb(self.get_application(), va.unpack())
 
         self.get_application().create_action(
             name=callback.__name__,
