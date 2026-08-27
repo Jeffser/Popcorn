@@ -110,7 +110,57 @@ template $PopcornEpisodePage: Adw.NavigationPage {
           maximum-size: 2000;
           tightening-threshold: 800;
           vexpand: true;
-          child: Adw.Bin {};
+          child: Gtk.Box {
+            styles [
+              "p10"
+            ]
+            orientation: vertical;
+            spacing: 10;
+
+            Gtk.Box {
+              styles [
+                "card",
+                "p10"
+              ]
+              hexpand: true;
+              orientation: vertical;
+              spacing: 5;
+              visible: bind $format_to_bool(template.model as <$PopcornEpisode> .Overview);
+              Gtk.Box {
+                orientation: horizontal;
+                spacing: 5;
+                Gtk.Label {
+                  styles [
+                    "heading"
+                  ]
+                  ellipsize: end;
+                  xalign: 0;
+                  hexpand: true;
+                  label: _("Overview");
+                }
+
+                Gtk.ToggleButton overview_toggle_button {
+                  styles [
+                    "p0",
+                    "flat"
+                  ]
+                  icon-name: bind $format_overview_button_icon_name(overview_toggle_button.active);
+                }
+              }
+
+              Gtk.Label overview_label {
+                styles [
+                  "body"
+                ]
+                wrap-mode: word;
+                wrap: true;
+                lines: 1;
+                ellipsize: bind $format_overview_ellipsize(overview_toggle_button.active);
+                xalign: 0;
+                label: bind template.model as <$PopcornEpisode> .Overview;
+              }
+            }
+          };
         }
       };
     };

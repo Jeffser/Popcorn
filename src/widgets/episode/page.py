@@ -24,3 +24,15 @@ class EpisodePage(Adw.NavigationPage):
     def format_name_number(self, obj, name:str, season_number:int, episode_number:int) -> str:
         return "{} - {}. {}".format(_('Season {}').format(season_number), episode_number, name)
 
+    @Gtk.Template.Callback()
+    def format_to_bool(self, obj, value) -> bool:
+        return bool(value)
+
+    @Gtk.Template.Callback()
+    def format_overview_ellipsize(self, obj, active:bool) -> Pango.EllipsizeMode:
+        return Pango.EllipsizeMode.NONE if active else Pango.EllipsizeMode.END
+
+    @Gtk.Template.Callback()
+    def format_overview_button_icon_name(self, obj, active:bool) -> str:
+        return "pan-up-symbolic" if active else "pan-down-symbolic"
+

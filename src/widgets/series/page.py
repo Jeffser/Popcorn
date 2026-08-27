@@ -59,10 +59,6 @@ class SeriesPage(Adw.NavigationPage):
         return ngettext("{} Season", "{} Seasons", value).format(value)
 
     @Gtk.Template.Callback()
-    def format_overview(self, obj, value) -> str:
-        return '\n'.join(value.split('\n')[:2])
-
-    @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
 
