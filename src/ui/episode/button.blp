@@ -120,9 +120,6 @@ template $PopcornEpisodeButton: Gtk.Box {
           Gtk.Label {
             ellipsize: end;
             label: bind $format_name_number(template.model as <$PopcornEpisode> .Name, template.model as <$PopcornEpisode> .EpisodeNumber);
-            wrap: true;
-            wrap-mode: word;
-            lines: 3;
             max-width-chars: 12;
             xalign: 0;
             styles [
