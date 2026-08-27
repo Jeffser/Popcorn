@@ -42,14 +42,14 @@ class HomePage(Adw.NavigationPage):
             episode_widgets.append(
                 EpisodeButton(model=episode)
             )
-        self.continue_watching_container.set_widgets(episode_widgets)
+        GLib.idle_add(self.continue_watching_container.set_widgets, episode_widgets)
 
         episode_widgets = []
         for episode in jellyfin.getNextUp():
             episode_widgets.append(
                 EpisodeButton(model=episode)
             )
-        self.next_up_container.set_widgets(episode_widgets)
+        GLib.idle_add(self.next_up_container.set_widgets, episode_widgets)
 
         for userView in user_view_models:
             latest_widgets = []
@@ -84,8 +84,8 @@ class HomePage(Adw.NavigationPage):
                     title=_("Recently Added in {}").format(userView.get_property('Name').title()),
                     icon_name=constants.USERVIEWS_ICONS.get(userView.get_property('CollectionType')) or 'folder-symbolic'
                 )
-                new_carousel.set_widgets(latest_widgets)
-                self.main_container.append(new_carousel)
+                GLib.idle_add(self.main_container.append, new_carousel)
+                GLib.idle_add(new_carousel.set_widgets, latest_widgets)
 
         GLib.timeout_add(15000, self.auto_scroll_overview)
 

@@ -1,6 +1,6 @@
 # carousel.py
 
-from gi.repository import Gtk, Adw, GLib, Gdk, Gio, GObject
+from gi.repository import Gtk, GLib, Gdk, GObject
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/containers/carousel.ui')
 class Carousel(Gtk.Box):
@@ -25,14 +25,14 @@ class Carousel(Gtk.Box):
                 if page:
                     self.list_el.scroll_to(page, True)
 
-        GLib.idle_add(self.set_visible, len(widgets) > 0)
+        self.set_visible(len(widgets) > 0)
         if self.list_el.get_n_pages() > 0:
-            GLib.idle_add(self.remove_all)
+            self.remove_all()
         for i, page in enumerate(widgets):
-            GLib.idle_add(self.list_el.append, page)
+            self.list_el.append(page)
         GLib.timeout_add(200, scroll_to_middle)
-        GLib.idle_add(self.pan_start_el.set_visible, len(widgets) > 1)
-        GLib.idle_add(self.pan_end_el.set_visible, len(widgets) > 1)
+        self.pan_start_el.set_visible(len(widgets) > 1)
+        self.pan_end_el.set_visible(len(widgets) > 1)
 
     @Gtk.Template.Callback()
     def on_scroll(self, controller, dx, dy):
