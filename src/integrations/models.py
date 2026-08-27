@@ -51,8 +51,9 @@ class Episode(BasicModel):
     SeriesId = GObject.Property(type=str)
     SeasonNumber = GObject.Property(type=int)
     EpisodeNumber = GObject.Property(type=int)
-    BackdropPaintable = GObject.Property(type=Gdk.Paintable)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
+    SeriesBackdropPaintable = GObject.Property(type=Gdk.Paintable)
+    SeriesPrimaryPaintable = GObject.Property(type=Gdk.Paintable)
     Progress = GObject.Property(type=float, default=0) # 0 - 1
 
 class Movie(BasicModel):

@@ -103,8 +103,9 @@ class Jellyfin(GObject.Object):
                 SeriesId=item.get('SeriesId'),
                 SeasonNumber=item.get('ParentIndexNumber'),
                 EpisodeNumber=item.get('IndexNumber'),
-                BackdropPaintable=self.getPaintable(item.get('SeriesId')),
-                PrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary')
+                PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
+                SeriesBackdropPaintable=self.getPaintable(item.get('SeriesId')),
+                SeriesPrimaryPaintable=self.getPaintable(item.get('SeriesId'), image_type='Primary')
             )
         elif item.get('Type') == 'Movie':
             model = models.Movie(

@@ -18,7 +18,7 @@ template $PopcornEpisodeButton: Gtk.Box {
     child: Gtk.Overlay {
       child: Gtk.Picture {
         content-fit: cover;
-        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .BackdropPaintable, template.model as <$PopcornEpisode> .PrimaryPaintable);
+        paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .PrimaryPaintable, template.model as <$PopcornEpisode> .SeriesPrimaryPaintable, template.model as <$PopcornEpisode> .SeriesBackdropPaintable);
         height-request: bind $format_picture_height(template.is_tall);
         width-request: bind $format_picture_width(template.is_tall);
       };

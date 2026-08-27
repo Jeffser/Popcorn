@@ -19,8 +19,8 @@ class EpisodeButton(Gtk.Box):
         return bool(value)
 
     @Gtk.Template.Callback()
-    def format_paintable(self, obj, is_tall:bool, wide_paintable, tall_paintable) -> Gdk.Paintable:
-        return tall_paintable if is_tall else wide_paintable
+    def format_paintable(self, obj, is_tall:bool, primary, series_primary, series_backdrop) -> Gdk.Paintable:
+        return series_primary if is_tall else (primary or series_backdrop)
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
