@@ -25,7 +25,7 @@ gi.require_version('Adw', '1')
 gi.require_version('Secret', '1')
 gi.require_version('Gst', '1.0')
 
-from gi.repository import Gtk, Gio, Adw, GLib
+from gi.repository import Gtk, GObject, Gio, Adw, GLib
 from .window import PopcornWindow
 from . import widgets as Widgets
 from .integrations import Jellyfin
@@ -37,19 +37,22 @@ class PopcornApplication(Adw.Application):
     __gtype_name__ = 'PopcornApplication'
     """The main application singleton class."""
 
+    player = GObject.Property(type=Widgets.Player)
+
     def __init__(self, version):
         settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
         super().__init__(application_id='com.jeffser.Popcorn',
              flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
              resource_base_path='/com/jeffser/Popcorn')
         self.version = version
-        self.player = Widgets.Player(application=self)
+        self.set_property('player', Widgets.Player(application=self))
         self.jellyfin = Jellyfin(
             user=settings.get_value('user').unpack(),
             url=settings.get_value('url').unpack(),
             trustServer=settings.get_value('trust-server').unpack()
         )
         self.main_window = None
+        self.pip_window = None
 
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
@@ -59,6 +62,8 @@ class PopcornApplication(Adw.Application):
         if not self.main_window:
             self.main_window = PopcornWindow(application=self)
             threading.Thread(target=self.try_login, daemon=True).start()
+        if not self.pip_window:
+            self.pip_window = Widgets.PlayerWindow(application=self)
         self.main_window.present()
 
     def on_about_action(self, *args):

@@ -5,15 +5,32 @@ template $PopcornPlayerPage: Adw.NavigationPage {
   styles [
     "black-background"
   ]
-  title: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Name;
-  child: Adw.ToolbarView {
+  title: _("Player");
+
+  Gtk.EventControllerMotion {
+    motion => $on_pointer_motion();
+  }
+
+  child: Adw.ToolbarView toolbarview {
     extend-content-to-top-edge: true;
+    reveal-top-bars: false;
 
     [top]
     Adw.HeaderBar {
       styles [
         "osd"
       ]
+      title-widget: Adw.WindowTitle {
+        title: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Name;
+      };
+
+      [end]
+      Gtk.Button {
+        tooltip-text: _("Watch in Picture-in-Picture");
+        icon-name: "pip-in-symbolic";
+        visible: bind $format_pip_button_visible(template.root as <Gtk.Window> .title);
+        clicked => $open_pip_window();
+      }
     }
 
     content: Gtk.Overlay {
@@ -22,92 +39,106 @@ template $PopcornPlayerPage: Adw.NavigationPage {
       };
 
       [overlay]
-      Gtk.Box {
-        styles [
-          "osd",
-          "player-controls-container"
-        ]
-        margin-top: 10;
-        margin-bottom: 10;
-        margin-start: 10;
-        margin-end: 10;
-        valign: end;
-        hexpand: true;
-        orientation: vertical;
-        spacing: 5;
-
-        Gtk.Box {
-          orientation: horizontal;
-          spacing: 10;
-
-          Gtk.Button {
-            styles [
-              "circular",
-              "flat"
-            ]
-            tooltip-text: _("Previous");
-            icon-name: "media-skip-backward-symbolic";
-          }
-
-          Gtk.Button {
-            styles [
-              "circular",
-              "flat"
-            ]
-            tooltip-text: _("Pause");
-            icon-name: "media-playback-pause-symbolic";
-          }
-
-          Gtk.Button {
-            styles [
-              "circular",
-              "flat"
-            ]
-            tooltip-text: _("Next");
-            icon-name: "media-skip-forward-symbolic";
-          }
-
-          Gtk.Label {
-            label: bind template.end-time;
-            xalign: 0;
-          }
-        }
-
-        Gtk.Box {
-          orientation: horizontal;
+      Gtk.Revealer controls_revealer {
+        transition-duration: 250;
+        transition-type: slide_up;
+        child: Gtk.Box {
+          styles [
+            "osd",
+            "player-controls-container"
+          ]
+          margin-top: 10;
+          margin-bottom: 10;
+          margin-start: 10;
+          margin-end: 10;
+          valign: end;
+          hexpand: true;
+          orientation: vertical;
           spacing: 5;
 
-          Gtk.Label {
-            styles [
-              "numeric"
-            ]
-            label: bind $format_time_ellapsed(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
-          }
+          Gtk.Box {
+            orientation: horizontal;
+            spacing: 5;
 
-          Gtk.Scale {
-            Gtk.GestureClick {
-                pressed => $scale_pressed();
-                unpaired-release => $scale_released();
+            Gtk.Button {
+              styles [
+                "circular",
+                "flat"
+              ]
+              tooltip-text: _("Previous");
+              icon-name: "media-skip-backward-symbolic";
             }
-            hexpand: true;
-            value-changed => $adjustment_changed();
-            adjustment: Gtk.Adjustment {
-              lower: 0;
-              upper: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration;
-              value: bind template.position;
-            };
+
+            Gtk.Button {
+              styles [
+                "circular",
+                "flat"
+              ]
+              tooltip-text: _("Pause");
+              icon-name: "media-playback-pause-symbolic";
+            }
+
+            Gtk.Button {
+              styles [
+                "circular",
+                "flat"
+              ]
+              tooltip-text: _("Next");
+              icon-name: "media-skip-forward-symbolic";
+            }
+
+            Gtk.Label {
+              label: bind template.end-time;
+              xalign: 0;
+            }
+
+            Adw.Bin {
+              hexpand: true;
+            }
+
+            Gtk.ToggleButton {
+              styles [
+                "flat"
+              ]
+              icon-name: "view-fullscreen-symbolic";
+              active: bind template.root as <Gtk.Window> .fullscreened;
+              notify::active => $fullscreen_toggled();
+            }
           }
 
-          Gtk.Label {
-            styles [
-              "numeric"
-            ]
-            label: bind $format_time_remaining(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+          Gtk.Box {
+            orientation: horizontal;
+            spacing: 5;
+
+            Gtk.Label {
+              styles [
+                "numeric"
+              ]
+              label: bind $format_time_ellapsed(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+            }
+
+            Gtk.Scale {
+              Gtk.GestureClick {
+                  pressed => $scale_pressed();
+                  unpaired-release => $scale_released();
+              }
+              hexpand: true;
+              value-changed => $adjustment_changed();
+              adjustment: Gtk.Adjustment {
+                lower: 0;
+                upper: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration;
+                value: bind template.position;
+              };
+            }
+
+            Gtk.Label {
+              styles [
+                "numeric"
+              ]
+              label: bind $format_time_remaining(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+            }
           }
-
-
-        }
-
+        };
       }
     };
   };

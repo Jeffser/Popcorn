@@ -1,0 +1,18 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornPictureInPictureWindow: Adw.ApplicationWindow {
+  title: "Picture-in-Picture";
+  width-request: 320;
+  height-request: 180;
+  default-width: 640;
+  default-height: 360;
+  close-request => $on_close();
+  content: Gtk.WindowHandle {
+    child: Adw.NavigationView {
+      $PopcornPlayerPage player_page {
+        player: bind template.application as <$PopcornApplication> .player;
+      }
+    };
+  };
+}

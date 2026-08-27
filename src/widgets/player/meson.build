@@ -4,6 +4,7 @@ widgets = [
   '__init__.py',
   'player.py',
   'page.py',
+  'window.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

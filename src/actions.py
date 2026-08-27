@@ -55,11 +55,11 @@ def show_movie(app, movie_id:str):
             __show_page(app, page)
 
 def play_movie(app, movie_id:str):
-    print(movie_id)
     if jellyfin := app.jellyfin:
         if movie_model := jellyfin.getModel(movie_id):
-            app.player.set_property('model', movie_model)
-            page = Widgets.PlayerPage(
-                player=app.player
-            )
-            __show_page(app, page)
+            if player := app.get_property('player'):
+                player.set_property('model', movie_model)
+                page = Widgets.PlayerPage(
+                    player=player
+                )
+                __show_page(app, page)

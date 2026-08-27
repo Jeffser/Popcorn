@@ -25,6 +25,7 @@ blueprints = files(
   'ui/season/page.blp',
 
   'ui/player/page.blp',
+  'ui/player/window.blp',
 
   'ui/containers/carousel.blp',
   'ui/containers/wrapbox.blp',
