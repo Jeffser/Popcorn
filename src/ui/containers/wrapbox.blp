@@ -1,0 +1,42 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornWrapbox: Gtk.Box {
+  orientation: vertical;
+  spacing: 10;
+
+  Gtk.Box {
+    orientation: horizontal;
+    spacing: 10;
+
+    Gtk.Box {
+      orientation: horizontal;
+      spacing: 5;
+      halign: start;
+      valign: center;
+      hexpand: true;
+      Gtk.Image {
+        icon-name: bind template.icon_name;
+      }
+      Gtk.Label {
+        xalign: 0;
+        ellipsize: middle;
+        label: bind template.title;
+        styles [
+          "title-2"
+        ]
+      }
+    }
+  }
+  Adw.WrapBox list_el {
+    hexpand: true;
+    halign: fill;
+    child-spacing: 10;
+    line-spacing: 10;
+    line-homogeneous: true;
+    Adw.Spinner {
+      height-request: 240;
+      width-request: 240;
+    }
+  }
+}

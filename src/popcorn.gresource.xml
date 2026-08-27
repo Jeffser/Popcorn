@@ -33,6 +33,7 @@
     <file alias="season/button.ui">ui/season/button.ui</file>
 
     <file alias="containers/carousel.ui">ui/containers/carousel.ui</file>
+    <file alias="containers/wrapbox.ui">ui/containers/wrapbox.ui</file>
   </gresource>
 </gresources>
 

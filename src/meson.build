@@ -22,6 +22,7 @@ blueprints = files(
   'ui/season/button.blp',
 
   'ui/containers/carousel.blp',
+  'ui/containers/wrapbox.blp',
 )
 
 blueprints = custom_target('blueprints',
