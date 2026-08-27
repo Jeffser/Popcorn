@@ -48,6 +48,8 @@ template $PopcornSeriesButton: Gtk.Box {
         "circular"
       ]
       tooltip-text: _("Play Series");
+      action-name: "app.play_series";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
       icon-name: "media-playback-start-symbolic";
       valign: end;
       halign: start;

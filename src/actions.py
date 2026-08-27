@@ -29,6 +29,11 @@ def show_series(app, series_id:str):
             page = Widgets.SeriesPage(model=series_model)
             __show_page(app, page)
 
+def play_series(app, series_id:str):
+    if jellyfin := app.jellyfin:
+        if episode_model := jellyfin.getSeriesNextUp(series_id):
+            __play_model(app, episode_model)
+
 # -- Seasons --
 
 def show_season(app, season_id:str):

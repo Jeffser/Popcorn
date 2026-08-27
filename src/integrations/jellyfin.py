@@ -371,3 +371,33 @@ class Jellyfin(GObject.Object):
             if model := self.__makeModel(item):
                 episode_models.append(model)
         return episode_models
+
+    def getSeriesNextUp(self, series_id:str) -> models.Episode | None:
+        items = self.makeRequest(
+            action='Shows/NextUp',
+            params={
+                'seriesId': series_id,
+                'userId': self.get_property('userId'),
+                'limit': 1,
+                'fields': 'Overview'
+            }
+        ).get('Items', [])
+        if len(items) > 0:
+            return self.__makeModel(items[0])
+
+        # Just send the first episode
+        items = self.makeRequest(
+            action='Users/{userId}/Items',
+            params={
+                'parentId': series_id,
+                'recursive': True,
+                'IncludeItemTypes': 'Episode',
+                'fields': 'Overview',
+                'sortBy': 'ParentIndexNumber,IndexNumber',
+                'sortOrder': 'Ascending',
+                'limit': 1
+            }
+        ).get('Items', [])
+        if len(items) > 0:
+            return self.__makeModel(items[0])
+

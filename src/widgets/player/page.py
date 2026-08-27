@@ -111,5 +111,6 @@ class PlayerPage(Adw.NavigationPage):
                     if window := app.pip_window:
                         window.present()
                     navigationview.pop()
+                    root.unfullscreen()
 
 

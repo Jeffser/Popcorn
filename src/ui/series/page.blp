@@ -97,6 +97,8 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                 ]
                 halign: center;
                 tooltip-text: _("Play");
+                action-name: "app.play_series";
+                action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
                 child: Adw.ButtonContent {
                   icon-name: "media-playback-start-symbolic";
                   label: _("Play");
