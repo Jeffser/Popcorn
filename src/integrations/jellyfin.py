@@ -79,8 +79,12 @@ class Jellyfin(GObject.Object):
         return {}
 
     def __makeModel(self, item:dict) -> models.BasicModel | None:
+        if not item.get('Id') or not item.get('Type'):
+            return
         if item.get('Type') == 'Series':
-            model = models.Series(
+            if item.get('Id') not in self.loaded_models:
+                self.loaded_models[item.get('Id')] = models.Series()
+            self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
                 CommunityRating=round(item.get('CommunityRating') or 0, 1),
@@ -93,15 +97,16 @@ class Jellyfin(GObject.Object):
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
                 Played=item.get('UserData', {}).get('Played', False)
             )
-            model.get_property('Genres').remove_all()
-            model.get_property('Genres').splice(
+            self.loaded_models.get(item.get('Id')).get_property('Genres').remove_all()
+            self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
                 0,
                 [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
             )
-            return model
         elif item.get('Type') == 'Episode':
-            return models.Episode(
+            if item.get('Id') not in self.loaded_models:
+                self.loaded_models[item.get('Id')] = models.Episode()
+            self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
                 SeriesName=item.get('SeriesName'),
@@ -118,7 +123,9 @@ class Jellyfin(GObject.Object):
                 Played=item.get('UserData', {}).get('Played', False)
             )
         elif item.get('Type') == 'Movie':
-            model = models.Movie(
+            if item.get('Id') not in self.loaded_models:
+                self.loaded_models[item.get('Id')] = models.Movie()
+            self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
                 CommunityRating=round(item.get('CommunityRating') or 0, 1),
@@ -132,15 +139,16 @@ class Jellyfin(GObject.Object):
                 Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
                 Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2)
             )
-            model.get_property('Genres').remove_all()
-            model.get_property('Genres').splice(
+            self.loaded_models.get(item.get('Id')).get_property('Genres').remove_all()
+            self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
                 0,
                 [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
             )
-            return model
         elif item.get('Type') == 'Season':
-            return models.Season(
+            if item.get('Id') not in self.loaded_models:
+                self.loaded_models[item.get('Id')] = models.Season()
+            self.loaded_models.get(item.get('Id')).update_data(
                 Id=item.get('Id'),
                 Name=item.get('Name'),
                 SeriesId=item.get('SeriesId'),
@@ -150,11 +158,14 @@ class Jellyfin(GObject.Object):
             )
         elif item.get('Type') in ('CollectionFolder', 'UserView'):
             if item.get('CollectionType') in ('tvshows', 'movies'):
-                return models.UserView(
+                if item.get('Id') not in self.loaded_models:
+                    self.loaded_models[item.get('Id')] = models.UserView()
+                self.loaded_models.get(item.get('Id')).update_data(
                     Id=item.get('Id'),
                     Name=item.get('Name'),
                     CollectionType=item.get('CollectionType')
                 )
+        return self.loaded_models.get(item.get('Id'))
 
     def initiateQuickConnect(self) -> dict:
         return self.makeRequest(
@@ -309,10 +320,13 @@ class Jellyfin(GObject.Object):
         return result_models
 
     def getModel(self, modelId:str) -> models.BasicModel | None:
+        if modelId in self.loaded_models:
+            return self.loaded_models.get(modelId)
         item = self.makeRequest(
             action='Users/{userId}/Items/{itemId}',
             action_keys={
-                'itemId': modelId
+                'itemId': modelId,
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
             }
         )
         return self.__makeModel(item)

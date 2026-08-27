@@ -15,10 +15,7 @@ class BasicModel(GObject.Object):
                 if self.get_property(prop.get_name()) != kwargs.get(prop.get_name()):
                     self.set_property(prop.get_name(), kwargs.get(prop.get_name()))
             elif self.get_property(prop.get_name()) is None:
-                if prop.value_type.name == 'PyObject': #LIST
-                    self.set_property(prop.get_name(), [])
-                else:
-                    self.set_property(prop.get_name(), prop.get_default_value())
+                self.set_property(prop.get_name(), prop.get_default_value())
 
 class UserView(BasicModel):
     __gtype_name__ = 'PopcornUserView'
