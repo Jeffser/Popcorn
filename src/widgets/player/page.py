@@ -30,7 +30,14 @@ class PlayerPage(Adw.NavigationPage):
         self.last_motion_coordinates = [0,0]
         self.connect('notify::root', self.on_root_changed)
         self.connect('notify::player', self.on_player_changed)
-        self.on_root_changed(self)
+        if player := self.get_property('player'):
+            if app := player.get_property('application'):
+                app.settings.bind(
+                    "volume",
+                    self.volume_adjustment,
+                    "value",
+                    Gio.SettingsBindFlags.DEFAULT
+                )
         self.on_player_changed(self)
 
     def on_player_changed(self, widget, pspec=None):
@@ -40,17 +47,9 @@ class PlayerPage(Adw.NavigationPage):
             GLib.idle_add(self.update_end_time)
 
     def on_root_changed(self, widget, pspec=None):
-        if widget.get_property('root'):
-            if player := self.get_property('player'):
-                if app := player.get_property('application'):
-                    if not app.pip_window or not app.pip_window.get_visible():
-                        player.get_property('gst').set_state(Gst.State.NULL)
-                    app.settings.bind(
-                        "volume",
-                        self.volume_adjustment,
-                        "value",
-                        Gio.SettingsBindFlags.DEFAULT
-                    )
+        if player := self.get_property('player'):
+            if not widget.get_property('root'):
+                player.get_property('gst').set_state(Gst.State.NULL)
 
     def media_segments_changed(self, widget, pspec=None):
         self.scale.clear_marks()
@@ -67,7 +66,7 @@ class PlayerPage(Adw.NavigationPage):
             self.media_segments[segment.get_property('StartPosition')] = segment
 
     def check_segments(self):
-        if not self.get_property('scale_seeking'):
+        if not self.get_property('scale-seeking'):
             segment_found = False
             if position := self.get_property('position'):
                 for ts, segment in self.media_segments.items():
@@ -92,7 +91,7 @@ class PlayerPage(Adw.NavigationPage):
         return True
 
     def update_position(self):
-        if not self.get_property('scale_seeking'):
+        if not self.get_property('scale-seeking'):
             self.set_property('position', self.get_property('player').get_property('position'))
         return True
 
@@ -106,12 +105,12 @@ class PlayerPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def adjustment_changed(self, adjustment):
-        if self.get_property('scale_seeking'):
+        if self.get_property('scale-seeking'):
             self.set_property('position', adjustment.get_value())
 
     @Gtk.Template.Callback()
     def scale_pressed(self, *args):
-        self.set_property('scale_seeking', True)
+        self.set_property('scale-seeking', True)
 
     @Gtk.Template.Callback()
     def scale_released(self, *args):

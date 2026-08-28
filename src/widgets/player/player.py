@@ -218,7 +218,6 @@ class Player(GObject.Object):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
 
         # MPRIS stuff
         self.event_adapter = PlayerEventAdapter(self)
@@ -234,7 +233,7 @@ class Player(GObject.Object):
         self.connect("notify::model", self.model_changed)
         self.set_property('paintable', self.get_property('gst').get_property('video-sink').get_property('paintable'))
         self.updating_volume = False
-        self.settings.connect("changed::volume", self.settings_volume_changed)
+        self.get_property('application').get_property('settings').connect("changed::volume", self.settings_volume_changed)
         self.gst.connect("notify::volume", self.gst_volume_changed)
         GLib.timeout_add(64, self.update_stream_progress)
 
@@ -245,6 +244,7 @@ class Player(GObject.Object):
                     self.get_property('gst').set_state(Gst.State.READY)
                     self.get_property('gst').set_property('uri', stream_url)
                     self.get_property('gst').set_state(Gst.State.PLAYING)
+
                     progress = model.get_property('Progress')
                     duration = model.get_property('Duration')
                     if 0 < progress < 1:
@@ -269,7 +269,7 @@ class Player(GObject.Object):
             self.updating_volume = True
             try:
                 value = gst.get_property('volume')
-                self.settings.set_double('volume', value ** (1/3) if value > 0 else 0.0)
+                self.get_property('application').get_property('settings').set_double('volume', value ** (1/3) if value > 0 else 0.0)
             finally:
                 self.updating_volume = False
 
@@ -287,7 +287,7 @@ class Player(GObject.Object):
             old_state, new_state, pending_state = message.parse_state_changed()
             if pending_state == Gst.State.VOID_PENDING and new_state != Gst.State.READY:
                 self.set_property('gst-state', new_state)
-                #self.emit_changes(self.mpris.player, changes=['Metadata', 'PlaybackStatus'])
+                self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def update_media_segments(self):
         self.get_property('media-segments').remove_all()
