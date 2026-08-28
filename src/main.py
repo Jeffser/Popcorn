@@ -38,14 +38,15 @@ class PopcornApplication(Adw.Application):
     """The main application singleton class."""
 
     player = GObject.Property(type=Widgets.Player)
+    settings = GObject.Property(type=Gio.Settings, default=Gio.Settings(schema_id="com.jeffser.Popcorn"))
 
     def __init__(self, version):
-        settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
         super().__init__(application_id='com.jeffser.Popcorn',
              flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
              resource_base_path='/com/jeffser/Popcorn')
         self.version = version
         self.set_property('player', Widgets.Player(application=self))
+        settings = self.get_property('settings')
         self.jellyfin = Jellyfin(
             user=settings.get_value('user').unpack(),
             url=settings.get_value('url').unpack(),
@@ -85,7 +86,7 @@ class PopcornApplication(Adw.Application):
 
     def try_login(self):
         if self.jellyfin.ping():
-            settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+            settings = self.get_property('settings')
             settings.set_string('url', self.jellyfin.get_property('url'))
             settings.set_string('user', self.jellyfin.get_property('user'))
             settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
