@@ -2,3 +2,4 @@
 
 from .login import LoginPage
 from .home import HomePage
+from .wrapbox_page import WrapboxPage

@@ -4,6 +4,7 @@ widgets = [
   '__init__.py',
   'login.py',
   'home.py',
+  'wrapbox_page.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

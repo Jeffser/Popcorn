@@ -547,3 +547,19 @@ class Jellyfin(GObject.Object):
                         pass
         return subtitle_models
 
+    def getModelsFromFolder(self, user_view_id:str, limit:int, startIndex:int) -> list:
+        # returns list of models (can be anything, check types on return)
+        model_list = []
+        items = self.makeRequest(
+            action='Users/{userId}/Items',
+            params={
+                'parentId': user_view_id,
+                'limit': limit,
+                'startIndex': startIndex,
+                'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
+            }
+        ).get('Items', [])
+        for item in items:
+            if model := self.__makeModel(item):
+                model_list.append(model)
+        return model_list

@@ -8,6 +8,7 @@ blueprints = files(
 
   'ui/pages/login.blp',
   'ui/pages/home.blp',
+  'ui/pages/wrapbox_page.blp',
 
   'ui/misc/user_view_button.blp',
 
