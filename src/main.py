@@ -62,9 +62,13 @@ class PopcornApplication(Adw.Application):
         if not self.main_window:
             self.main_window = PopcornWindow(application=self)
             threading.Thread(target=self.try_login, daemon=True).start()
-        if not self.pip_window:
-            self.pip_window = Widgets.PlayerWindow(application=self)
         self.main_window.present()
+
+    def open_pip_window(self):
+        if window := self.pip_window:
+            window.close()
+        self.pip_window = Widgets.PlayerWindow(application=self)
+        self.pip_window.present()
 
     def on_about_action(self, *args):
         about = Adw.AboutDialog(application_name='Popcorn',

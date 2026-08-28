@@ -40,7 +40,7 @@ class PlayerPage(Adw.NavigationPage):
         if widget.get_property(pspec.name) is None:
             if player := self.get_property('player'):
                 if app := player.get_property('application'):
-                    if not app.pip_window.get_visible():
+                    if not app.pip_window or not app.pip_window.get_visible():
                         player.get_property('gst').set_state(Gst.State.NULL)
 
     def media_segments_changed(self, widget, pspec=None):
@@ -111,7 +111,7 @@ class PlayerPage(Adw.NavigationPage):
             Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
             int(self.get_property('position') * Gst.SECOND)
         )
-        GLib.timeout_add(500, self.set_property, 'scale_seeking', False)
+        GLib.timeout_add(500, self.set_property, 'scale-seeking', False)
         GLib.timeout_add(500, lambda: self.update_end_time() and False)
 
     @Gtk.Template.Callback()
@@ -122,6 +122,8 @@ class PlayerPage(Adw.NavigationPage):
             self.get_root().unfullscreen()
 
     def toggle_controls(self, visible:bool):
+        if not visible and self.get_property('scale-seeking'):
+            return
         self.toolbarview.set_reveal_top_bars(visible)
         self.controls_revealer.set_reveal_child(visible)
         if root := self.get_root():
@@ -152,8 +154,7 @@ class PlayerPage(Adw.NavigationPage):
         if root := self.get_root():
             if app := root.get_application():
                 if navigationview := self.get_ancestor(Adw.NavigationView):
-                    if window := app.pip_window:
-                        window.present()
+                    app.open_pip_window()
                     navigationview.pop()
                     root.unfullscreen()
 

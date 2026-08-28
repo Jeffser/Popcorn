@@ -31,8 +31,9 @@ class PopcornWindow(Adw.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_close(self, window):
         if app := self.get_application():
-            if app.pip_window.get_visible():
-                app.pip_window.close()
+            if pip_win := app.pip_window:
+                if pip_win.get_visible():
+                    pip_win.close()
             app.get_property('player').get_property('gst').set_state(Gst.State.NULL)
             app.get_property('player').event_adapter.mpris.unpublish()
             app.quit()

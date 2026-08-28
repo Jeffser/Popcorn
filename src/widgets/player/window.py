@@ -1,6 +1,7 @@
 # window.py
 
 from gi.repository import Gtk, Adw, GLib, Gst
+from ..player import PlayerPage
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/player/window.ui')
 class PlayerWindow(Adw.ApplicationWindow):
@@ -10,5 +11,8 @@ class PlayerWindow(Adw.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on_close(self, window):
-        if player := self.player_page.get_property('player'):
-            player.get_property('gst').set_state(Gst.State.NULL)
+        if app := self.get_application():
+            app.main_window.root_navigationview.push(PlayerPage(
+                player=app.get_property('player')
+            ))
+

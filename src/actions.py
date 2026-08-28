@@ -15,7 +15,7 @@ def __show_page(app, page:Adw.NavigationPage):
 def __play_model(app, model):
     if player := app.get_property('player'):
         player.set_property('model', model)
-        if not app.pip_window.get_visible():
+        if not app.pip_window or not app.pip_window.get_visible():
             page = Widgets.PlayerPage(
                 player=player
             )
