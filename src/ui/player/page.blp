@@ -143,6 +143,45 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   hexpand: true;
                 }
 
+                Gtk.MenuButton volume_menubutton {
+                  styles [
+                    "flat"
+                  ]
+                  icon-name: bind $format_volume_icon_name(volume_adjustment.value);
+                  popover: Gtk.Popover {
+                    child: Gtk.Box {
+                      orientation: horizontal;
+
+                      Gtk.Button {
+                        styles [
+                          "flat"
+                        ]
+                        icon-name: "speaker-0-symbolic";
+                        tooltip-text: _("Mute");
+                        clicked => $mute_volume_clicked();
+                      }
+
+                      Gtk.Scale {
+                        adjustment: Gtk.Adjustment volume_adjustment {
+                          lower: 0;
+                          upper: 1;
+                          value: 0.25;
+                        };
+                        width-request: 150;
+                      }
+
+                      Gtk.Button {
+                        styles [
+                          "flat"
+                        ]
+                        icon-name: "speaker-3-symbolic";
+                        tooltip-text: _("Full Volume");
+                        clicked => $full_volume_clicked();
+                      }
+                    };
+                  };
+                }
+
                 Gtk.ToggleButton {
                   styles [
                     "flat"

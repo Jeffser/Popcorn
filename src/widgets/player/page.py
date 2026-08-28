@@ -1,6 +1,6 @@
 # page.py
 
-from gi.repository import Gtk, Adw, GLib, GObject, Gst
+from gi.repository import Gtk, Adw, GLib, GObject, Gst, Gio
 from ...integrations import models
 from .player import Player
 from ...constants import get_future_time, format_time_display, SECTION_NAMES
@@ -18,6 +18,8 @@ class PlayerPage(Adw.NavigationPage):
     toolbarview = Gtk.Template.Child()
     controls_revealer = Gtk.Template.Child()
     scale = Gtk.Template.Child()
+    volume_menubutton = Gtk.Template.Child()
+    volume_adjustment = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -29,6 +31,13 @@ class PlayerPage(Adw.NavigationPage):
         self.connect('notify::root', self.on_root_changed)
         self.connect('notify::player', self.on_player_changed)
         self.on_player_changed(self)
+        self.settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+        self.settings.bind(
+            "volume",
+            self.volume_adjustment,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        )
 
     def on_player_changed(self, widget, pspec=None):
         if player := widget.get_property('player'):
@@ -122,7 +131,7 @@ class PlayerPage(Adw.NavigationPage):
             self.get_root().unfullscreen()
 
     def toggle_controls(self, visible:bool):
-        if not visible and self.get_property('scale-seeking'):
+        if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active()):
             return
         self.toolbarview.set_reveal_top_bars(visible)
         self.controls_revealer.set_reveal_child(visible)
@@ -187,3 +196,20 @@ class PlayerPage(Adw.NavigationPage):
             if gst := player.get_property('gst'):
                 gst.set_state(Gst.State.PAUSED)
 
+    @Gtk.Template.Callback()
+    def format_volume_icon_name(self, obj, value:float) -> str:
+        if value == 0:
+            return "speaker-0-symbolic"
+        elif value < 0.33:
+            return "speaker-1-symbolic"
+        elif value < 0.66:
+            return "speaker-2-symbolic"
+        return "speaker-3-symbolic"
+
+    @Gtk.Template.Callback()
+    def mute_volume_clicked(self, button):
+        self.volume_adjustment.set_value(0)
+
+    @Gtk.Template.Callback()
+    def full_volume_clicked(self, button):
+        self.volume_adjustment.set_value(1)

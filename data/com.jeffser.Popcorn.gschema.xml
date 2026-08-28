@@ -10,6 +10,9 @@
     <key name="trust-server" type="b">
       <default>false</default>
     </key>
+	  <key name="volume" type="d">
+	    <default>0.25</default>
+	  </key>
 	</schema>
 </schemalist>
 

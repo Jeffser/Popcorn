@@ -218,6 +218,7 @@ class Player(GObject.Object):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
 
         # MPRIS stuff
         self.event_adapter = PlayerEventAdapter(self)
@@ -232,6 +233,9 @@ class Player(GObject.Object):
         self.bus.connect("message::state-changed", self.handle_message_state_changed)
         self.connect("notify::model", self.model_changed)
         self.set_property('paintable', self.get_property('gst').get_property('video-sink').get_property('paintable'))
+        self.updating_volume = False
+        self.settings.connect("changed::volume", self.settings_volume_changed)
+        self.gst.connect("notify::volume", self.gst_volume_changed)
         GLib.timeout_add(64, self.update_stream_progress)
 
     def model_changed(self, player, pspec):
@@ -250,6 +254,24 @@ class Player(GObject.Object):
                             int(duration * progress * Gst.SECOND)
                         ) and False)
                     threading.Thread(target=self.update_media_segments, daemon=True).start()
+
+    def settings_volume_changed(self, settings, key):
+        if not self.updating_volume:
+            self.updating_volume = True
+            try:
+                value = settings.get_value(key).unpack() ** 3
+                self.get_property('gst').set_property('volume', value)
+            finally:
+                self.updating_volume = False
+
+    def gst_volume_changed(self, gst, gp):
+        if not self.updating_volume:
+            self.updating_volume = True
+            try:
+                value = gst.get_property('volume')
+                self.settings.set_double('volume', value ** (1/3) if value > 0 else 0.0)
+            finally:
+                self.updating_volume = False
 
     def on_source_setup(self, playbin, source):
         try:
