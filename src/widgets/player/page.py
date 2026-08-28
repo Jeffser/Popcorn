@@ -30,14 +30,6 @@ class PlayerPage(Adw.NavigationPage):
         self.last_motion_coordinates = [0,0]
         self.connect('notify::root', self.on_root_changed)
         self.connect('notify::player', self.on_player_changed)
-        if player := self.get_property('player'):
-            if app := player.get_property('application'):
-                app.settings.bind(
-                    "volume",
-                    self.volume_adjustment,
-                    "value",
-                    Gio.SettingsBindFlags.DEFAULT
-                )
         self.on_player_changed(self)
 
     def on_player_changed(self, widget, pspec=None):
@@ -45,6 +37,13 @@ class PlayerPage(Adw.NavigationPage):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
             self.media_segments_changed(player.get_property('media-segments'))
             GLib.idle_add(self.update_end_time)
+            if app := player.get_property('application'):
+                app.settings.bind(
+                    "volume",
+                    self.volume_adjustment,
+                    "value",
+                    Gio.SettingsBindFlags.DEFAULT
+                )
 
     def on_root_changed(self, widget, pspec=None):
         if not widget.get_property('root'):
