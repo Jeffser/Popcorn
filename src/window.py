@@ -34,7 +34,7 @@ class PopcornWindow(Adw.ApplicationWindow):
             if pip_win := app.pip_window:
                 if pip_win.get_visible():
                     pip_win.close()
-            app.get_property('player').get_property('gst').set_state(Gst.State.NULL)
+            app.get_property('player').stop()
             app.get_property('player').event_adapter.mpris.unpublish()
             app.quit()
 

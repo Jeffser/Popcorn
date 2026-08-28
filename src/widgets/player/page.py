@@ -47,11 +47,11 @@ class PlayerPage(Adw.NavigationPage):
             GLib.idle_add(self.update_end_time)
 
     def on_root_changed(self, widget, pspec=None):
-        if not gwidget.get_property('root'):
+        if not widget.get_property('root'):
             if player := self.get_property('player'):
                 if app := player.get_property('application'):
                     if not app.pip_window or not app.pip_window.get_visible():
-                        player.get_property('gst').set_state(Gst.State.NULL)
+                        player.stop()
 
     def media_segments_changed(self, widget, pspec=None):
         self.scale.clear_marks()
@@ -214,3 +214,4 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def full_volume_clicked(self, button):
         self.volume_adjustment.set_value(1)
+

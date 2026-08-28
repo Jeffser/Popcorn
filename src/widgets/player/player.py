@@ -306,3 +306,8 @@ class Player(GObject.Object):
         self.set_property('position', position / Gst.SECOND)
         return True
 
+    def stop(self):
+        self.get_property('gst').set_state(Gst.State.NULL)
+        self.set_property('position', 0)
+        self.set_property('model', None)
+        self.get_property('media_segments').remove_all()
