@@ -1,5 +1,6 @@
 using Gtk 4.0;
 using Adw 1;
+using Gio 2.0;
 
 template $PopcornPlayerPage: Adw.NavigationPage {
   styles [
@@ -50,30 +51,54 @@ template $PopcornPlayerPage: Adw.NavigationPage {
           valign: end;
           hexpand: true;
 
-          Gtk.Revealer skip_segment_revealer {
-            transition-duration: 250;
-            transition-type: crossfade;
-            reveal-child: bind $format_to_bool(template.current-media-segment as <$PopcornMediaSegment> .Id);
-            halign: end;
-            child: Gtk.Button skip_segment_button {
+          Gtk.Overlay {
+            hexpand: true;
+
+            Gtk.Label {
               styles [
-                "suggested-action",
-                "pill"
+                "document",
+                "osd",
+                "rounded-corner",
+                "p10"
               ]
+              hexpand: true;
+              halign: center;
+              justify: center;
+              wrap: true;
+              visible: bind $format_subtitle_visible(template.current_subtitle_line);
+              label: bind $format_subtitle_label(template.current_subtitle_line);
               margin-bottom: 10;
-              clicked => $skip_segment_clicked();
-              tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-              child: Adw.ButtonContent {
-                label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-                icon-name: "media-seek-forward-symbolic";
+            }
+
+            [overlay]
+            Gtk.Revealer skip_segment_revealer {
+              transition-duration: 250;
+              transition-type: crossfade;
+              reveal-child: bind $format_to_bool(template.current-media-segment as <$PopcornMediaSegment> .Id);
+              halign: end;
+              valign: end;
+              child: Gtk.Button skip_segment_button {
+                styles [
+                  "suggested-action",
+                  "pill"
+                ]
+                margin-bottom: 10;
+                clicked => $skip_segment_clicked();
+                tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                child: Adw.ButtonContent {
+                  label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                  icon-name: "media-seek-forward-symbolic";
+                };
               };
-            };
+            }
           }
 
           Gtk.Revealer controls_revealer {
             transition-duration: 250;
             transition-type: slide_up;
             child: Adw.BreakpointBin {
+              width-request: 335;
+              height-request: 10;
               Adw.Breakpoint {
                 condition ("max-width: 360sp")
                 setters {
@@ -152,6 +177,32 @@ template $PopcornPlayerPage: Adw.NavigationPage {
 
                   Adw.Bin {
                     hexpand: true;
+                  }
+
+                  Gtk.MenuButton {
+                    styles [
+                      "flat"
+                    ]
+                    icon-name: "media-view-subtitles-symbolic";
+                    visible: bind $format_subtitle_button_visible(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
+                    popover: Gtk.Popover {
+                      styles [
+                        "p0"
+                      ]
+                      child: Gtk.ListView {
+                        styles [
+                          "rounded-corner"
+                        ]
+                        model: Gtk.SingleSelection subtitle_selector {
+                          model: bind template.player as <$PopcornPlayer> .available-subtitles;
+                          selected: bind template.player as <$PopcornPlayer> .selected-subtitle-index;
+                        };
+                        factory: Gtk.SignalListItemFactory {
+                          setup => $subtitle_setup();
+                          bind => $subtitle_bind();
+                        };
+                      };
+                    };
                   }
 
                   Gtk.MenuButton volume_menubutton {

@@ -61,7 +61,6 @@ class LoginPage(Adw.NavigationPage):
 
         def run(integration):
             data = integration.initiateQuickConnect()
-            print(data)
             dialog = Adw.AlertDialog(
                 heading=_("Quick Connect"),
                 body=data.get("Code") or _("Error getting code"),

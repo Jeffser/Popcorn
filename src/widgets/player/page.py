@@ -14,16 +14,19 @@ class PlayerPage(Adw.NavigationPage):
     scale_seeking = GObject.Property(type=bool, default=False)
     position = GObject.Property(type=float)
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
+    current_subtitle_line = GObject.Property(type=models.SubtitleLine) # If subtitle line should be shown
     media_segments = {} # start time : segment
     toolbarview = Gtk.Template.Child()
     controls_revealer = Gtk.Template.Child()
     scale = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
     volume_adjustment = Gtk.Template.Child()
+    subtitle_selector = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         GLib.timeout_add(1000, self.check_segments)
+        GLib.timeout_add(1000, self.check_subtitles)
         GLib.timeout_add(60000, self.update_end_time)
         GLib.timeout_add(64, self.update_position)
         self.hide_timeout_id = None
@@ -79,6 +82,16 @@ class PlayerPage(Adw.NavigationPage):
                 if current_media_segment := self.get_property('current-media-segment'):
                     current_type = current_media_segment.get_property('Type')
                     self.set_property('current-media-segment', models.MediaSegment(Type=current_type))
+        return True
+
+    def check_subtitles(self):
+        if selected_subtitle := self.subtitle_selector.get_selected_item():
+            if position := self.get_property('position'):
+                for line in list(selected_subtitle.get_property('Lines') or []):
+                    if line.get_property('StartPosition') < position < line.get_property('EndPosition'):
+                        self.set_property('current-subtitle-line', line)
+                        return True
+        self.set_property('current-subtitle-line', models.SubtitleLine())
         return True
 
     def reset(self):
@@ -226,3 +239,31 @@ class PlayerPage(Adw.NavigationPage):
     def full_volume_clicked(self, button):
         self.volume_adjustment.set_value(1)
 
+    @Gtk.Template.Callback()
+    def subtitle_setup(self, factory, list_item):
+        label = Gtk.Label(
+            xalign=0.0
+        )
+        list_item.set_child(label)
+
+    @Gtk.Template.Callback()
+    def subtitle_bind(self, factory, list_item):
+        model = list_item.get_item()
+        label = list_item.get_child()
+        label.set_label(model.get_property('Title'))
+
+    @Gtk.Template.Callback()
+    def format_subtitle_button_visible(self, obj, n_subtitles):
+        return n_subtitles > 1
+
+    @Gtk.Template.Callback()
+    def format_subtitle_visible(self, obj, subtitle_line) -> bool:
+        if subtitle_line:
+            return bool(subtitle_line.get_property('Text'))
+        return False
+
+    @Gtk.Template.Callback()
+    def format_subtitle_label(self, obj, subtitle_line) -> str:
+        if subtitle_line:
+            return subtitle_line.get_property('Text')
+        return ''

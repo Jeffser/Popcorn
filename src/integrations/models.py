@@ -96,3 +96,15 @@ class MediaSegment(BasicModel):
     StartPosition = GObject.Property(type=float) # Seconds with decimals
     EndPosition = GObject.Property(type=float) # Seconds with decimals
 
+class SubtitleLine(BasicModel):
+    __gtype_name__ = 'PopcornSubtitleLine'
+
+    StartPosition = GObject.Property(type=float) # Seconds with decimals
+    EndPosition = GObject.Property(type=float) # Seconds with decimals
+    Text = GObject.Property(type=str)
+
+class Subtitle(BasicModel):
+    __gtype_name__ = 'PopcornSubtitle'
+
+    Title = GObject.Property(type=str)
+    Lines = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=SubtitleLine))

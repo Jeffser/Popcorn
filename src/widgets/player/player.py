@@ -216,6 +216,9 @@ class Player(GObject.Object):
     paintable = GObject.Property(type=Gdk.Paintable)
     position = GObject.Property(type=float)
     media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
+    current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
+    available_subtitles = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.Subtitle))
+    selected_subtitle_index = GObject.Property(type=int, default=0)
     gst_state = GObject.Property(type=Gst.State, default=Gst.State.NULL)
 
     def __init__(self, **kwargs):
@@ -257,6 +260,21 @@ class Player(GObject.Object):
                         ) and False)
                     threading.Thread(target=self.update_media_segments, daemon=True).start()
                     threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
+                    threading.Thread(target=self.update_subtitles, daemon=True).start()
+
+    def update_subtitles(self):
+        self.get_property('available-subtitles').remove_all()
+        if model := self.get_property('model'):
+            if app := self.get_property('application'):
+                if jellyfin := app.jellyfin:
+                    if subtitles := jellyfin.getSubtitles(model.get_property('Id')):
+                        self.get_property('available-subtitles').splice(
+                            0,
+                            0,
+                            [models.Subtitle(Title=_("Off"), Lines=[]), *subtitles]
+                        )
+                        if len(subtitles) > 0:
+                            GLib.timeout_add(1000, self.set_property, 'selected-subtitle-index', 1)
 
     def get_adjacent_episodes(self):
         if jellyfin := self.get_property('application').jellyfin:

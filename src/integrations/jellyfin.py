@@ -2,6 +2,7 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk
 from . import models, secret
+from ..constants import subtitle_timestamp_to_position
 import requests, io, urllib3, platform
 
 # Just so that the logs don't get cluttered with warnings if trust-server = True
@@ -48,7 +49,7 @@ class Jellyfin(GObject.Object):
             "Accept": "application/json"
         }
         try:
-            if mode == 'GET':
+            if mode in ('GET', 'RAWGET'):
                 response = requests.get(
                     self.getUrl(action, **action_keys),
                     params=params,
@@ -73,7 +74,10 @@ class Jellyfin(GObject.Object):
                     verify=not self.get_property('trustServer')
                 )
             if response.status_code in (200, 201):
-                return response.json()
+                if mode == 'RAWGET':
+                    return response
+                else:
+                    return response.json()
             elif response.status_code == 204:
                 return {'state': 'ok'}
         except Exception as e:
@@ -501,4 +505,45 @@ class Jellyfin(GObject.Object):
                             next_model = self.__makeModel(items[i+1])
                         break
         return previous_model, next_model
+
+    def getSubtitles(self, playable_id:str) -> list:
+        # Return list of subtitle models
+        subtitle_models = []
+        items = self.makeRequest(
+            action='Users/{userId}/Items/{item_id}',
+            action_keys={
+                'item_id': playable_id
+            }
+        ).get("MediaSources", [])
+        for item in items:
+            for stream in item.get("MediaStreams", []):
+                if stream.get("Type") == "Subtitle":
+                    try:
+                        subtitle_model = models.Subtitle(
+                            Title=stream.get('DisplayTitle')
+                        )
+                        result = self.makeRequest(
+                            action='Videos/{item_id}/{media_source_id}/Subtitles/{index}/Stream.vtt',
+                            action_keys={
+                                'item_id': playable_id,
+                                'media_source_id': item.get("Id"),
+                                'index': stream.get("Index")
+                            },
+                            mode='RAWGET'
+                        ).content.decode('utf8')
+                        raw_lines = [line for line in str(result).split('\n\n')[1:] if line]
+                        for line in raw_lines:
+                            sublines = line.split('\n')
+                            timestamp = sublines.pop(0)
+                            start_timestamp, end_timestamp = timestamp.split(' --> ')[:2]
+                            line_model = models.SubtitleLine(
+                                StartPosition=subtitle_timestamp_to_position(start_timestamp),
+                                EndPosition=subtitle_timestamp_to_position(end_timestamp),
+                                Text='\n'.join(sublines)
+                            )
+                            subtitle_model.get_property('Lines').append(line_model)
+                        subtitle_models.append(subtitle_model)
+                    except:
+                        pass
+        return subtitle_models
 
