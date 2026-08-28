@@ -103,7 +103,7 @@ class PlayerPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def format_time_remaining(self, obj, position:float, duration:float) -> str:
-        return format_time_display(duration-position, duration > 3600)
+        return '-{}'.format(format_time_display(duration-position, duration > 3600))
 
     @Gtk.Template.Callback()
     def adjustment_changed(self, adjustment):
