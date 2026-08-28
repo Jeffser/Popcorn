@@ -93,6 +93,8 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   ]
                   tooltip-text: _("Previous");
                   icon-name: "media-skip-backward-symbolic";
+                  sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .previous_model);
+                  clicked => $previous_clicked();
                 }
 
                 Gtk.Stack {
@@ -131,6 +133,8 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   ]
                   tooltip-text: _("Next");
                   icon-name: "media-skip-forward-symbolic";
+                  sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .next_model);
+                  clicked => $next_clicked();
                 }
 
                 Gtk.Label {

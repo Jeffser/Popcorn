@@ -211,6 +211,8 @@ class Player(GObject.Object):
     application = GObject.Property(type=Adw.Application)
     gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin", "player"))
     model = GObject.Property(type=models.Playable)
+    previous_model = GObject.Property(type=models.Playable)
+    next_model = GObject.Property(type=models.Playable)
     paintable = GObject.Property(type=Gdk.Paintable)
     position = GObject.Property(type=float)
     media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
@@ -227,7 +229,7 @@ class Player(GObject.Object):
         self.get_property('gst').connect("source-setup", self.on_source_setup)
         self.bus = self.get_property('gst').get_bus()
         self.bus.add_signal_watch()
-        self.bus.connect("message::eos", print) # Video ended
+        self.bus.connect("message::eos", self.stream_ended)
         self.bus.connect("message::error", lambda bus, msg: logger.error(msg.parse_error()[0]))
         self.bus.connect("message::state-changed", self.handle_message_state_changed)
         self.connect("notify::model", self.model_changed)
@@ -254,6 +256,17 @@ class Player(GObject.Object):
                             int(duration * progress * Gst.SECOND)
                         ) and False)
                     threading.Thread(target=self.update_media_segments, daemon=True).start()
+                    threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
+
+    def get_adjacent_episodes(self):
+        if jellyfin := self.get_property('application').jellyfin:
+            if current_model := self.get_property('model'):
+                previous_model, next_model = jellyfin.getAdjacentEpisodes(current_model.get_property('Id'))
+                self.set_property('previous-model', previous_model)
+                self.set_property('next-model', next_model)
+                return
+        self.set_property('previous-model', None)
+        self.set_property('next-model', None)
 
     def settings_volume_changed(self, settings, key):
         if not self.updating_volume:
@@ -310,4 +323,8 @@ class Player(GObject.Object):
         self.get_property('gst').set_state(Gst.State.NULL)
         self.set_property('position', 0)
         self.set_property('model', None)
-        self.get_property('media_segments').remove_all()
+        self.get_property('media-segments').remove_all()
+
+    def stream_ended(self, bus, message):
+        if message.src == self.get_property('gst'):
+            self.set_property('gst-state', Gst.State.NULL)

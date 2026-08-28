@@ -473,3 +473,29 @@ class Jellyfin(GObject.Object):
                 ))
         return media_segment_models
 
+    def getAdjacentEpisodes(self, episode_id:str) -> tuple:
+        # returns: previous episode model, next episode model
+        previous_model = None
+        next_model = None
+        if model := self.loaded_models.get(episode_id):
+            if isinstance(model, models.Movie):
+                return None, None
+            if series_id := model.get_property('SeriesId'):
+                items = self.makeRequest(
+                    action='Shows/{series_id}/Episodes',
+                    action_keys={
+                        'series_id': series_id
+                    },
+                    params={
+                        'userId': self.get_property('userId')
+                    }
+                ).get('Items', [])
+                for i, item in enumerate(items):
+                    if item.get('Id') == episode_id:
+                        if i-1 >= 0:
+                            previous_model = self.__makeModel(items[i-1])
+                        if i+1 < len(items):
+                            next_model = self.__makeModel(items[i+1])
+                        break
+        return previous_model, next_model
+

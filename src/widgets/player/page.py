@@ -198,6 +198,18 @@ class PlayerPage(Adw.NavigationPage):
                 gst.set_state(Gst.State.PAUSED)
 
     @Gtk.Template.Callback()
+    def previous_clicked(self, button):
+        if player := self.get_property('player'):
+            if model := player.get_property('previous-model'):
+                self.get_property('player').set_property('model', model)
+
+    @Gtk.Template.Callback()
+    def next_clicked(self, button):
+        if player := self.get_property('player'):
+            if model := player.get_property('next-model'):
+                self.get_property('player').set_property('model', model)
+
+    @Gtk.Template.Callback()
     def format_volume_icon_name(self, obj, value:float) -> str:
         if value == 0:
             return "speaker-0-symbolic"
