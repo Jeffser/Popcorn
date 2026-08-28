@@ -36,8 +36,11 @@ class Jellyfin(GObject.Object):
         return '{}/{}'.format(self.get_property('url').strip('/'), action)
 
     def getStreamUrl(self, model_id:str) -> str:
-        return self.getUrl('Videos/{model_id}/stream?static=true&api_key={api_key}', model_id=model_id, api_key=self.get_property('accessToken'))
-        #return self.getUrl('Videos/{model_id}/master.m3u8?api_key={api_key}', model_id=model_id, api_key=self.get_property('accessToken'))
+        return self.getUrl(
+            'Videos/{model_id}/stream?static=true&api_key={api_key}',
+            model_id=model_id,
+            api_key=self.get_property('accessToken')
+        )
 
     def makeRequest(self, action:str, json:dict={}, params:dict={}, mode:str="GET", action_keys:dict={}) -> dict:
         headers = {
