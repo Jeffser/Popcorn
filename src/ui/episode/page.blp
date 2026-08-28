@@ -68,7 +68,8 @@ template $PopcornEpisodePage: Adw.NavigationPage {
                       name: "logo";
                       child: Gtk.Picture logo_picture {
                         styles [
-                          "logo"
+                          "logo",
+                          "rounded-corner"
                         ]
                         paintable: bind template.model as <$PopcornEpisode> .PrimaryPaintable;
                         halign: center;

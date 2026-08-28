@@ -265,5 +265,5 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def format_subtitle_label(self, obj, subtitle_line) -> str:
         if subtitle_line:
-            return subtitle_line.get_property('Text')
+            return subtitle_line.get_property('Text').strip()
         return ''

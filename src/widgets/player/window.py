@@ -15,4 +15,4 @@ class PlayerWindow(Adw.ApplicationWindow):
             app.main_window.root_navigationview.push(PlayerPage(
                 player=app.get_property('player')
             ))
-
+            app.main_window.present()
