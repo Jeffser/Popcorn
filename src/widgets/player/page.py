@@ -21,7 +21,6 @@ class PlayerPage(Adw.NavigationPage):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.update_end_time()
         GLib.timeout_add(1000, self.check_segments)
         GLib.timeout_add(60000, self.update_end_time)
         GLib.timeout_add(64, self.update_position)
@@ -35,6 +34,7 @@ class PlayerPage(Adw.NavigationPage):
         if player := widget.get_property('player'):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
             self.media_segments_changed(player.get_property('media-segments'))
+            GLib.idle_add(self.update_end_time)
 
     def on_root_changed(self, widget, pspec):
         if widget.get_property(pspec.name) is None:
