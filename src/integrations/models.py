@@ -13,7 +13,10 @@ class BasicModel(GObject.Object):
         for prop in self.list_properties():
             if prop.get_name() in kwargs:
                 if self.get_property(prop.get_name()) != kwargs.get(prop.get_name()):
-                    self.set_property(prop.get_name(), kwargs.get(prop.get_name()))
+                    try:
+                        self.set_property(prop.get_name(), kwargs.get(prop.get_name()))
+                    except:
+                        self.set_property(prop.get_name(), prop.get_default_value())
             elif self.get_property(prop.get_name()) is None:
                 self.set_property(prop.get_name(), prop.get_default_value())
 

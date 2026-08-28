@@ -47,9 +47,11 @@ class PlayerPage(Adw.NavigationPage):
             GLib.idle_add(self.update_end_time)
 
     def on_root_changed(self, widget, pspec=None):
-        if player := self.get_property('player'):
-            if not widget.get_property('root'):
-                player.get_property('gst').set_state(Gst.State.NULL)
+        if not gwidget.get_property('root'):
+            if player := self.get_property('player'):
+                if app := player.get_property('application'):
+                    if not app.pip_window or not app.pip_window.get_visible():
+                        player.get_property('gst').set_state(Gst.State.NULL)
 
     def media_segments_changed(self, widget, pspec=None):
         self.scale.clear_marks()
