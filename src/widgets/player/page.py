@@ -28,7 +28,11 @@ class PlayerPage(Adw.NavigationPage):
         self.hide_timeout_id = None
         self.last_motion_coordinates = [0,0]
         self.connect('notify::root', self.on_root_changed)
-        if player := self.get_property('player'):
+        self.connect('notify::player', self.on_player_changed)
+        self.on_player_changed(self)
+
+    def on_player_changed(self, widget, pspec=None):
+        if player := widget.get_property('player'):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
             self.media_segments_changed(player.get_property('media-segments'))
 
@@ -54,17 +58,18 @@ class PlayerPage(Adw.NavigationPage):
             self.media_segments[segment.get_property('StartPosition')] = segment
 
     def check_segments(self):
-        segment_found = False
-        if position := self.get_property('position'):
-            for ts, segment in self.media_segments.items():
-                if ts <= position <= ts + 10:
-                    self.set_property('current-media-segment', segment)
-                    segment_found = True
-                    break
-        if not segment_found:
-            if current_media_segment := self.get_property('current-media-segment'):
-                current_type = current_media_segment.get_property('Type')
-                self.set_property('current-media-segment', models.MediaSegment(Type=current_type))
+        if not self.get_property('scale_seeking'):
+            segment_found = False
+            if position := self.get_property('position'):
+                for ts, segment in self.media_segments.items():
+                    if ts <= position <= ts + 10:
+                        self.set_property('current-media-segment', segment)
+                        segment_found = True
+                        break
+            if not segment_found:
+                if current_media_segment := self.get_property('current-media-segment'):
+                    current_type = current_media_segment.get_property('Type')
+                    self.set_property('current-media-segment', models.MediaSegment(Type=current_type))
         return True
 
     def reset(self):
@@ -164,3 +169,20 @@ class PlayerPage(Adw.NavigationPage):
                 Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
                 int(segment.get_property('EndPosition') * Gst.SECOND)
             )
+
+    @Gtk.Template.Callback()
+    def format_visible_state_button(self, obj, state) -> str:
+        return 'pause' if state == Gst.State.PLAYING else 'play'
+
+    @Gtk.Template.Callback()
+    def play_clicked(self, button):
+        if player := self.get_property('player'):
+            if gst := player.get_property('gst'):
+                gst.set_state(Gst.State.PLAYING)
+
+    @Gtk.Template.Callback()
+    def pause_clicked(self, button):
+        if player := self.get_property('player'):
+            if gst := player.get_property('gst'):
+                gst.set_state(Gst.State.PAUSED)
+

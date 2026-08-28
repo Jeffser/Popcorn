@@ -214,6 +214,7 @@ class Player(GObject.Object):
     paintable = GObject.Property(type=Gdk.Paintable)
     position = GObject.Property(type=float)
     media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
+    gst_state = GObject.Property(type=Gst.State, default=Gst.State.NULL)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -225,9 +226,10 @@ class Player(GObject.Object):
         self.get_property('gst').set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
         self.get_property('gst').connect("source-setup", self.on_source_setup)
         self.bus = self.get_property('gst').get_bus()
+        self.bus.add_signal_watch()
         self.bus.connect("message::eos", print) # Video ended
         self.bus.connect("message::error", lambda bus, msg: logger.error(msg.parse_error()[0]))
-        self.bus.connect("message::state-changed", print)
+        self.bus.connect("message::state-changed", self.handle_message_state_changed)
         self.connect("notify::model", self.model_changed)
         self.set_property('paintable', self.get_property('gst').get_property('video-sink').get_property('paintable'))
         GLib.timeout_add(64, self.update_stream_progress)
@@ -257,6 +259,13 @@ class Player(GObject.Object):
                         source.set_property("ssl-strict", not jellyfin.get_property('trustServer'))
         except:
             pass
+
+    def handle_message_state_changed(self, bus, message):
+        if message.src == self.get_property('gst'):
+            old_state, new_state, pending_state = message.parse_state_changed()
+            if pending_state == Gst.State.VOID_PENDING and new_state != Gst.State.READY:
+                self.set_property('gst-state', new_state)
+                #self.emit_changes(self.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def update_media_segments(self):
         self.get_property('media-segments').remove_all()

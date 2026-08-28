@@ -44,9 +44,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
         maximum-size: 1200;
         child: Gtk.Box {
           orientation: vertical;
-          spacing: 10;
           margin-top: 10;
-          margin-bottom: 10;
           margin-start: 10;
           margin-end: 10;
           valign: end;
@@ -62,6 +60,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                 "suggested-action",
                 "pill"
               ]
+              margin-bottom: 10;
               clicked => $skip_segment_clicked();
               tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
               child: Adw.ButtonContent {
@@ -81,6 +80,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
               ]
               orientation: vertical;
               spacing: 5;
+              margin-bottom: 10;
 
               Gtk.Box {
                 orientation: horizontal;
@@ -95,13 +95,33 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   icon-name: "media-skip-backward-symbolic";
                 }
 
-                Gtk.Button {
-                  styles [
-                    "circular",
-                    "flat"
-                  ]
-                  tooltip-text: _("Pause");
-                  icon-name: "media-playback-pause-symbolic";
+                Gtk.Stack {
+                  transition-type: crossfade;
+                  visible-child-name: bind $format_visible_state_button(template.player as <$PopcornPlayer> .gst-state);
+                  Gtk.StackPage {
+                    name: "pause";
+                    child: Gtk.Button {
+                      styles [
+                        "circular",
+                        "flat"
+                      ]
+                      tooltip-text: _("Pause");
+                      icon-name: "media-playback-pause-symbolic";
+                      clicked => $pause_clicked();
+                    };
+                  }
+                  Gtk.StackPage {
+                    name: "play";
+                    child: Gtk.Button {
+                      styles [
+                        "circular",
+                        "flat"
+                      ]
+                      tooltip-text: _("Play");
+                      icon-name: "media-playback-start-symbolic";
+                      clicked => $play_clicked();
+                    };
+                  }
                 }
 
                 Gtk.Button {
@@ -116,6 +136,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                 Gtk.Label {
                   label: bind template.end-time;
                   xalign: 0;
+                  ellipsize: middle;
                 }
 
                 Adw.Bin {
