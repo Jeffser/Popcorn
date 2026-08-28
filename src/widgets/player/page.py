@@ -3,7 +3,7 @@
 from gi.repository import Gtk, Adw, GLib, GObject, Gst
 from ...integrations import models
 from .player import Player
-from ...constants import get_future_time, format_time_display
+from ...constants import get_future_time, format_time_display, SECTION_NAMES
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/player/page.ui')
 class PlayerPage(Adw.NavigationPage):
@@ -13,17 +13,24 @@ class PlayerPage(Adw.NavigationPage):
     end_time = GObject.Property(type=str)
     scale_seeking = GObject.Property(type=bool, default=False)
     position = GObject.Property(type=float)
+    current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
+    media_segments = {} # start time : segment
     toolbarview = Gtk.Template.Child()
     controls_revealer = Gtk.Template.Child()
+    scale = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.update_end_time()
+        GLib.timeout_add(1000, self.check_segments)
         GLib.timeout_add(60000, self.update_end_time)
         GLib.timeout_add(64, self.update_position)
         self.hide_timeout_id = None
         self.last_motion_coordinates = [0,0]
         self.connect('notify::root', self.on_root_changed)
+        if player := self.get_property('player'):
+            player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
+            self.media_segments_changed(player.get_property('media-segments'))
 
     def on_root_changed(self, widget, pspec):
         if widget.get_property(pspec.name) is None:
@@ -31,6 +38,34 @@ class PlayerPage(Adw.NavigationPage):
                 if app := player.get_property('application'):
                     if not app.pip_window.get_visible():
                         player.get_property('gst').set_state(Gst.State.NULL)
+
+    def media_segments_changed(self, widget, pspec=None):
+        self.scale.clear_marks()
+        self.media_segments = {}
+        for segment in list(widget):
+            self.scale.add_mark(
+                segment.get_property('StartPosition'),
+                Gtk.PositionType.BOTTOM
+            )
+            self.scale.add_mark(
+                segment.get_property('EndPosition'),
+                Gtk.PositionType.BOTTOM
+            )
+            self.media_segments[segment.get_property('StartPosition')] = segment
+
+    def check_segments(self):
+        segment_found = False
+        if position := self.get_property('position'):
+            for ts, segment in self.media_segments.items():
+                if ts <= position <= ts + 10:
+                    self.set_property('current-media-segment', segment)
+                    segment_found = True
+                    break
+        if not segment_found:
+            if current_media_segment := self.get_property('current-media-segment'):
+                current_type = current_media_segment.get_property('Type')
+                self.set_property('current-media-segment', models.MediaSegment(Type=current_type))
+        return True
 
     def reset(self):
         pass
@@ -90,6 +125,10 @@ class PlayerPage(Adw.NavigationPage):
             self.hide_timeout_id = None
 
     @Gtk.Template.Callback()
+    def format_to_bool(self, obj, value) -> bool:
+        return bool(value)
+
+    @Gtk.Template.Callback()
     def on_pointer_motion(self, controller, x, y):
         if self.last_motion_coordinates != [x, y]:
             self.last_motion_coordinates = [x, y]
@@ -113,4 +152,15 @@ class PlayerPage(Adw.NavigationPage):
                     navigationview.pop()
                     root.unfullscreen()
 
+    @Gtk.Template.Callback()
+    def format_segment_skipper_label(self, obj, segment_type:str) -> str:
+        return _("Skip {}").format(SECTION_NAMES.get(segment_type) or _("Segment"))
 
+    @Gtk.Template.Callback()
+    def skip_segment_clicked(self, button):
+        if segment := self.get_property('current-media-segment'):
+            self.get_property('player').get_property('gst').seek_simple(
+                Gst.Format.TIME,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                int(segment.get_property('EndPosition') * Gst.SECOND)
+            )

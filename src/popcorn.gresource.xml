@@ -19,6 +19,7 @@
     <file alias="icons/scalable/status/media-skip-forward-symbolic.svg">icons/media-skip-forward-symbolic.svg</file>
     <file alias="icons/scalable/status/view-fullscreen-symbolic.svg">icons/view-fullscreen-symbolic.svg</file>
     <file alias="icons/scalable/status/pip-in-symbolic.svg">icons/pip-in-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-seek-forward-symbolic.svg">icons/media-seek-forward-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>

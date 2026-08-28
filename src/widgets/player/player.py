@@ -213,6 +213,7 @@ class Player(GObject.Object):
     model = GObject.Property(type=models.Playable)
     paintable = GObject.Property(type=Gdk.Paintable)
     position = GObject.Property(type=float)
+    media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -246,6 +247,7 @@ class Player(GObject.Object):
                             Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
                             int(duration * progress * Gst.SECOND)
                         ) and False)
+                    threading.Thread(target=self.update_media_segments, daemon=True).start()
 
     def on_source_setup(self, playbin, source):
         try:
@@ -255,6 +257,18 @@ class Player(GObject.Object):
                         source.set_property("ssl-strict", not jellyfin.get_property('trustServer'))
         except:
             pass
+
+    def update_media_segments(self):
+        self.get_property('media-segments').remove_all()
+        if model := self.get_property('model'):
+            if app := self.get_property('application'):
+                if jellyfin := app.jellyfin:
+                    if media_segments := jellyfin.getMediaSegments(model.get_property('Id')):
+                        self.get_property('media-segments').splice(
+                            0,
+                            0,
+                            media_segments
+                        )
 
     def update_stream_progress(self):
         success, position = self.get_property('gst').query_position(Gst.Format.TIME)

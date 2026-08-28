@@ -84,3 +84,12 @@ class Movie(Playable):
     LogoPaintable = GObject.Property(type=Gdk.Paintable)
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
 
+class MediaSegment(BasicModel):
+    __gtype_name__ = 'PopcornMediaSegment'
+
+    Id = GObject.Property(type=str)
+    ItemId = GObject.Property(type=str)
+    Type = GObject.Property(type=str)
+    StartPosition = GObject.Property(type=float) # Seconds with decimals
+    EndPosition = GObject.Property(type=float) # Seconds with decimals
+

@@ -450,3 +450,26 @@ class Jellyfin(GObject.Object):
         ).get('Items', [])
         if len(items) > 0:
             return self.__makeModel(items[0])
+
+    def getMediaSegments(self, model_id:str) -> list:
+        # Returns list of MediaSegment models
+        media_segment_models = []
+        items = self.makeRequest(
+            action='MediaSegments/{model_id}',
+            action_keys={
+                'model_id': model_id
+            }
+        ).get('Items', [])
+        for item in items:
+            start_position = round((item.get('StartTicks') or 0) / 10_000_000, 2)
+            end_position = round((item.get('EndTicks') or 0) / 10_000_000, 2)
+            if start_position and end_position:
+                media_segment_models.append(models.MediaSegment(
+                    Id=item.get('Id'),
+                    ItemId=item.get('ItemId'),
+                    Type=item.get('Type'),
+                    StartPosition=start_position,
+                    EndPosition=end_position,
+                ))
+        return media_segment_models
+

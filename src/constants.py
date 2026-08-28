@@ -24,6 +24,11 @@ USERVIEWS_ICONS = {
     'tvshows': 'tv-symbolic'
 }
 
+SECTION_NAMES = { # For translations
+    'Intro': _("Intro"),
+    'Outro': _("Outro")
+}
+
 def format_duration_display(seconds:float) -> str:
     if seconds < 60:
         return f"{round(seconds)}s"
