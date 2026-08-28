@@ -95,3 +95,7 @@ button.active_appearance_button:disabled {
   border-radius: 24px;
   padding: 12px;
 }
+
+.picture-in-picture headerbar {
+	background: none;
+}

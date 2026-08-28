@@ -3,16 +3,17 @@ using Adw 1;
 
 template $PopcornPictureInPictureWindow: Adw.ApplicationWindow {
   title: "Picture-in-Picture";
+  styles [
+    "picture-in-picture"
+  ]
   width-request: 320;
   height-request: 180;
   default-width: 640;
   default-height: 360;
   close-request => $on_close();
   content: Gtk.WindowHandle {
-    child: Adw.NavigationView {
-      $PopcornPlayerPage player_page {
-        player: bind template.application as <$PopcornApplication> .player;
-      }
+    child: $PopcornPlayerPage player_page {
+      player: bind template.application as <$PopcornApplication> .player;
     };
   };
 }
