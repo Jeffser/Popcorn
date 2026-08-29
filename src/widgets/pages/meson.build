@@ -4,6 +4,7 @@ widgets = [
   '__init__.py',
   'login.py',
   'home.py',
+  'search.py',
   'wrapbox_page.py',
 ]
 

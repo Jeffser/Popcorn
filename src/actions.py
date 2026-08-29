@@ -94,3 +94,12 @@ def show_user_view(app, user_view_id:str):
                 title=model.get_property('Name')
             )
             __show_page(app, page)
+
+def show_search_page(app):
+    if main_window := app.main_window:
+        if current_page := main_window.root_navigationview.get_visible_page():
+            if current_page.get_tag() == 'search':
+                main_window.set_focus(current_page.search_entry)
+            else:
+                page = Widgets.SearchPage()
+                __show_page(app, page)

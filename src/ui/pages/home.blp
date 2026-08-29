@@ -11,6 +11,7 @@ template $PopcornHomePage: Adw.NavigationPage {
     Adw.HeaderBar {
       show-title: false;
 
+      [start]
       Gtk.MenuButton {
         styles [
           "flat"
@@ -20,6 +21,16 @@ template $PopcornHomePage: Adw.NavigationPage {
         popover: Gtk.PopoverMenu {
           menu-model: primary_menu;
         };
+      }
+
+      [start]
+      Gtk.Button {
+        styles [
+          "flat"
+        ]
+        action-name: "app.show_search_page";
+        icon-name: "system-search-symbolic";
+        tooltip-text: _("Search");
       }
     }
 

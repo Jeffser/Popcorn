@@ -1,0 +1,73 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornSearchPage: Adw.NavigationPage {
+  title: _("Search");
+  tag: "search";
+  child: Adw.ToolbarView {
+      [top]
+      Adw.HeaderBar {
+        title-widget: Gtk.SearchEntry search_entry {
+          placeholder-text: _("Search");
+          hexpand: true;
+          search-changed => $search_changed();
+          search-delay: 300;
+        };
+      }
+      content: Gtk.Stack main_stack {
+        transition-type: crossfade;
+        Gtk.StackPage {
+          name: "empty";
+          child: Adw.StatusPage {
+            title: _("Search");
+            description: _("Begin typing to search");
+            icon-name: "system-search-symbolic";
+          };
+        }
+        Gtk.StackPage {
+          name: "loading";
+          child: Adw.Spinner {};
+        }
+        Gtk.StackPage {
+          name: "no-results";
+          child: Adw.StatusPage {
+            title: _("No Results");
+            icon-name: "sad-computer-symbolic";
+          };
+        }
+        Gtk.StackPage {
+          name: "results";
+          child: Gtk.ScrolledWindow {
+            vexpand: true;
+            hexpand: true;
+            hscrollbar-policy: never;
+            child: Adw.Clamp {
+              maximum-size: 2000;
+              tightening-threshold: 800;
+              child: Gtk.Box {
+                styles [
+                  "p10"
+                ]
+                orientation: vertical;
+                spacing: 10;
+                $PopcornCarousel series_container {
+                  title: _("Series");
+                  icon-name: "tv-symbolic";
+                }
+
+                $PopcornCarousel movie_container {
+                  title: _("Movies");
+                  icon-name: "video-clip-symbolic";
+                }
+
+                $PopcornCarousel episode_container {
+                  title: _("Episodes");
+                  icon-name: "media-playback-start-symbolic";
+                }
+              };
+            };
+          };
+        }
+      };
+  };
+}

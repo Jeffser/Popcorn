@@ -1,6 +1,6 @@
 # __init__.py
 
-from .pages import LoginPage, HomePage, WrapboxPage
+from .pages import LoginPage, HomePage, WrapboxPage, SearchPage
 from .misc import UserViewButton, OverviewCarousel
 from .series import SeriesOverview, SeriesButton, SeriesPage
 from .containers import Carousel, Wrapbox

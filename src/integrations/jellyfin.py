@@ -563,3 +563,21 @@ class Jellyfin(GObject.Object):
             if model := self.__makeModel(item):
                 model_list.append(model)
         return model_list
+
+    def search(self, searchTerm:str):
+        # returns list of models (can be episodes, movies and series)
+        model_list = []
+        items = self.makeRequest(
+            action="Items",
+            params={
+                "searchTerm": searchTerm,
+                "includeItemTypes": "Episode,Series,Movie",
+                "limit": 20,
+                "recursive": "true",
+                "fields": "Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount"
+            }
+        ).get('Items', [])
+        for item in items:
+            if model := self.__makeModel(item):
+                model_list.append(model)
+        return model_list
