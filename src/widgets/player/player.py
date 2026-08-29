@@ -346,3 +346,4 @@ class Player(GObject.Object):
     def stream_ended(self, bus, message):
         if message.src == self.get_property('gst'):
             self.set_property('gst-state', Gst.State.NULL)
+            self.set_property('model', self.get_property('next-model'))
