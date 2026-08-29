@@ -11,6 +11,7 @@ blueprints = files(
   'ui/pages/wrapbox_page.blp',
 
   'ui/misc/user_view_button.blp',
+  'ui/misc/overview_carousel.blp',
 
   'ui/series/overview.blp',
   'ui/series/button.blp',

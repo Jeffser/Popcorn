@@ -34,6 +34,7 @@
     <file alias="pages/wrapbox_page.ui">ui/pages/wrapbox_page.ui</file>
 
     <file alias="misc/user_view_button.ui">ui/misc/user_view_button.ui</file>
+    <file alias="misc/overview_carousel.ui">ui/misc/overview_carousel.ui</file>
 
     <file alias="series/overview.ui">ui/series/overview.ui</file>
     <file alias="series/button.ui">ui/series/button.ui</file>

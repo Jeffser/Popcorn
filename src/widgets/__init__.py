@@ -1,7 +1,7 @@
 # __init__.py
 
 from .pages import LoginPage, HomePage, WrapboxPage
-from .misc import UserViewButton
+from .misc import UserViewButton, OverviewCarousel
 from .series import SeriesOverview, SeriesButton, SeriesPage
 from .containers import Carousel, Wrapbox
 from .episode import EpisodeButton, EpisodePage

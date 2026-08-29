@@ -1,0 +1,63 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornOverviewCarousel: Gtk.Overlay {
+  overflow: visible;
+  child: Adw.Carousel list_el {
+    styles [
+      "card"
+    ]
+    allow-mouse-drag: true;
+    allow-scroll-wheel: true;
+    height-request: 480;
+
+    Adw.Spinner {
+      width-request: 32;
+      height-request: 32;
+    }
+  };
+
+  [overlay]
+  Adw.Bin indicator_container {
+    styles [
+      "blur-backdrop",
+      "card"
+    ]
+    margin-top: 10;
+    halign: center;
+    valign: start;
+    child: Adw.CarouselIndicatorDots {
+      margin-end: 5;
+      carousel: list_el;
+    };
+  }
+
+  [overlay]
+  Gtk.Button pan_start_button {
+    tooltip-text: _("Pan");
+    icon-name: "pan-start-symbolic";
+    valign: center;
+    halign: start;
+    margin-start: 10;
+    clicked => $pan_start();
+    styles [
+      "circular",
+      "flat"
+    ]
+  }
+
+  [overlay]
+  Gtk.Button pan_end_button {
+    tooltip-text: _("Pan");
+    icon-name: "pan-end-symbolic";
+    valign: center;
+    halign: end;
+    margin-end: 10;
+    clicked => $pan_end();
+    styles [
+      "circular",
+      "flat"
+    ]
+  }
+
+}

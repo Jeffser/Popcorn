@@ -26,14 +26,16 @@ class HomePage(Adw.NavigationPage):
         if not jellyfin:
             return
 
+        overview_widgets = []
         for series in jellyfin.getFeaturedSeries():
-            self.overview_container.append(
+            overview_widgets.append(
                 SeriesOverview(model=series)
             )
+        GLib.idle_add(self.overview_container.set_widgets, overview_widgets)
 
         user_view_models = jellyfin.getUserViews()
         for userView in user_view_models:
-            self.user_views_container.append(
+            GLib.idle_add(self.user_views_container.append,
                 UserViewButton(model=userView)
             )
 
@@ -86,34 +88,4 @@ class HomePage(Adw.NavigationPage):
                 )
                 GLib.idle_add(self.main_container.append, new_carousel)
                 GLib.idle_add(new_carousel.set_widgets, latest_widgets)
-
-        GLib.timeout_add(15000, self.auto_scroll_overview)
-
-    def auto_scroll_overview(self):
-        position_float = self.overview_container.get_position()
-        position_int = int(position_float)
-        if position_float == position_int:
-            next_index = position_int + 1
-            if next_index >= self.overview_container.get_n_pages():
-                next_index = 0
-            self.overview_container.scroll_to(self.overview_container.get_nth_page(next_index), True)
-        return True
-
-    def pan_overview(self, position_modifier:int):
-        current_position = int(self.overview_container.get_position() + position_modifier)
-        if current_position >= self.overview_container.get_n_pages():
-            current_position = 0
-        elif current_position < 0:
-            current_position = self.overview_container.get_n_pages() - 1
-        self.overview_container.scroll_to(self.overview_container.get_nth_page(current_position), True)
-
-    @Gtk.Template.Callback()
-    def pan_overview_start(self, btn):
-        self.pan_overview(-1)
-
-    @Gtk.Template.Callback()
-    def pan_overview_end(self, btn):
-        self.pan_overview(1)
-
-
 
