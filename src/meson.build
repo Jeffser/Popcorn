@@ -29,6 +29,7 @@ blueprints = files(
 
   'ui/player/page.blp',
   'ui/player/window.blp',
+  'ui/player/next_up_button.blp',
 
   'ui/containers/carousel.blp',
   'ui/containers/wrapbox.blp',

@@ -5,6 +5,7 @@ widgets = [
   'player.py',
   'page.py',
   'window.py',
+  'next_up_button.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

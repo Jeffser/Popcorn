@@ -54,6 +54,7 @@
 
     <file alias="player/page.ui">ui/player/page.ui</file>
     <file alias="player/window.ui">ui/player/window.ui</file>
+    <file alias="player/next_up_button.ui">ui/player/next_up_button.ui</file>
 
     <file alias="containers/carousel.ui">ui/containers/carousel.ui</file>
     <file alias="containers/wrapbox.ui">ui/containers/wrapbox.ui</file>

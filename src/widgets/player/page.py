@@ -18,6 +18,8 @@ class PlayerPage(Adw.NavigationPage):
     media_segments = {} # start time : segment
     toolbarview = Gtk.Template.Child()
     controls_revealer = Gtk.Template.Child()
+    button_revealer = Gtk.Template.Child()
+    button_revealer_stack = Gtk.Template.Child()
     scale = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
     volume_adjustment = Gtk.Template.Child()
@@ -78,10 +80,22 @@ class PlayerPage(Adw.NavigationPage):
                         self.set_property('current-media-segment', segment)
                         segment_found = True
                         break
-            if not segment_found:
+            if segment_found:
+                self.button_revealer_stack.set_visible_child_name('segment')
+                self.button_revealer.set_reveal_child(True)
+                return True
+            else:
                 if current_media_segment := self.get_property('current-media-segment'):
                     current_type = current_media_segment.get_property('Type')
                     self.set_property('current-media-segment', models.MediaSegment(Type=current_type))
+                if player := self.get_property('player'):
+                    if model := player.get_property('model'):
+                        if duration := model.get_property('Duration'):
+                            if 20 >= duration - position > 1:
+                                self.button_revealer_stack.set_visible_child_name('next-up')
+                                self.button_revealer.set_reveal_child(True)
+                                return True
+        self.button_revealer.set_reveal_child(False)
         return True
 
     def check_subtitles(self):

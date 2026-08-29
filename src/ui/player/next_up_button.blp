@@ -1,0 +1,58 @@
+using Gtk 4.0;
+
+template $PopcornNextUpButton: Gtk.Button {
+  tooltip-text: bind $format_title(template.model as <$PopcornPlayable>, template.model as <$PopcornPlayable> .PlayerTitle, template.model as <$PopcornPlayable> .PlayerSubtitle);
+  action-name: bind $format_action_name(template.model as <$PopcornPlayable>);
+  action-target: bind $format_action_target(template.model as <$PopcornPlayable> .Id, 's');
+  height-request: 128;
+  child: Gtk.Box {
+    orientation: horizontal;
+    spacing: 10;
+
+    Gtk.Picture {
+      styles [
+        "card"
+      ]
+      paintable: bind template.model as <$PopcornPlayable> .PrimaryPaintable;
+      valign: center;
+    }
+
+    Gtk.Box {
+      orientation: vertical;
+      valign: center;
+      spacing: 10;
+
+      Gtk.Box {
+        orientation: horizontal;
+        spacing: 10;
+
+        Gtk.Image {
+          icon-name: "media-seek-forward-symbolic";
+        }
+
+        Gtk.Label {
+          styles [
+            "title-2"
+          ]
+          xalign: 0;
+          ellipsize: end;
+          label: _("Playing Next…");
+        }
+      }
+
+      Gtk.Label {
+        styles [
+          "dimmed",
+          "title-4",
+          "no-bold"
+        ]
+        xalign: 0;
+        ellipsize: end;
+        lines: 2;
+        wrap: true;
+        wrap-mode: word_char;
+        label: bind $format_title(template.model as <$PopcornPlayable>, template.model as <$PopcornPlayable> .PlayerTitle, template.model as <$PopcornPlayable> .PlayerSubtitle);
+      }
+    }
+  };
+}

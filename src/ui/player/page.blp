@@ -42,7 +42,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
 
       [overlay]
       Adw.Clamp {
-        maximum-size: 1200;
+        maximum-size: 2400;
         child: Gtk.Box {
           orientation: vertical;
           margin-top: 10;
@@ -72,24 +72,45 @@ template $PopcornPlayerPage: Adw.NavigationPage {
             }
 
             [overlay]
-            Gtk.Revealer skip_segment_revealer {
+            Gtk.Revealer button_revealer {
               transition-duration: 250;
               transition-type: crossfade;
-              reveal-child: bind $format_to_bool(template.current-media-segment as <$PopcornMediaSegment> .Id);
               halign: end;
               valign: end;
-              child: Gtk.Button skip_segment_button {
-                styles [
-                  "suggested-action",
-                  "pill"
-                ]
-                margin-bottom: 10;
-                clicked => $skip_segment_clicked();
-                tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-                child: Adw.ButtonContent {
-                  label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-                  icon-name: "media-seek-forward-symbolic";
-                };
+              child: Gtk.Stack button_revealer_stack {
+                hhomogeneous: false;
+                vhomogeneous: false;
+                Gtk.StackPage {
+                  name: "segment";
+                  child: Gtk.Button {
+                    styles [
+                      "suggested-action",
+                      "pill"
+                    ]
+                    margin-bottom: 10;
+                    halign: end;
+                    valign: end;
+                    clicked => $skip_segment_clicked();
+                    tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                    child: Adw.ButtonContent {
+                      label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                      icon-name: "media-seek-forward-symbolic";
+                    };
+                  };
+                }
+
+                Gtk.StackPage {
+                  name: "next-up";
+                  child: Adw.Clamp {
+                    margin-bottom: 10;
+                    maximum-size: 420;
+                    halign: end;
+                    valign: end;
+                    child: $PopcornNextUpButton {
+                      model: bind template.player as <$PopcornPlayer> .next-model as <$PopcornPlayable>;
+                    };
+                  };
+                }
               };
             }
           }
