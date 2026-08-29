@@ -293,6 +293,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                         unpaired-release => $scale_released();
                     }
                     hexpand: true;
+                    digits: 4;
                     value-changed => $adjustment_changed();
                     adjustment: Gtk.Adjustment {
                       lower: 0;
