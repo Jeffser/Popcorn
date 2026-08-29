@@ -8,8 +8,13 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
       "card"
     ]
     allow-mouse-drag: true;
-    allow-scroll-wheel: true;
+    allow-scroll-wheel: false;
     height-request: 480;
+
+    Gtk.EventControllerScroll {
+      scroll => $on_scroll();
+      flags: both_axes;
+    }
 
     Adw.Spinner {
       width-request: 32;

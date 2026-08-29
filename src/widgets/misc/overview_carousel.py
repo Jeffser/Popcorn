@@ -1,6 +1,6 @@
 # overview_carousel.py
 
-from gi.repository import Gtk, Adw, GLib, Gst
+from gi.repository import Gtk, Gdk, Adw, GLib, Gst
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/misc/overview_carousel.ui')
 class OverviewCarousel(Gtk.Overlay):
@@ -60,3 +60,16 @@ class OverviewCarousel(Gtk.Overlay):
     def pan_end(self, btn):
         self.pan_overview(1)
 
+    @Gtk.Template.Callback()
+    def on_scroll(self, controller, dx, dy):
+        position = self.list_el.get_position()
+        if position == int(position):
+            event = controller.get_current_event()
+            state = event.get_modifier_state()
+            if (state & Gdk.ModifierType.SHIFT_MASK) or dx != 0:
+                direction = dy or dx
+                next_position = int(max(0, min(position + direction, self.list_el.get_n_pages())))
+                next_page = self.list_el.get_nth_page(next_position)
+                if next_page:
+                    self.list_el.scroll_to(next_page, True)
+        return Gdk.EVENT_PROPAGATE
