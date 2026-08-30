@@ -20,6 +20,7 @@ class PlayerPage(Adw.NavigationPage):
     controls_revealer = Gtk.Template.Child()
     button_revealer = Gtk.Template.Child()
     button_revealer_stack = Gtk.Template.Child()
+    subtitle_menu_button = Gtk.Template.Child()
     scale = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
     volume_adjustment = Gtk.Template.Child()
@@ -159,7 +160,7 @@ class PlayerPage(Adw.NavigationPage):
             self.get_root().unfullscreen()
 
     def toggle_controls(self, visible:bool):
-        if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active()):
+        if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active() or self.subtitle_menu_button.get_active()):
             return
         self.toolbarview.set_reveal_top_bars(visible)
         self.controls_revealer.set_reveal_child(visible)
@@ -258,7 +259,11 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def subtitle_setup(self, factory, list_item):
         label = Gtk.Label(
-            xalign=0.0
+            xalign=0.0,
+            margin_start=5,
+            margin_end=5,
+            margin_top=5,
+            margin_bottom=5
         )
         list_item.set_child(label)
 
@@ -283,3 +288,4 @@ class PlayerPage(Adw.NavigationPage):
         if subtitle_line:
             return subtitle_line.get_property('Text').strip()
         return ''
+

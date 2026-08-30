@@ -2,8 +2,8 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk
 from . import models, secret
-from ..constants import subtitle_timestamp_to_position
-import requests, io, urllib3, platform
+from ..constants import subtitle_timestamp_to_position, subtitle_text_to_pango
+import requests, io, urllib3, platform, webvtt
 
 # Just so that the logs don't get cluttered with warnings if trust-server = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -531,15 +531,12 @@ class Jellyfin(GObject.Object):
                             },
                             mode='RAWGET'
                         ).content.decode('utf8')
-                        raw_lines = [line for line in str(result).replace('\r', '').split('\n\n')[1:] if line]
-                        for line in raw_lines:
-                            sublines = line.split('\n')
-                            timestamp = sublines.pop(0)
-                            start_timestamp, end_timestamp = timestamp.split(' --> ')[:2]
+                        vtt = webvtt.from_string(result)
+                        for caption in vtt:
                             line_model = models.SubtitleLine(
-                                StartPosition=subtitle_timestamp_to_position(start_timestamp),
-                                EndPosition=subtitle_timestamp_to_position(end_timestamp),
-                                Text='\n'.join(sublines)
+                                StartPosition=subtitle_timestamp_to_position(caption.start),
+                                EndPosition=subtitle_timestamp_to_position(caption.end),
+                                Text=subtitle_text_to_pango(caption.raw_text)
                             )
                             subtitle_model.get_property('Lines').append(line_model)
                         subtitle_models.append(subtitle_model)
@@ -581,4 +578,5 @@ class Jellyfin(GObject.Object):
             if model := self.__makeModel(item):
                 model_list.append(model)
         return model_list
+
 

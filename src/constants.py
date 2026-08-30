@@ -1,6 +1,6 @@
 # constants.py
 
-import os
+import os, re
 from datetime import datetime, timedelta
 
 IN_FLATPAK = bool(os.getenv("FLATPAK_ID"))
@@ -59,7 +59,47 @@ def format_time_display(total_seconds:float, force_include_hours:bool) -> str:
         return f"{minutes}:{seconds:02d}"
 
 def subtitle_timestamp_to_position(ts:str) -> float:
-    ts = ts.split(' ')[0].split(":")
-    seconds = ts.pop(-1)
-    return sum([int(t) * 60 for t in ts]) + float(seconds)
+    return sum(float(p) * (60 ** i) for i, p in enumerate(reversed(ts.split(':'))))
 
+def subtitle_text_to_pango(line:str) -> str:
+    if not line:
+        return ""
+
+    def replace_font(match):
+        attrs = match.group(1)
+        content = match.group(2)
+
+        color_match = re.search(r'color=["\']?([^"\'>\s]+)["\']?', attrs, re.IGNORECASE)
+        face_match = re.search(r'face=["\']?([^"\'>\s]+)["\']?', attrs, re.IGNORECASE)
+
+        span_attrs = []
+        if color_match:
+            span_attrs.append(f'foreground="{color_match.group(1)}"')
+        if face_match:
+            span_attrs.append(f'face="{face_match.group(1)}"')
+
+        attr_str = " ".join(span_attrs)
+        if attr_str:
+            return f'<span {attr_str}>{content}</span>'
+        return content
+
+    line = re.sub(r'<font\s+([^>]+)>(.*?)</font>', replace_font, line, flags=re.DOTALL)
+    # Also handle malformed/mismatched WebVTT closing tags like </c> for a <font> open tag
+    line = re.sub(r'<font\s+([^>]+)>(.*?)</c>', replace_font, line, flags=re.DOTALL)
+
+    line = re.sub(r'<v\s+([^>]+)>(.*?)</v>', r'<b>\1:</b> \2', line, flags=re.DOTALL)
+    line = re.sub(r'</?v[^>]*>', '', line)
+
+    def replace_ruby(match):
+        base = match.group(1)
+        rt = match.group(2)
+        return f"{base} (<i>{rt}</i>)"
+
+    line = re.sub(r'<ruby>(.*?)<rt>(.*?)</rt></ruby>', replace_ruby, line, flags=re.DOTALL)
+    line = re.sub(r'</?(?:ruby|rt)>', '', line)
+
+    line = re.sub(r'<c\.[\w-]+>(.*?)</c>', r'\1', line, flags=re.DOTALL)
+    line = re.sub(r'<c>(.*?)</c>', r'\1', line, flags=re.DOTALL)
+    line = re.sub(r'</?c[^>]*>', '', line)
+
+    return line
