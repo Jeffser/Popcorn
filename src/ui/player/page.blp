@@ -209,21 +209,8 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                     icon-name: "media-view-subtitles-symbolic";
                     visible: bind $format_subtitle_button_visible(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
                     popover: Gtk.Popover {
-                      styles [
-                        "p0"
-                      ]
-                      child: Gtk.ListView {
-                        styles [
-                          "rounded-corner"
-                        ]
-                        model: Gtk.SingleSelection subtitle_selector {
-                          model: bind template.player as <$PopcornPlayer> .available-subtitles;
-                          selected: bind template.player as <$PopcornPlayer> .selected-subtitle-index;
-                        };
-                        factory: Gtk.SignalListItemFactory {
-                          setup => $subtitle_setup();
-                          bind => $subtitle_bind();
-                        };
+                      child: Gtk.Box subtitle_options_container {
+                        orientation: vertical;
                       };
                     };
                   }

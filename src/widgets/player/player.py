@@ -218,7 +218,6 @@ class Player(GObject.Object):
     media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
     available_subtitles = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.Subtitle))
-    selected_subtitle_index = GObject.Property(type=int, default=0)
     gst_state = GObject.Property(type=Gst.State, default=Gst.State.NULL)
 
     def __init__(self, **kwargs):
@@ -273,8 +272,6 @@ class Player(GObject.Object):
                             0,
                             [models.Subtitle(Title=_("Off"), Lines=[]), *subtitles]
                         )
-                        if len(subtitles) > 0:
-                            GLib.timeout_add(1000, self.set_property, 'selected-subtitle-index', 1)
 
     def get_adjacent_episodes(self):
         if jellyfin := self.get_property('application').jellyfin:

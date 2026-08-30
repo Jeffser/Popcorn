@@ -5,6 +5,11 @@ from ...integrations import models
 from .player import Player
 from ...constants import get_future_time, format_time_display, SECTION_NAMES
 
+class SubtitleCheckButton(Gtk.CheckButton):
+    __gtype_name__ = 'PopcornSubtitleCheckButton'
+
+    model = GObject.Property(type=models.Subtitle)
+
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/player/page.ui')
 class PlayerPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornPlayerPage'
@@ -21,10 +26,10 @@ class PlayerPage(Adw.NavigationPage):
     button_revealer = Gtk.Template.Child()
     button_revealer_stack = Gtk.Template.Child()
     subtitle_menu_button = Gtk.Template.Child()
+    subtitle_options_container = Gtk.Template.Child()
     scale = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
     volume_adjustment = Gtk.Template.Child()
-    subtitle_selector = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,6 +46,7 @@ class PlayerPage(Adw.NavigationPage):
     def on_player_changed(self, widget, pspec=None):
         if player := widget.get_property('player'):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
+            player.get_property('available-subtitles').connect('notify::n-items', self.available_subtitles_changed)
             self.media_segments_changed(player.get_property('media-segments'))
             GLib.idle_add(self.update_end_time)
             if app := player.get_property('application'):
@@ -72,6 +78,22 @@ class PlayerPage(Adw.NavigationPage):
             )
             self.media_segments[segment.get_property('StartPosition')] = segment
 
+    def available_subtitles_changed(self, widget, pspec=None):
+        for item in list(self.subtitle_options_container):
+            self.subtitle_options_container.remove(item)
+        first_check = None
+        options_list = list(widget)
+        for i, model in enumerate(options_list):
+            check_button = SubtitleCheckButton(
+                label=model.get_property('Title'),
+                group=first_check,
+                model=model,
+                active=i==min(1, len(options_list))
+            )
+            if not first_check:
+                first_check = check_button
+            self.subtitle_options_container.append(check_button)
+
     def check_segments(self):
         self.button_revealer_stack.set_sensitive(True)
         if not self.get_property('scale-seeking'):
@@ -101,9 +123,14 @@ class PlayerPage(Adw.NavigationPage):
         return True
 
     def check_subtitles(self):
-        if selected_subtitle := self.subtitle_selector.get_selected_item():
+        subtitle_model = None
+        for option in list(self.subtitle_options_container):
+            if option.get_active():
+                subtitle_model = option.get_property('model')
+
+        if subtitle_model:
             if position := self.get_property('position'):
-                for line in list(selected_subtitle.get_property('Lines') or []):
+                for line in list(subtitle_model.get_property('Lines') or []):
                     if line.get_property('StartPosition') < position < line.get_property('EndPosition'):
                         self.set_property('current-subtitle-line', line)
                         return True
@@ -257,23 +284,6 @@ class PlayerPage(Adw.NavigationPage):
         self.volume_adjustment.set_value(1)
 
     @Gtk.Template.Callback()
-    def subtitle_setup(self, factory, list_item):
-        label = Gtk.Label(
-            xalign=0.0,
-            margin_start=5,
-            margin_end=5,
-            margin_top=5,
-            margin_bottom=5
-        )
-        list_item.set_child(label)
-
-    @Gtk.Template.Callback()
-    def subtitle_bind(self, factory, list_item):
-        model = list_item.get_item()
-        label = list_item.get_child()
-        label.set_label(model.get_property('Title'))
-
-    @Gtk.Template.Callback()
     def format_subtitle_button_visible(self, obj, n_subtitles):
         return n_subtitles > 1
 
@@ -288,4 +298,5 @@ class PlayerPage(Adw.NavigationPage):
         if subtitle_line:
             return subtitle_line.get_property('Text').strip()
         return ''
+
 
