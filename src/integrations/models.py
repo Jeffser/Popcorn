@@ -36,7 +36,7 @@ class Series(BasicModel):
     ProductionYear = GObject.Property(type=int)
     OfficialRating = GObject.Property(type=str)
     SeasonCount = GObject.Property(type=int, default=0)
-    Genres = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
+    Genres = GObject.Property(type=Gio.ListStore)
     Overview = GObject.Property(type=str)
     LogoPaintable = GObject.Property(type=Gdk.Paintable)
     BackdropPaintable = GObject.Property(type=Gdk.Paintable)
@@ -82,7 +82,7 @@ class Movie(Playable):
     CommunityRating = GObject.Property(type=float)
     ProductionYear = GObject.Property(type=int)
     OfficialRating = GObject.Property(type=str)
-    Genres = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
+    Genres = GObject.Property(type=Gio.ListStore)
     Overview = GObject.Property(type=str)
     LogoPaintable = GObject.Property(type=Gdk.Paintable)
 
@@ -106,5 +106,4 @@ class Subtitle(BasicModel):
     __gtype_name__ = 'PopcornSubtitle'
 
     Title = GObject.Property(type=str)
-    Lines = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=SubtitleLine))
-
+    Lines = GObject.Property(type=Gio.ListStore)

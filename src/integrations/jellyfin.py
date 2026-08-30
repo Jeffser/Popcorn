@@ -1,6 +1,6 @@
 # jellyfin.py
 
-from gi.repository import Gtk, GLib, GObject, Gdk
+from gi.repository import Gtk, GLib, GObject, Gdk, Gio
 from . import models, secret
 from ..constants import subtitle_timestamp_to_position, subtitle_text_to_pango
 import requests, io, urllib3, platform, webvtt
@@ -102,9 +102,9 @@ class Jellyfin(GObject.Object):
                 LogoPaintable=self.getPaintable(item.get('Id'), image_type='logo'),
                 BackdropPaintable=self.getPaintable(item.get('Id')),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
-                Played=item.get('UserData', {}).get('Played', False)
+                Played=item.get('UserData', {}).get('Played', False),
+                Genres=Gio.ListStore.new(item_type=Gtk.StringObject)
             )
-            self.loaded_models.get(item.get('Id')).get_property('Genres').remove_all()
             self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
                 0,
@@ -148,9 +148,9 @@ class Jellyfin(GObject.Object):
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
                 Played=item.get('UserData', {}).get('Played', False),
                 Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
-                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2)
+                Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2),
+                Genres=Gio.ListStore.new(item_type=Gtk.StringObject)
             )
-            self.loaded_models.get(item.get('Id')).get_property('Genres').remove_all()
             self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
                 0,
@@ -520,7 +520,8 @@ class Jellyfin(GObject.Object):
                 if stream.get("Type") == "Subtitle":
                     try:
                         subtitle_model = models.Subtitle(
-                            Title=stream.get('DisplayTitle')
+                            Title=stream.get('DisplayTitle'),
+                            Lines=Gio.ListStore.new(item_type=models.SubtitleLine)
                         )
                         result = self.makeRequest(
                             action='Videos/{item_id}/{media_source_id}/Subtitles/{index}/Stream.vtt',

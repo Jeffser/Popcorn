@@ -47,6 +47,7 @@ class PlayerPage(Adw.NavigationPage):
         if player := widget.get_property('player'):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
             player.get_property('available-subtitles').connect('notify::n-items', self.available_subtitles_changed)
+            self.available_subtitles_changed(player.get_property('available-subtitles'))
             self.media_segments_changed(player.get_property('media-segments'))
             GLib.idle_add(self.update_end_time)
             if app := player.get_property('application'):
@@ -127,6 +128,7 @@ class PlayerPage(Adw.NavigationPage):
         for option in list(self.subtitle_options_container):
             if option.get_active():
                 subtitle_model = option.get_property('model')
+                break
 
         if subtitle_model:
             if position := self.get_property('position'):
