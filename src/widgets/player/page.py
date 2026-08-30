@@ -72,6 +72,7 @@ class PlayerPage(Adw.NavigationPage):
             self.media_segments[segment.get_property('StartPosition')] = segment
 
     def check_segments(self):
+        self.button_revealer_stack.set_sensitive(True)
         if not self.get_property('scale-seeking'):
             segment_found = False
             if position := self.get_property('position'):
@@ -93,7 +94,7 @@ class PlayerPage(Adw.NavigationPage):
                         if duration := model.get_property('Duration'):
                             if 20 >= duration - position > 1:
                                 self.button_revealer_stack.set_visible_child_name('next-up')
-                                self.button_revealer.set_reveal_child(True)
+                                self.button_revealer.set_reveal_child(player.get_property('next-model'))
                                 return True
         self.button_revealer.set_reveal_child(False)
         return True
@@ -200,6 +201,7 @@ class PlayerPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def skip_segment_clicked(self, button):
+        self.button_revealer_stack.set_sensitive(False)
         if segment := self.get_property('current-media-segment'):
             self.get_property('player').get_property('gst').seek_simple(
                 Gst.Format.TIME,
