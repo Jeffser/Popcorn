@@ -233,10 +233,18 @@ class Jellyfin(GObject.Object):
                 view_models.append(model)
         return view_models
 
-    def getPaintable(self, item_id, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
+    def getImageUrl(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> str:
+        return self.getUrl(
+            "Items/{item_id}/Images/{image_type}?maxWidth={max_width}&quality=85",
+            item_id=item_id,
+            image_type=image_type,
+            max_width=max_width
+        )
+
+    def getPaintable(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
         try:
-            url = self.getUrl("Items/{item_id}/Images/{image_type}", item_id=item_id, image_type=image_type)
-            response = requests.get(url, params={'maxWidth': max_width, 'quality': 85}, timeout=5)
+            url = self.getImageUrl(item_id, image_type, max_width)
+            response = requests.get(url, timeout=5)
             response.raise_for_status()
             gbytes = GLib.Bytes.new(response.content)
             return Gdk.Texture.new_from_bytes(gbytes)
@@ -579,5 +587,6 @@ class Jellyfin(GObject.Object):
             if model := self.__makeModel(item):
                 model_list.append(model)
         return model_list
+
 
 

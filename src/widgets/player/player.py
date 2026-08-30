@@ -38,21 +38,41 @@ class PlayerMprisAdapter(MprisAdapter):
         return False
 
     def quit(self):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            if app := player.get_property('application'):
+                app.quit()
 
     def set_fullscreen(self, value:bool):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            if app := player.get_property('application'):
+                if active_window := app.get_active_window():
+                    if value:
+                        active_window.fullscreen()
+                    else:
+                        active_window.unfullscreen()
 
     def set_raise(self, value:bool):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            if app := player.get_property('application'):
+                if active_window := app.get_active_window():
+                    active_window.present()
 
     # -- PlayerAdapter --
 
     def metadata(self) -> ValidMetadata:
-        #TODO
+        if player := self.event_adapter.gst_player:
+            if model := player.get_property('model'):
+                art_url = ''
+                if app := player.get_property('application'):
+                    if jellyfin := app.jellyfin:
+                        art_url = jellyfin.getImageUrl(model.get_property('Id'), image_type="Primary")
+                return MetadataObj(
+                    title=model.get_property('PlayerTitle'),
+                    artists=[model.get_property('PlayerSubtitle')],
+                    as_text=[model.get_property('PlayerTitle')],
+                    length=model.get_property('Duration')*1000000,
+                    art_url=art_url
+                )
         return MetadataObj()
 
     def can_control(self) -> bool:
@@ -74,8 +94,10 @@ class PlayerMprisAdapter(MprisAdapter):
         return True
 
     def get_current_position(self) -> Position:
-        #TODO
-        return Position(0/1000)
+        if player := self.event_adapter.gst_player:
+            success, position = player.get_property('gst').query_position(Gst.Format.TIME)
+            return Position(position/1000)
+        return Position(0)
 
     def get_rate(self) -> Rate:
         return Rate(1)
@@ -93,18 +115,22 @@ class PlayerMprisAdapter(MprisAdapter):
         pass
 
     def get_playstate(self) -> PlayState:
-        #TODO
+        if player := self.event_adapter.gst_player:
+            success, state, pending = player.get_property('gst').get_state(0)
+            return PlayState.PLAYING if state == Gst.State.PLAYING else PlayState.PAUSED
         return PlayState.PAUSED
 
     def get_shuffle(self) -> bool:
         return False
 
     def get_volume(self) -> Volume:
-        #TODO
+        if player := self.event_adapter.gst_player:
+            return Volume(player.get_property('gst').get_property('volume'))
         return Volume(0)
 
     def is_mute(self) -> bool:
-        #TODO
+        if player := self.event_adapter.gst_player:
+            return player.get_property('gst').get_property('volume') == 0
         return True
 
     def is_playlist(self) -> bool:
@@ -114,31 +140,40 @@ class PlayerMprisAdapter(MprisAdapter):
         return False
 
     def next(self):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            if next_model := player.get_property('next-model'):
+                player.set_property('model', next_model)
 
     def open_uri(self, uri:str):
         pass
 
     def pause(self):
-        #TODO
+        if player := self.event_adapter.gst_player:
+            player.get_property('gst').set_state(Gst.State.PAUSED)
         pass
 
     def play(self):
-        #TODO
+        if player := self.event_adapter.gst_player:
+            player.get_property('gst').set_state(Gst.State.PLAYING)
         pass
 
     def previous(self):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            if previous_model := player.get_property('previous-model'):
+                player.set_property('model', previous_model)
 
     def resume(self):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            player.get_property('gst').set_state(Gst.State.PLAYING)
 
     def seek(self, time:Position, track_id:DbusObj | None = None):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            player.get_property('gst').seek_simple(
+                Gst.Format.TIME,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                time*1000
+            )
+            self.event_adapter.emit_changes(self.player.mpris.player, changes=['Position'])
 
     def set_maximum_rate(self, value:Rate):
         pass
@@ -147,7 +182,6 @@ class PlayerMprisAdapter(MprisAdapter):
         pass
 
     def set_mute(self, value:bool):
-        #TODO
         pass
 
     def set_rate(self, value:Rate):
@@ -160,12 +194,12 @@ class PlayerMprisAdapter(MprisAdapter):
         pass
 
     def set_volume(self, value:Volume):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            player.get_property('application').settings.set_double('volume', value)
 
     def stop(self):
-        #TODO
-        pass
+        if player := self.event_adapter.gst_player:
+            player.get_property('gst').set_state(Gst.State.NULL)
 
     def activate_playlist(self, id:DbusObj):
         pass
@@ -194,7 +228,7 @@ class PlayerMprisAdapter(MprisAdapter):
 class PlayerEventAdapter(EventAdapter):
 
     def __init__(self, player):
-        self.player = player
+        self.gst_player = player
         self.adapter = PlayerMprisAdapter(self)
         self.mpris = Server("com.jeffser.Popcorn", adapter=self.adapter)
         super().__init__(root=self.mpris.root, player=self.mpris.player)
@@ -344,3 +378,4 @@ class Player(GObject.Object):
         if message.src == self.get_property('gst'):
             self.set_property('gst-state', Gst.State.NULL)
             self.set_property('model', self.get_property('next-model'))
+
