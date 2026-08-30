@@ -59,5 +59,7 @@ def format_time_display(total_seconds:float, force_include_hours:bool) -> str:
         return f"{minutes}:{seconds:02d}"
 
 def subtitle_timestamp_to_position(ts:str) -> float:
-    minutes, seconds = ts.split(":")
-    return int(minutes) * 60 + float(seconds)
+    ts = ts.split(' ')[0].split(":")
+    seconds = ts.pop(-1)
+    return sum([int(t) * 60 for t in ts]) + float(seconds)
+

@@ -531,7 +531,7 @@ class Jellyfin(GObject.Object):
                             },
                             mode='RAWGET'
                         ).content.decode('utf8')
-                        raw_lines = [line for line in str(result).split('\n\n')[1:] if line]
+                        raw_lines = [line for line in str(result).replace('\r', '').split('\n\n')[1:] if line]
                         for line in raw_lines:
                             sublines = line.split('\n')
                             timestamp = sublines.pop(0)
@@ -543,8 +543,8 @@ class Jellyfin(GObject.Object):
                             )
                             subtitle_model.get_property('Lines').append(line_model)
                         subtitle_models.append(subtitle_model)
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e)
         return subtitle_models
 
     def getModelsFromFolder(self, user_view_id:str, limit:int, startIndex:int) -> list:
@@ -581,3 +581,4 @@ class Jellyfin(GObject.Object):
             if model := self.__makeModel(item):
                 model_list.append(model)
         return model_list
+
