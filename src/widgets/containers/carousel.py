@@ -31,8 +31,10 @@ class Carousel(Gtk.Box):
         for i, page in enumerate(widgets):
             self.list_el.append(page)
         GLib.timeout_add(200, scroll_to_middle)
-        self.pan_start_el.set_visible(len(widgets) > 1)
-        self.pan_end_el.set_visible(len(widgets) > 1)
+
+    @Gtk.Template.Callback()
+    def format_visible_button(self, obj, n_pages:int) -> bool:
+        return n_pages > 1
 
     @Gtk.Template.Callback()
     def on_scroll(self, controller, dx, dy):

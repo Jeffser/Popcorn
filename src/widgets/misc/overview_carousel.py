@@ -26,9 +26,6 @@ class OverviewCarousel(Gtk.Overlay):
             self.remove_all()
         for i, page in enumerate(widgets):
             self.list_el.append(page)
-        self.pan_start_button.set_visible(len(widgets) > 1)
-        self.pan_end_button.set_visible(len(widgets) > 1)
-        self.indicator_container.set_visible(len(widgets) > 1)
 
     def auto_scroll_overview(self):
         if self.list_el.get_n_pages() == 0:
@@ -73,3 +70,7 @@ class OverviewCarousel(Gtk.Overlay):
                 if next_page:
                     self.list_el.scroll_to(next_page, True)
         return Gdk.EVENT_PROPAGATE
+
+    @Gtk.Template.Callback()
+    def format_visible_button(self, obj, n_pages:int) -> bool:
+        return n_pages > 1

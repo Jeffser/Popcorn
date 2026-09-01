@@ -35,6 +35,7 @@ template $PopcornCarousel: Gtk.Box {
       halign: end;
       margin-start: 10;
       clicked => $pan_start();
+      visible: bind $format_visible_button(list_el.n-pages);
       styles [
         "circular",
         "accent"
@@ -48,6 +49,7 @@ template $PopcornCarousel: Gtk.Box {
       halign: end;
       margin-end: 10;
       clicked => $pan_end();
+      visible: bind $format_visible_button(list_el.n-pages);
       styles [
         "circular",
         "accent"

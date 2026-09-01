@@ -195,6 +195,7 @@ class Jellyfin(GObject.Object):
         return False
 
     def ping(self) -> bool:
+        self.loaded_models = {}
         self.set_property('accessToken', "")
         self.set_property('userId', "")
         response = self.makeRequest(

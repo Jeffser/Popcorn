@@ -31,6 +31,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     margin-top: 10;
     halign: center;
     valign: start;
+    visible: bind $format_visible_button(list_el.n-pages);
     child: Adw.CarouselIndicatorDots {
       margin-end: 5;
       carousel: list_el;
@@ -44,6 +45,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     valign: center;
     halign: start;
     margin-start: 10;
+    visible: bind $format_visible_button(list_el.n-pages);
     clicked => $pan_start();
     styles [
       "circular",
@@ -58,6 +60,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     valign: center;
     halign: end;
     margin-end: 10;
+    visible: bind $format_visible_button(list_el.n-pages);
     clicked => $pan_end();
     styles [
       "circular",
