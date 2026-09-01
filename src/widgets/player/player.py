@@ -276,8 +276,9 @@ class Player(GObject.Object):
         GLib.timeout_add(64, self.update_stream_progress)
 
     def model_changed(self, player, pspec):
-        if model := player.get_property(pspec.name):
-            if jellyfin := self.get_property('application').jellyfin:
+        if jellyfin := self.get_property('application').jellyfin:
+            if model := player.get_property(pspec.name):
+                self.past_model = model
                 if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
                     self.get_property('gst').set_state(Gst.State.READY)
                     self.get_property('gst').set_property('uri', stream_url)

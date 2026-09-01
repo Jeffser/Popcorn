@@ -589,42 +589,31 @@ class Jellyfin(GObject.Object):
                 model_list.append(model)
         return model_list
 
-    def setPlayedStatus(self, modelId:str, played:bool):
-        result = self.makeRequest(
-            action="Users/{userId}/PlayedItems/{itemId}",
-            action_keys={
-                "itemId": modelId
-            },
-            mode="POST" if played else "DELETE"
-        )
+    def __updatePlayedStatus(self, modelId:str):
         if model := self.loaded_models.get(modelId):
-            if isinstance(model, models.Movie):
-                if played:
-                    model.set_property("Progress", 0)
-                model.set_property("Played", played)
-                return
-
-            seriesId = None
-            if isinstance(model, models.Series):
-                seriesId = model.get_property("Id")
+            parentId = None
+            if isinstance(model, models.Series) or isinstance(model, models.Movie):
+                parentId = model.get_property("Id")
             elif isinstance(model, models.Season) or isinstance(model, models.Episode):
-                seriesId = model.get_property("SeriesId")
+                parentId = model.get_property("SeriesId")
 
-            if seriesId:
-                is_series_played = self.makeRequest(
+            if parentId:
+                item_user_data = self.makeRequest(
                     action='Users/{userId}/Items/{itemId}',
                     action_keys={
-                        'itemId': seriesId,
+                        'itemId': parentId,
                     }
-                ).get('UserData', {}).get('Played', False)
-
-                if series_model := self.loaded_models.get(seriesId):
-                    series_model.set_property('Played', is_series_played)
+                ).get('UserData', {})
+                if parent_model := self.loaded_models.get(parentId):
+                    parent_model.set_property("Played", item_user_data.get('Played', False))
+                    parent_model.set_property("Progress", item_user_data.get('PlayedPercentage', 0) / 100)
+                    if isinstance(parent_model, models.Movie):
+                        return
 
                 items = self.makeRequest(
                     action="Users/{userId}/Items",
                     params={
-                        "ParentId": seriesId,
+                        "ParentId": parentId,
                         "Recursive": "true",
                         "IncludeItemTypes": "Season,Episode"
                     }
@@ -635,4 +624,21 @@ class Jellyfin(GObject.Object):
                         child_model.set_property("Played", isPlayed)
                         if isPlayed and isinstance(child_model, models.Episode):
                             child_model.set_property("Progress", 0)
+
+
+    def setPlayedStatus(self, modelId:str, played:bool):
+        self.makeRequest(
+            action="Users/{userId}/PlayedItems/{itemId}",
+            action_keys={
+                "itemId": modelId
+            },
+            mode="POST" if played else "DELETE"
+        )
+        self.__updatePlayedStatus(modelId)
+
+    def setProgress(self, modelId:str, progress:float):
+        # progress should be seconds with decimals
+        self.makeRequest(
+            action=""
+        )
 
