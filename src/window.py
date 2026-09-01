@@ -26,6 +26,7 @@ import threading
 class PopcornWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornWindow'
 
+    toast_overlay = Gtk.Template.Child()
     root_navigationview = Gtk.Template.Child()
 
     @Gtk.Template.Callback()
@@ -65,4 +66,5 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.play_movie)
         self.create_action(actions.show_user_view)
         self.create_action(actions.show_search_page, shortcuts=['<ctrl>f'], parameter_type=None)
+
 

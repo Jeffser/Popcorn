@@ -8,19 +8,21 @@ template $PopcornWindow: Adw.ApplicationWindow {
   default-width: 1000;
   default-height: 900;
   close-request => $on_close();
-  content: Adw.NavigationView root_navigationview {
-    Adw.NavigationPage {
-      tag: "loading";
-      title: _("Loading");
-      child: Adw.ToolbarView {
-        [top]
-        Adw.HeaderBar {
-          show-title: false;
-        }
-        content: Adw.Spinner {};
-      };
-    }
-    $PopcornLoginPage {}
-    $PopcornHomePage {}
+  content: Adw.ToastOverlay toast_overlay {
+    child: Adw.NavigationView root_navigationview {
+      Adw.NavigationPage {
+        tag: "loading";
+        title: _("Loading");
+        child: Adw.ToolbarView {
+          [top]
+          Adw.HeaderBar {
+            show-title: false;
+          }
+          content: Adw.Spinner {};
+        };
+      }
+      $PopcornLoginPage {}
+      $PopcornHomePage {}
+    };
   };
 }

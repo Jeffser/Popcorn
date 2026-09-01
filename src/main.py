@@ -95,6 +95,11 @@ class PopcornApplication(Adw.Application):
         else:
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
             threading.Thread(target=self.main_window.root_navigationview.find_page('login').reset).start()
+            if self.get_property('settings').get_value("user").unpack():
+                toast = Adw.Toast(
+                    title=_("Error logging in")
+                )
+                GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         action = Gio.SimpleAction.new(name, parameter_type)
@@ -106,3 +111,4 @@ class PopcornApplication(Adw.Application):
 def main(version):
     print("Popcorn version", version)
     return PopcornApplication(version).run(sys.argv)
+
