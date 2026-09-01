@@ -66,5 +66,6 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.play_movie)
         self.create_action(actions.show_user_view)
         self.create_action(actions.show_search_page, shortcuts=['<ctrl>f'], parameter_type=None)
+        self.create_action(actions.toggle_played)
 
 

@@ -90,19 +90,36 @@ template $PopcornMoviePage: Adw.NavigationPage {
                 };
               }
 
-              Gtk.Button {
-                styles [
-                  "pill",
-                  "suggested-action"
-                ]
+              Adw.WrapBox {
+                child-spacing: 10;
+                line-spacing: 10;
                 halign: center;
-                tooltip-text: _("Play");
-                action-name: "app.play_movie";
-                action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
-                child: Adw.ButtonContent {
-                  icon-name: "media-playback-start-symbolic";
-                  label: _("Play");
-                };
+                Gtk.Button {
+                  styles [
+                    "pill",
+                    "suggested-action"
+                  ]
+                  tooltip-text: _("Play");
+                  action-name: "app.play_movie";
+                  action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
+                  child: Adw.ButtonContent {
+                    icon-name: "media-playback-start-symbolic";
+                    label: _("Play");
+                  };
+                }
+                Gtk.ToggleButton {
+                  styles [
+                    "circular",
+                    "flat",
+                    "toggle-with-accent"
+                  ]
+                  valign: center;
+                  tooltip-text: _("Toggle Played");
+                  action-name: "app.toggle_played";
+                  action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
+                  active: bind template.model as <$PopcornMovie> .Played;
+                  icon-name: "checkmark-symbolic";
+                }
               }
 
               Adw.WrapBox {

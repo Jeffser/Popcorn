@@ -103,3 +103,9 @@ def show_search_page(app):
             else:
                 page = Widgets.SearchPage()
                 __show_page(app, page)
+
+def toggle_played(app, model_id:str):
+    if jellyfin := app.jellyfin:
+        if model := jellyfin.loaded_models.get(model_id):
+            jellyfin.setPlayedStatus(model_id, not model.get_property('Played'))
+

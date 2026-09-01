@@ -28,49 +28,53 @@ template $PopcornEpisodeButton: Gtk.Box {
     };
 
     [overlay]
-      Gtk.Image {
+    Gtk.ToggleButton {
+      styles [
+        "circular",
+        "toggle-with-accent",
+        "osd"
+      ]
+      valign: start;
+      halign: end;
+      margin-start: 10;
+      margin-end: 10;
+      margin-top: 10;
+      margin-bottom: 10;
+      tooltip-text: _("Toggle Played");
+      action-name: "app.toggle_played";
+      action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+      active: bind template.model as <$PopcornEpisode> .Played;
+      icon-name: "checkmark-symbolic";
+    }
+
+    [overlay]
+    Gtk.Box {
+      orientation: vertical;
+      spacing: 10;
+      margin-start: 10;
+      margin-end: 10;
+      margin-top: 10;
+      margin-bottom: 10;
+      valign: end;
+      hexpand: true;
+
+      Gtk.Button {
         styles [
-          "played-indicator"
+          "osd",
+          "circular"
         ]
-        icon-name: "checkmark-symbolic";
-        valign: start;
-        halign: end;
-        margin-start: 10;
-        margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
-        visible: bind template.model as <$PopcornEpisode> .Played;
-        tooltip-text: _("Played");
+        tooltip-text: _("Play Episode");
+        action-name: "app.play_episode";
+        action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+        icon-name: "media-playback-start-symbolic";
+        halign: start;
       }
 
-      [overlay]
-      Gtk.Box {
-        orientation: vertical;
-        spacing: 10;
-        margin-start: 10;
-        margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
-        valign: end;
-        hexpand: true;
-
-        Gtk.Button {
-          styles [
-            "osd",
-            "circular"
-          ]
-          tooltip-text: _("Play Episode");
-          action-name: "app.play_episode";
-          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-          icon-name: "media-playback-start-symbolic";
-          halign: start;
-        }
-
-        Gtk.ProgressBar {
-          fraction: bind template.model as <$PopcornEpisode> .Progress;
-          visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
-        }
+      Gtk.ProgressBar {
+        fraction: bind template.model as <$PopcornEpisode> .Progress;
+        visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
       }
+    }
   }
 
   Gtk.Stack {

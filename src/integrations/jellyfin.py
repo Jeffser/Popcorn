@@ -589,6 +589,50 @@ class Jellyfin(GObject.Object):
                 model_list.append(model)
         return model_list
 
+    def setPlayedStatus(self, modelId:str, played:bool):
+        result = self.makeRequest(
+            action="Users/{userId}/PlayedItems/{itemId}",
+            action_keys={
+                "itemId": modelId
+            },
+            mode="POST" if played else "DELETE"
+        )
+        if model := self.loaded_models.get(modelId):
+            if isinstance(model, models.Movie):
+                if played:
+                    model.set_property("Progress", 0)
+                model.set_property("Played", played)
+                return
 
+            seriesId = None
+            if isinstance(model, models.Series):
+                seriesId = model.get_property("Id")
+            elif isinstance(model, models.Season) or isinstance(model, models.Episode):
+                seriesId = model.get_property("SeriesId")
 
+            if seriesId:
+                is_series_played = self.makeRequest(
+                    action='Users/{userId}/Items/{itemId}',
+                    action_keys={
+                        'itemId': seriesId,
+                    }
+                ).get('UserData', {}).get('Played', False)
+
+                if series_model := self.loaded_models.get(seriesId):
+                    series_model.set_property('Played', is_series_played)
+
+                items = self.makeRequest(
+                    action="Users/{userId}/Items",
+                    params={
+                        "ParentId": seriesId,
+                        "Recursive": "true",
+                        "IncludeItemTypes": "Season,Episode"
+                    }
+                ).get("Items", [])
+                for item in items:
+                    if child_model := self.loaded_models.get(item.get('Id', '')):
+                        isPlayed = item.get('UserData', {}).get('Played', False)
+                        child_model.set_property("Played", isPlayed)
+                        if isPlayed and isinstance(child_model, models.Episode):
+                            child_model.set_property("Progress", 0)
 
