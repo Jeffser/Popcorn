@@ -8,6 +8,10 @@ template $PopcornWindow: Adw.ApplicationWindow {
   default-width: 1000;
   default-height: 900;
   close-request => $on_close();
+  Gtk.EventControllerKey {
+    key-pressed => $on_key_pressed();
+    propagation-phase: capture;
+  }
   content: Adw.ToastOverlay toast_overlay {
     child: Adw.NavigationView root_navigationview {
       Adw.NavigationPage {

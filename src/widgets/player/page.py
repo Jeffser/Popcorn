@@ -20,6 +20,8 @@ class PlayerPage(Adw.NavigationPage):
     position = GObject.Property(type=float)
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
     current_subtitle_line = GObject.Property(type=models.SubtitleLine) # If subtitle line should be shown
+    overlay_icon_name = GObject.Property(type=str)
+    overlay_progress = GObject.Property(type=float) # 0-1
     media_segments = {} # start time : segment
     toolbarview = Gtk.Template.Child()
     controls_revealer = Gtk.Template.Child()
@@ -38,9 +40,13 @@ class PlayerPage(Adw.NavigationPage):
         GLib.timeout_add(60000, self.update_end_time)
         GLib.timeout_add(64, self.update_position)
         self.hide_timeout_id = None
+        self.overlay_icon_timeout_id = None
         self.last_motion_coordinates = [0,0]
         self.connect('notify::root', self.on_root_changed)
         self.connect('notify::player', self.on_player_changed)
+        self.install_action("player.seek", 'i', self.seek)
+        self.install_action("player.change-volume", 'd', self.change_volume)
+        self.install_action("player.toggle-playback", None, self.toggle_playback)
         self.on_player_changed(self)
 
     def on_player_changed(self, widget, pspec=None):
@@ -198,6 +204,13 @@ class PlayerPage(Adw.NavigationPage):
         if not visible and self.hide_timeout_id:
             self.hide_timeout_id = None
 
+    def show_controls(self):
+        self.toggle_controls(True)
+        if self.hide_timeout_id is not None:
+            GLib.source_remove(self.hide_timeout_id)
+            self.hide_timeout_id = None
+        self.hide_timeout_id = GLib.timeout_add(3000, self.toggle_controls, False)
+
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
@@ -206,11 +219,7 @@ class PlayerPage(Adw.NavigationPage):
     def on_pointer_motion(self, controller, x, y):
         if self.last_motion_coordinates != [x, y]:
             self.last_motion_coordinates = [x, y]
-            self.toggle_controls(True)
-            if self.hide_timeout_id is not None:
-                GLib.source_remove(self.hide_timeout_id)
-                self.hide_timeout_id = None
-            self.hide_timeout_id = GLib.timeout_add(3000, self.toggle_controls, False)
+            self.show_controls()
 
     @Gtk.Template.Callback()
     def format_pip_button_visible(self, obj, window_title:str) -> bool:
@@ -301,4 +310,53 @@ class PlayerPage(Adw.NavigationPage):
             return subtitle_line.get_property('Text').strip()
         return ''
 
+    def reset_overlay_icon(self):
+        self.set_property('overlay-progress', 0)
+        self.set_property('overlay-icon-name', '')
+
+    def seek(self, obj, action_name, seek_amount):
+        seek_amount = seek_amount.unpack()
+        icon_name = 'media-seek-{}-symbolic'.format('forward' if seek_amount > 0 else 'backward')
+        self.get_property('player').get_property('gst').seek_simple(
+            Gst.Format.TIME,
+            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+            int((self.get_property('position') + seek_amount) * Gst.SECOND)
+        )
+        self.set_property('overlay-icon-name', icon_name)
+        self.set_property('overlay-progress', 0)
+        if self.overlay_icon_timeout_id:
+            GLib.source_remove(self.overlay_icon_timeout_id)
+        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
+
+    def change_volume(self, obj, action_name, volume):
+        volume = volume.unpack()
+        if root := self.get_root():
+            if app := root.get_application():
+                volume = app.settings.get_value("volume").unpack() + volume
+                app.settings.set_double("volume", max(0, min(volume, 1)))
+                icon_name = self.format_volume_icon_name(None, volume)
+
+        self.set_property('overlay-icon-name', icon_name)
+        self.set_property('overlay-progress', volume*5)
+        if self.overlay_icon_timeout_id:
+            GLib.source_remove(self.overlay_icon_timeout_id)
+        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
+
+    def toggle_playback(self, obj, action_name, param):
+        icon_name = ''
+        if player := self.get_property('player'):
+            if gst := player.get_property('gst'):
+                success, state, pending = gst.get_state(0)
+                if success:
+                    if state == Gst.State.PAUSED:
+                        gst.set_state(Gst.State.PLAYING)
+                        icon_name = "media-playback-start-symbolic"
+                    else:
+                        gst.set_state(Gst.State.PAUSED)
+                        icon_name = "media-playback-pause-symbolic"
+        self.set_property('overlay-icon-name', icon_name)
+        self.set_property('overlay-progress', 0)
+        if self.overlay_icon_timeout_id:
+            GLib.source_remove(self.overlay_icon_timeout_id)
+        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
 

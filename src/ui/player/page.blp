@@ -7,6 +7,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
     "black-background"
   ]
   title: _("Player");
+  tag: "player";
 
   Gtk.EventControllerMotion {
     motion => $on_pointer_motion();
@@ -39,6 +40,38 @@ template $PopcornPlayerPage: Adw.NavigationPage {
       child: Gtk.Picture {
         paintable: bind template.player as <$PopcornPlayer> .paintable;
       };
+
+      [overlay]
+      Gtk.Revealer {
+        valign: center;
+        halign: center;
+        transition-type: crossfade;
+        reveal-child: bind $format_to_bool(template.overlay-icon-name);
+        child: Gtk.Box {
+          styles [
+            "card",
+            "blur-backdrop",
+            "osd",
+            "p10"
+          ]
+          orientation: vertical;
+          spacing: 10;
+          Gtk.Image {
+            styles [
+              "p10"
+            ]
+            icon-name: bind template.overlay-icon-name;
+            pixel-size: 64;
+          }
+          Gtk.LevelBar {
+            mode: discrete;
+            min-value: 0;
+            max-value: 5;
+            visible: bind $format_to_bool(template.overlay-progress);
+            value: bind template.overlay-progress;
+          }
+        };
+      }
 
       [overlay]
       Adw.Clamp {

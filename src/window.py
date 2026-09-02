@@ -39,6 +39,26 @@ class PopcornWindow(Adw.ApplicationWindow):
             app.get_property('player').event_adapter.mpris.unpublish()
             app.quit()
 
+    @Gtk.Template.Callback()
+    def on_key_pressed(self, controller, keyval, keycode, modifier):
+        if visible_page := self.root_navigationview.get_visible_page():
+            if visible_page.get_tag() == 'player':
+                if keycode == 111: #UP
+                    visible_page.activate_action('player.change-volume', GLib.Variant('d', 0.1))
+                    return True
+                elif keycode == 116: #DOWN
+                    visible_page.activate_action('player.change-volume', GLib.Variant('d', -0.1))
+                    return True
+                elif keycode == 114: #RIGHT
+                    visible_page.activate_action('player.seek', GLib.Variant('i', 10))
+                    return True
+                elif keycode == 113: #LEFT
+                    visible_page.activate_action('player.seek', GLib.Variant('i', -10))
+                    return True
+                elif keycode == 65: #SPACE
+                    visible_page.activate_action('player.toggle-playback', None)
+                    return True
+
     def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
         def call_action(cb, va):
             if va is None:
@@ -67,5 +87,4 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.show_user_view)
         self.create_action(actions.show_search_page, shortcuts=['<ctrl>f'], parameter_type=None)
         self.create_action(actions.toggle_played)
-
 
