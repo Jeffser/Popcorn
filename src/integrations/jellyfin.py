@@ -252,7 +252,7 @@ class Jellyfin(GObject.Object):
     def getPaintableBytes(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> bytes | None:
         try:
             url = self.getImageUrl(item_id, image_type, max_width)
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=5, verify=not self.get_property('trustServer'))
             response.raise_for_status()
             return response.content
         except:
@@ -328,7 +328,7 @@ class Jellyfin(GObject.Object):
     def getUserAvatar(self) -> Gdk.Paintable | None:
         try:
             url = self.getUrl("Users/{userId}/Images/Primary")
-            response = requests.get(url, params={'quality': 85}, timeout=5)
+            response = requests.get(url, params={'quality': 85}, timeout=5, verify=not self.get_property('trustServer'))
             response.raise_for_status()
             gbytes = GLib.Bytes.new(response.content)
             return Gdk.Texture.new_from_bytes(gbytes)
@@ -756,7 +756,7 @@ class Jellyfin(GObject.Object):
     def getLoginDisclaimer(self) -> str:
         # Does NOT need to be logged in to work
         try:
-            results = requests.get(self.getUrl("Branding/Configuration")).json()
+            results = requests.get(self.getUrl("Branding/Configuration"), verify=not self.get_property('trustServer')).json()
             return results.get('LoginDisclaimer') or ''
         except:
             pass
@@ -766,7 +766,7 @@ class Jellyfin(GObject.Object):
         # Check if server is ok
         # Does NOT need to be logged in to work
         try:
-            return requests.get(self.getUrl("health")).status_code == 200
+            return requests.get(self.getUrl("health"), verify=not self.get_property('trustServer')).status_code == 200
         except:
             return False
 
@@ -774,7 +774,7 @@ class Jellyfin(GObject.Object):
         # Does NOT need to be logged in to work
         try:
             url = self.getUrl('Branding/Splashscreen')
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=5, verify=not self.get_property('trustServer'))
             response.raise_for_status()
             if raw_bytes := response.content:
                 gbytes = GLib.Bytes.new(raw_bytes)
