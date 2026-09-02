@@ -8,12 +8,14 @@ class WelcomePage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornWelcomePage'
 
     url_entry = Gtk.Template.Child()
+    trust_checkbutton = Gtk.Template.Child()
 
     def reset(self):
         if root := self.get_root():
             if app := root.get_application():
                 if settings := app.get_property('settings'):
                     self.url_entry.set_text(settings.get_value('url').unpack())
+                    self.trust_checkbutton.set_active(settings.get_value('trust-server').unpack())
 
     def try_connect(self):
         if root := self.get_root():
@@ -42,4 +44,5 @@ class WelcomePage(Adw.NavigationPage):
                         url = 'http://{}'.format(url)
                         self.url_entry.set_text(url)
                     jellyfin.set_property('url', url)
+                    jellyfin.set_property('trustServer', self.trust_checkbutton.get_active())
                     threading.Thread(target=self.try_connect, daemon=True).start()

@@ -17,7 +17,7 @@ template $PopcornWelcomePage: Adw.NavigationPage {
       title: _("Welcome to Popcorn");
       description: _("Connect to your Jellyfin server");
       child: Gtk.Box {
-        spacing: 20;
+        spacing: 10;
         orientation: vertical;
         halign: center;
         width-request: 320;
@@ -30,6 +30,10 @@ template $PopcornWelcomePage: Adw.NavigationPage {
           entry-activated => $connect_requested();
         }
 
+        Gtk.CheckButton trust_checkbutton {
+          label: _("Trust server SSL certificates");
+        }
+
         Gtk.Button {
           styles [
             "suggested-action",
@@ -40,6 +44,7 @@ template $PopcornWelcomePage: Adw.NavigationPage {
           halign: center;
           clicked => $connect_requested();
           sensitive: bind $format_to_bool(url_entry.text);
+          margin-top: 10;
         }
       };
     };
