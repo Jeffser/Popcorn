@@ -154,18 +154,15 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
         Gtk.Button {
           styles [
-            "pill",
-            "suggested-action"
+            "circular",
+            "accent"
           ]
-          valign: center;
+          valign: end;
           halign: center;
           tooltip-text: _("Continue Watching");
           action-name: "app.play_series";
           action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-          child: Adw.ButtonContent {
-            icon-name: "media-playback-start-symbolic";
-            label: _("Continue Watching");
-          };
+          icon-name: "media-playback-start-symbolic";
         }
       }
     }
