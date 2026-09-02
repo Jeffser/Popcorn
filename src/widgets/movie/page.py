@@ -30,17 +30,17 @@ class MoviePage(Adw.NavigationPage):
             return
 
         recommendation_widgets = []
-        recommendation_dict = jellyfin.getRecommendations(model_id)
-        for series_model in recommendation_dict.get('Series', []):
-            recommendation_widgets.append(SeriesButton(
-                model=series_model,
-                is_tall=True
-            ))
-        for movie_model in recommendation_dict.get('Movie', []):
-            recommendation_widgets.append(MovieButton(
-                model=movie_model,
-                is_tall=True
-            ))
+        for model in jellyfin.getRecommendations(model_id):
+            if isinstance(model, models.Series):
+                recommendation_widgets.append(SeriesButton(
+                    model=model,
+                    is_tall=True
+                ))
+            elif isinstance(model, models.Movie):
+                recommendation_widgets.append(MovieButton(
+                    model=model,
+                    is_tall=True
+                ))
         GLib.idle_add(self.recommendations_container.set_widgets, recommendation_widgets)
 
     @Gtk.Template.Callback()

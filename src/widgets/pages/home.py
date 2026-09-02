@@ -61,32 +61,28 @@ class HomePage(Adw.NavigationPage):
 
         for userView in user_view_models:
             latest_widgets = []
-            latest_dict = jellyfin.getLatest(userView.get_property('Id'))
-
-            for series_model in latest_dict.get('Series'):
-                latest_widgets.append(
-                    SeriesButton(
-                        model=series_model,
-                        is_tall=True
+            for model in jellyfin.getLatest(userView.get_property('Id')):
+                if isinstance(model, models.Series):
+                    latest_widgets.append(
+                        SeriesButton(
+                            model=model,
+                            is_tall=True
+                        )
                     )
-                )
-
-            for episode_model in latest_dict.get('Episode'):
-                latest_widgets.append(
-                    EpisodeButton(
-                        model=episode_model,
-                        is_tall=True
+                elif isinstance(model, models.Episode):
+                    latest_widgets.append(
+                        EpisodeButton(
+                            model=model,
+                            is_tall=True
+                        )
                     )
-                )
-
-            for movie_model in latest_dict.get('Movie'):
-                latest_widgets.append(
-                    MovieButton(
-                        model=movie_model,
-                        is_tall=True
+                elif isinstance(model, models.Movie):
+                    latest_widgets.append(
+                        MovieButton(
+                            model=model,
+                            is_tall=True
+                        )
                     )
-                )
-
             if len(latest_widgets) > 0:
                 new_carousel = Carousel(
                     title=_("Recently Added in {}").format(userView.get_property('Name').title()),

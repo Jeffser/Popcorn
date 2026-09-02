@@ -324,13 +324,9 @@ class Jellyfin(GObject.Object):
             pass
         return None
 
-    def getLatest(self, libraryId:str) -> dict:
-        # Returns dict of lists
-        result_models = {
-            'Series': [],
-            'Episode': [],
-            'Movie': []
-        }
+    def getLatest(self, libraryId:str) -> list:
+        # Returns list of different models, check types!
+        result_models = []
         items = self.makeRequest(
             action='Users/{userId}/Items/Latest',
             params={
@@ -341,9 +337,8 @@ class Jellyfin(GObject.Object):
             }
         )
         for item in items:
-            if item.get('Type') in list(result_models):
-                if model := self.__makeModel(item):
-                    result_models[item.get('Type')].append(model)
+            if model := self.__makeModel(item):
+                result_models.append(model)
         return result_models
 
     def getModel(self, modelId:str) -> models.BasicModel | None:
@@ -376,11 +371,8 @@ class Jellyfin(GObject.Object):
         return season_models
 
     def getRecommendations(self, seriesId:str) -> list:
-        # Returns list of Series/Movies models
-        result_models = {
-            'Series': [],
-            'Movie': []
-        }
+        # Returns list of different models (Series / Movies) check types!
+        result_models = []
         items = self.makeRequest(
             action='Items/{seriesId}/Similar',
             action_keys={
@@ -392,9 +384,8 @@ class Jellyfin(GObject.Object):
             }
         ).get('Items', [])
         for item in items:
-            if item.get('Type') in list(result_models):
-                if model := self.__makeModel(item):
-                    result_models[item.get('Type')].append(model)
+            if model := self.__makeModel(item):
+                result_models.append(model)
         return result_models
 
     def getEpisodesFromSeason(self, season_id:str) -> list:
