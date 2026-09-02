@@ -22,6 +22,7 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
         action-name: "app.open_uri";
         action-target: bind $format_action_target(template.session-url, 's');
         activatable: bind $format_to_bool(template.session-url);
+        tooltip-text: bind template.session-url;
 
         [prefix]
         Adw.Avatar {
@@ -34,6 +35,14 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
           icon-name: "external-link-symbolic";
           visible: bind $format_to_bool(template.session-url);
         }
+      }
+
+      Adw.ButtonRow {
+        title: _("Logout");
+        styles [
+          "destructive-action"
+        ]
+        action-name: "app.logout";
       }
     }
   }

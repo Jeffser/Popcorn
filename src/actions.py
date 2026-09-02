@@ -2,6 +2,7 @@
 
 from gi.repository import Adw, GLib, Gio
 from . import widgets as Widgets
+from .integrations import secret
 import threading, os
 
 # -- Helpers --
@@ -126,5 +127,24 @@ def open_uri(app, uri:str):
         uri = Gio.File.new_for_path(uri.removeprefix('file://')).get_uri()
         os.system('xdg-open {}'.format(uri))
         return
-
     Gio.AppInfo.launch_default_for_uri(uri, None)
+
+def logout(app):
+    app.get_property('player').stop()
+
+    secret.store_password('')
+
+    if settings := app.get_property('settings'):
+        settings.set_string('user', '')
+
+    if main_window := app.main_window:
+        main_window.root_navigationview.replace_with_tags(['login'])
+        threading.Thread(target=main_window.root_navigationview.find_page('login').reset).start()
+        for dialog in main_window.get_dialogs():
+            dialog.close()
+
+    if pip_window := app.pip_window:
+        if pip_window.get_visible():
+            pip_window.close()
+
+
