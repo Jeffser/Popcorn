@@ -105,6 +105,12 @@ def show_search_page(app):
                     page = Widgets.SearchPage()
                     __show_page(app, page)
 
+def reload_page(app):
+    if main_window := app.main_window:
+        if current_page := main_window.root_navigationview.get_visible_page():
+            thread = threading.Thread(target=current_page.reset)
+            GLib.idle_add(thread.start)
+
 def toggle_played(app, model_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.loaded_models.get(model_id):
