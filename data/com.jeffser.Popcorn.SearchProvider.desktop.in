@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Popcorn Search Provider
+Icon=com.jeffser.Popcorn
+DBusActivatable=true
+NoDisplay=true
+X-GNOME-SearchProvider-Prefix=com.jeffser.Popcorn
+X-GNOME-SearchProvider-Path=/com/jeffser/Popcorn/SearchProvider/

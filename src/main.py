@@ -18,6 +18,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import sys, threading
+from pydbus import SessionBus
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -34,6 +35,25 @@ from .constants import set_popcorn_version, TRANSLATORS
 
 GLib.set_prgname('com.jeffser.Popcorn')
 GLib.set_application_name("Popcorn")
+
+class PopcornService:
+    """
+    <node>
+        <interface name="com.jeffser.Popcorn.Service">
+            <method name="Search">
+                <arg type="a{sa{sv}}" name="result" direction="out"/>
+                <arg type="s" name="query" direction="in"/>
+            </method>
+        </interface>
+    </node>
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    def Search(self, query:str) -> dict:
+        print('QUERY', query)
+        return {}
 
 class PopcornApplication(Adw.Application):
     __gtype_name__ = 'PopcornApplication'
@@ -66,6 +86,12 @@ class PopcornApplication(Adw.Application):
             self.main_window = PopcornWindow(application=self)
             threading.Thread(target=self.try_login, daemon=True).start()
         self.main_window.present()
+        app_service = PopcornService(self)
+        if 'linux' in sys.platform:
+            bus = SessionBus()
+            dbus_proxy = bus.get('org.freedesktop.DBus', '/org/freedesktop/DBus')
+            if not dbus_proxy.NameHasOwner('com.jeffser.Popcorn.Service'):
+                bus.publish('com.jeffser.Popcorn.Service', ('/com/jeffser/Popcorn/Service', app_service))
 
     def open_pip_window(self):
         if window := self.pip_window:

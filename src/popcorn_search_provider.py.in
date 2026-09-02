@@ -1,0 +1,126 @@
+#!/usr/bin/python3
+
+import gettext, sys
+from pydbus import SessionBus
+from gi.repository import GLib, Gio
+
+_ = gettext.gettext
+
+ACTION_STRINGS = {
+    'movie': _("Show Movie"),
+    'series': _("Show Series")
+}
+
+class PopcornSearchProvider:
+    """
+    <node>
+        <interface name='org.gnome.Shell.SearchProvider2'>
+            <method name='GetInitialResultSet'>
+                <arg type='as' name='terms' direction='in'/>
+                <arg type='as' name='results' direction='out'/>
+            </method>
+            <method name='GetSubsearchResultSet'>
+                <arg type='as' name='previousResults' direction='in'/>
+                <arg type='as' name='terms' direction='in'/>
+                <arg type='as' name='results' direction='out'/>
+            </method>
+            <method name='ActivateResult'>
+                <arg type='s' name='identifier' direction='in'/>
+                <arg type='as' name='terms' direction='in'/>
+                <arg type='u' name='uid' direction='in'/>
+            </method>
+            <method name='GetResultMetas'>
+                <arg type='as' name='identifiers' direction='in'/>
+                <arg type='aa{sv}' name='metas' direction='out'/>
+            </method>
+        </interface>
+    </node>
+    """
+
+    timeout_id = None
+    last_results = {}
+    allowed_types = []
+
+    def __init__(self):
+        self.settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
+
+    def __reset_timeout(self):
+        if self.timeout_id is not None:
+            GLib.source_remove(self.timeout_id)
+        self.timeout_id = GLib.timeout_add(5000, sys.exit, 0)
+
+    def GetInitialResultSet(self, terms):
+        self.__reset_timeout()
+        possible_types = [
+            'movie',
+            'series',
+            'episode'
+        ]
+        self.allowed_types = []
+        for type_name in possible_types:
+            self.allowed_types.append(type_name)
+            #if self.settings.get_value('gnome-search-include-{}'.format(type_name)).unpack():
+            #    self.allowed_types.append(type_name)
+        return []
+
+    def ActivateResult(self, identifier, terms, uid=None):
+        self.__reset_timeout()
+        if item := self.last_results.get(identifier):
+            try:
+                bus = SessionBus()
+                if app_service := bus.get("com.jeffser.Popcorn"):
+                    actions = {
+                        'movie': 'show_movie',
+                        'series': 'show_series',
+                        'episode': 'show_episode',
+                    }
+                    if action := actions.get(item.get('type')):
+                        app_service["org.gtk.Actions"].Activate(action, [GLib.Variant('s', identifier)], {})
+            except Exception as e:
+                print(e)
+
+    def GetSubsearchResultSet(self, previousResults, terms):
+        self.__reset_timeout()
+        query = ' '.join(terms)
+        self.last_results = {}
+        try:
+            bus = SessionBus()
+            if app_service := bus.get("com.jeffser.Popcorn.Service"):
+                for item_id, item in app_service.Search(query).items():
+                    if item.get('type') in self.allowed_types:
+                        self.last_results[item_id] = item
+        except Exception as e:
+            print(e)
+
+        return list(self.last_results)
+
+    def GetResultMetas(self, identifiers):
+        self.__reset_timeout()
+        results = []
+        for identifier in identifiers:
+            if item := self.last_results.get(identifier):
+                if display := item.get('display'):
+                    icon = None
+                    try:
+                        if icon_bytes := item.get('icon'):
+                            if len(icon_bytes) > 0:
+                                gbytes = GLib.Bytes.new(icon_bytes)
+                                icon = Gio.BytesIcon.new(gbytes).serialize()
+                    except:
+                        pass
+                    if not icon:
+                        icon_name = 'video-clip-symbolic' if item.get('type') == 'movie' else 'tv-symbolic'
+                        icon = Gio.ThemedIcon.new(icon_name).serialize()
+
+                    results.append({
+                        'id': GLib.Variant('s', identifier),
+                        'name': GLib.Variant('s', display),
+                        'description': GLib.Variant('s', item.get('description') or ACTION_STRINGS.get(item.get('type', ''), '')),
+                        'icon': icon
+                    })
+        return results
+
+bus = SessionBus()
+bus.publish("com.jeffser.Popcorn.SearchProvider", PopcornSearchProvider())
+loop = GLib.MainLoop()
+loop.run()

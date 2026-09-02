@@ -74,6 +74,15 @@ configure_file(
   install_mode: 'rwxr-xr-x'
 )
 
+configure_file(
+  input: 'popcorn_search_provider.py.in',
+  output: 'popcorn_search_provider',
+  configuration: conf,
+  install: true,
+  install_dir: get_option('bindir'),
+  install_mode: 'rwxr-xr-x'
+)
+
 popcorn_sources = [
   '__init__.py',
   'main.py',
