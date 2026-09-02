@@ -629,8 +629,8 @@ class Jellyfin(GObject.Object):
                     if child_model := self.loaded_models.get(item.get('Id', '')):
                         isPlayed = item.get('UserData', {}).get('Played', False)
                         child_model.set_property("Played", isPlayed)
-                        if isPlayed and isinstance(child_model, models.Episode):
-                            child_model.set_property("Progress", 0)
+                        if isinstance(child_model, models.Episode):
+                            child_model.set_property("Progress", item.get('UserData', {}).get('PlayedPercentage', 0) / 100)
 
     def setPlayedStatus(self, modelId:str, played:bool):
         self.makeRequest(
@@ -645,13 +645,9 @@ class Jellyfin(GObject.Object):
     def StartSession(self, modelId:str):
         # When starting a new movie / episode
         self.makeRequest(
-            action="Sessions/Playing",
-            params={
-                "ItemId": modelId,
-                "PositionTicks": 0,
-                "IsPaused": "false",
-                "CanSeek": "true",
-                "PlayMethod": "DirectPlay"
+            action="Users/{userId}/PlayingItems/{itemId}",
+            action_keys = {
+                "itemId": modelId
             },
             mode="POST"
         )
@@ -660,12 +656,13 @@ class Jellyfin(GObject.Object):
         # Sent every few seconds whilst playing a movie / episode
         # position = seconds with decimals
         self.makeRequest(
-            action="Sessions/Playing/Progress",
+            action="Users/{userId}/PlayingItems/{itemId}/Progress",
+            action_keys = {
+                "itemId": modelId
+            },
             params={
-                "ItemId": modelId,
                 "PositionTicks": int(position * 10_000_000),
-                "IsPaused": "true" if isPaused else "false",
-                "CanSeek": "true"
+                "IsPaused": "true" if isPaused else "false"
             },
             mode="POST"
         )
@@ -674,27 +671,17 @@ class Jellyfin(GObject.Object):
         # When finishing a movie / episode
         # position = seconds with decimals
         # also updates the Played and Progress properties of the model
+        if position == 0:
+            return
         self.makeRequest(
-            action="Sessions/Playing/Stopped",
-            params={
-                "ItemId": modelId,
-                "PositionTicks": int(position * 10_000_000)
-            },
-            mode="POST"
-        )
-        if model := self.loaded_models.get(modelId):
-            if position >= model.get_property('Duration') * 0.9:
-                self.setPlayedStatus(modelId, True)
-                self.__updatePlayedStatus(modelId)
-                return
-        self.makeRequest(
-            action="Users/{userId}/Items/{itemId}/UserData",
-            action_keys={
+            action="Users/{userId}/PlayingItems/{itemId}/Progress",
+            action_keys = {
                 "itemId": modelId
             },
             params={
-                "PlaybackPositionTicks": int(position * 10_000_000)
-            }
+                "PositionTicks": int(position * 10_000_000)
+            },
+            mode="DELETE"
         )
         self.__updatePlayedStatus(modelId)
 
