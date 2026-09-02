@@ -13,3 +13,6 @@ class SeasonButton(Gtk.Box):
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
 
+    @Gtk.Template.Callback()
+    def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
+        return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"

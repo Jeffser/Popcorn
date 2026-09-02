@@ -25,3 +25,7 @@ class SeriesButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_picture_width(self, obj, is_tall:bool) -> int:
         return 220 if is_tall else 420
+
+    @Gtk.Template.Callback()
+    def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
+        return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"

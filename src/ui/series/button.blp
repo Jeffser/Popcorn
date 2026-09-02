@@ -47,6 +47,26 @@ template $PopcornSeriesButton: Gtk.Box {
     }
 
     [overlay]
+    Gtk.ToggleButton {
+      styles [
+        "circular",
+        "toggle-with-accent",
+        "osd"
+      ]
+      valign: end;
+      halign: end;
+      margin-start: 10;
+      margin-end: 10;
+      margin-top: 10;
+      margin-bottom: 10;
+      tooltip-text: _("Toggle Favorite");
+      action-name: "app.toggle_favorite";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      active: bind template.model as <$PopcornSeries> .IsFavorite;
+      icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeries> .IsFavorite);
+    }
+
+    [overlay]
     Gtk.Button {
       styles [
         "osd",

@@ -106,7 +106,8 @@ class Jellyfin(GObject.Object):
                 BackdropPaintable=self.getPaintable(item.get('Id')),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
                 Played=item.get('UserData', {}).get('Played', False),
-                Genres=Gio.ListStore.new(item_type=Gtk.StringObject)
+                Genres=Gio.ListStore.new(item_type=Gtk.StringObject),
+                IsFavorite=item.get('UserData', {}).get('IsFavorite', False)
             )
             self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
@@ -132,7 +133,8 @@ class Jellyfin(GObject.Object):
                 Overview=item.get('Overview'),
                 CommunityRating=round(item.get('CommunityRating') or 0, 1),
                 Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2),
-                Played=item.get('UserData', {}).get('Played', False)
+                Played=item.get('UserData', {}).get('Played', False),
+                IsFavorite=item.get('UserData', {}).get('IsFavorite', False)
             )
         elif item.get('Type') == 'Movie':
             if item.get('Id') not in self.loaded_models:
@@ -152,7 +154,8 @@ class Jellyfin(GObject.Object):
                 Played=item.get('UserData', {}).get('Played', False),
                 Progress=item.get('UserData', {}).get('PlayedPercentage', 0) / 100,
                 Duration=round((item.get('RunTimeTicks') or 0) / 10_000_000, 2),
-                Genres=Gio.ListStore.new(item_type=Gtk.StringObject)
+                Genres=Gio.ListStore.new(item_type=Gtk.StringObject),
+                IsFavorite=item.get('UserData', {}).get('IsFavorite', False)
             )
             self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
@@ -168,7 +171,8 @@ class Jellyfin(GObject.Object):
                 SeriesId=item.get('SeriesId'),
                 IndexNumber=item.get('IndexNumber'),
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary') or self.getPaintable(item.get('SeriesId'), image_type='Primary'),
-                Played=item.get('UserData', {}).get('Played', False)
+                Played=item.get('UserData', {}).get('Played', False),
+                IsFavorite=item.get('UserData', {}).get('IsFavorite', False)
             )
         elif item.get('Type') in ('CollectionFolder', 'UserView'):
             if item.get('CollectionType') in ('tvshows', 'movies'):
@@ -693,3 +697,14 @@ class Jellyfin(GObject.Object):
             }
         )
         self.__updatePlayedStatus(modelId)
+
+    def setFavorite(self, modelId:str, favorite:bool):
+        response = self.makeRequest(
+            action="Users/{userId}/FavoriteItems/{itemId}",
+            action_keys={
+                "itemId": modelId
+            },
+            mode="POST" if favorite else "DELETE"
+        )
+        if model := self.loaded_models.get(modelId):
+            model.set_property('IsFavorite', response.get('IsFavorite', model.get_property('IsFavorite')))

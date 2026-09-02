@@ -55,3 +55,7 @@ class EpisodeButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_end_time(self, obj, duration:float) -> str:
         return _("Ends at {}").format(get_future_time(duration))
+
+    @Gtk.Template.Callback()
+    def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
+        return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"

@@ -109,6 +109,20 @@ template $PopcornSeasonPage: Adw.NavigationPage {
                 child-spacing: 10;
                 line-spacing: 10;
                 halign: center;
+                Gtk.ToggleButton {
+                  styles [
+                    "circular",
+                    "flat",
+                    "toggle-with-accent"
+                  ]
+                  valign: center;
+                  tooltip-text: _("Toggle Favorite");
+                  action-name: "app.toggle_favorite";
+                  action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
+                  active: bind template.model as <$PopcornSeason> .IsFavorite;
+                  icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeason> .IsFavorite);
+                }
+
                 Gtk.Button {
                   styles [
                     "pill",

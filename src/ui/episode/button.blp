@@ -58,16 +58,34 @@ template $PopcornEpisodeButton: Gtk.Box {
       valign: end;
       hexpand: true;
 
-      Gtk.Button {
-        styles [
-          "osd",
-          "circular"
-        ]
-        tooltip-text: _("Play Episode");
-        action-name: "app.play_episode";
-        action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-        icon-name: "media-playback-start-symbolic";
-        halign: start;
+      Gtk.Box {
+        Gtk.Button {
+          styles [
+            "osd",
+            "circular"
+          ]
+          tooltip-text: _("Play Episode");
+          action-name: "app.play_episode";
+          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+          icon-name: "media-playback-start-symbolic";
+        }
+
+        Adw.Bin {
+          hexpand: true;
+        }
+
+        Gtk.ToggleButton {
+          styles [
+            "circular",
+            "toggle-with-accent",
+            "osd"
+          ]
+          tooltip-text: _("Toggle Favorite");
+          action-name: "app.toggle_favorite";
+          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+          active: bind template.model as <$PopcornEpisode> .IsFavorite;
+          icon-name: bind $format_heart_icon_name(template.model as <$PopcornEpisode> .IsFavorite);
+        }
       }
 
       Gtk.ProgressBar {
