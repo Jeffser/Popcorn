@@ -25,20 +25,25 @@ template $PopcornSeriesButton: Gtk.Box {
         width-request: bind $format_picture_width(template.is_tall);
       };
     };
+
     [overlay]
-    Gtk.Image {
+    Gtk.ToggleButton {
       styles [
-        "played-indicator"
+        "circular",
+        "toggle-with-accent",
+        "osd"
       ]
-      icon-name: "checkmark-symbolic";
       valign: start;
       halign: end;
       margin-start: 10;
       margin-end: 10;
       margin-top: 10;
       margin-bottom: 10;
-      visible: bind template.model as <$PopcornSeries> .Played;
-      tooltip-text: _("Played");
+      tooltip-text: _("Toggle Played");
+      action-name: "app.toggle_played";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      active: bind template.model as <$PopcornSeries> .Played;
+      icon-name: "checkmark-symbolic";
     }
 
     [overlay]
