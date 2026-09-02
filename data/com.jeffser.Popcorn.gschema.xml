@@ -19,6 +19,9 @@
 	  <key name="blur-effect" type="b">
 	    <default>true</default>
 	  </key>
+	  <key name="fullscreen-content-fit" type="i">
+	    <default>1</default>
+	  </key>
 
 	  <!-- ## Gnome Search -->
 	  <key name="gnome-search-include-movie" type="b">

@@ -9,6 +9,7 @@ class PopcornPreferences(Adw.PreferencesDialog):
 
     # General
     blur_effect_el = Gtk.Template.Child()
+    content_fit_el = Gtk.Template.Child()
 
     # Gnome Search
     is_gnome = GObject.Property(type=bool, default="GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper())
@@ -30,6 +31,13 @@ class PopcornPreferences(Adw.PreferencesDialog):
                 "active",
                 Gio.SettingsBindFlags.DEFAULT
             )
+            settings.bind(
+                "fullscreen-content-fit",
+                self.content_fit_el,
+                "selected",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+
             settings.bind(
                 "gnome-search-include-movie",
                 self.gnome_search_movie_el,

@@ -11,6 +11,18 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
         title: _("Blur Effect");
         subtitle: _("Apply blur effect in some areas");
       }
+      Adw.ComboRow content_fit_el {
+        title: _("Player Content Fit Mode");
+        subtitle: _("Only applies when in fullscreen mode");
+        model: Gtk.StringList {
+          strings [
+            _("Fill"),
+            _("Contain"),
+            _("Cover"),
+            _("Scale Down")
+          ]
+        };
+      }
     }
 
     Adw.PreferencesGroup {

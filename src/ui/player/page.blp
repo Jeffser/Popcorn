@@ -15,6 +15,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
 
   Gtk.GestureClick {
     pressed => $on_gesture_clicked();
+    propagation-phase: target;
   }
 
   child: Adw.ToolbarView toolbarview {
@@ -42,6 +43,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
 
     content: Gtk.Overlay {
       child: Gtk.Picture {
+        content-fit: bind $format_picture_renderer_content_fit(template.root as <Gtk.ApplicationWindow> .application as <$PopcornApplication> .settings as <Gio.Settings>, template.root as <Gtk.ApplicationWindow> .fullscreened);
         paintable: bind template.player as <$PopcornPlayer> .paintable;
       };
 

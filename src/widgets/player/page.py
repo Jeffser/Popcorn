@@ -327,6 +327,13 @@ class PlayerPage(Adw.NavigationPage):
                 self.seek(None, None, GLib.Variant('i', -10))
             return True
 
+    @Gtk.Template.Callback()
+    def format_picture_renderer_content_fit(self, obj, settings:Gio.Settings, is_fullscreen:bool) -> Gtk.ContentFit:
+        if is_fullscreen:
+            return settings.get_value('fullscreen-content-fit').unpack()
+        else:
+            return Gtk.ContentFit.CONTAIN
+
     def reset_overlay_icon(self):
         self.set_property('overlay-progress', 0)
         self.set_property('overlay-icon-name', '')
