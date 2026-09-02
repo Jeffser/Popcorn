@@ -105,7 +105,7 @@ button.toggle.toggle-with-accent:checked {
 
 @keyframes slideDown {
   from {
-    opacity: 0;
+    opacity: 0.5;
     transform: translateY(-30px);
   }
   to {
@@ -115,5 +115,5 @@ button.toggle.toggle-with-accent:checked {
 }
 
 picture.page-background {
-  animation: slideDown 1s ease forwards;
+  animation: slideDown 1s ease-out;
 }
