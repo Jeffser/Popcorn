@@ -310,6 +310,14 @@ class PlayerPage(Adw.NavigationPage):
             return subtitle_line.get_property('Text').strip()
         return ''
 
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)
+
+    @Gtk.Template.Callback()
+    def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
+        return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
+
     def reset_overlay_icon(self):
         self.set_property('overlay-progress', 0)
         self.set_property('overlay-icon-name', '')
