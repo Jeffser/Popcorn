@@ -695,3 +695,35 @@ class Jellyfin(GObject.Object):
         )
         if model := self.loaded_models.get(modelId):
             model.set_property('IsFavorite', response.get('IsFavorite', model.get_property('IsFavorite')))
+
+    def getServerInformation(self) -> dict:
+        server_information = {
+            'link': self.get_property('url').strip('/'),
+            'username': self.get_property('user').title()
+        }
+        try:
+            response = self.makeRequest(
+                action='Users/{userId}/Images/Primary',
+                params={
+                    "maxWidth": 240,
+                    "quality": 90
+                },
+                mode='RAWGET'
+            )
+            response_bytes = response.content if response.status_code in (200, 201) else b''
+            if response_bytes and len(response_bytes) > 0:
+                gbytes = GLib.Bytes.new(response_bytes)
+                server_information['picture'] = Gdk.Texture.new_from_bytes(gbytes)
+        except:
+            pass
+
+        try:
+            info = self.makeRequest(
+                action="System/Info",
+                mode="GET"
+            )
+            server_information["title"] = "{} {}".format(info.get("ServerName"), info.get("Version"))
+        except:
+            pass
+
+        return server_information

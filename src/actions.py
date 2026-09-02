@@ -1,8 +1,8 @@
 # actions.py
 
-from gi.repository import Adw, GLib
+from gi.repository import Adw, GLib, Gio
 from . import widgets as Widgets
-import threading
+import threading, os
 
 # -- Helpers --
 
@@ -120,3 +120,11 @@ def toggle_favorite(app, model_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.loaded_models.get(model_id):
             jellyfin.setFavorite(model_id, not model.get_property('IsFavorite'))
+
+def open_uri(app, uri:str):
+    if uri.startswith('file://'):
+        uri = Gio.File.new_for_path(uri.removeprefix('file://')).get_uri()
+        os.system('xdg-open {}'.format(uri))
+        return
+
+    Gio.AppInfo.launch_default_for_uri(uri, None)

@@ -12,5 +12,29 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
         subtitle: _("Apply blur effect in some areas");
       }
     }
+    Adw.PreferencesGroup {
+      title: _("Session");
+      visible: bind $format_to_bool(template.session-server-name);
+
+      Adw.ActionRow {
+        title: bind template.session-username;
+        subtitle: bind template.session-server-name;
+        action-name: "app.open_uri";
+        action-target: bind $format_action_target(template.session-url, 's');
+        activatable: bind $format_to_bool(template.session-url);
+
+        [prefix]
+        Adw.Avatar {
+          size: 32;
+          custom-image: bind template.session-user-paintable;
+        }
+
+        [suffix]
+        Gtk.Image {
+          icon-name: "external-link-symbolic";
+          visible: bind $format_to_bool(template.session-url);
+        }
+      }
+    }
   }
 }

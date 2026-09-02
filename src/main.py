@@ -91,7 +91,11 @@ class PopcornApplication(Adw.Application):
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):
-        PopcornPreferences().present(self.props.active_window)
+        def open_preferences_dialog():
+            dialog = PopcornPreferences()
+            dialog.reset(self)
+            GLib.idle_add(dialog.present, self.props.active_window)
+        threading.Thread(target=open_preferences_dialog, daemon=True).start()
 
     def try_login(self):
         if self.jellyfin.ping():
