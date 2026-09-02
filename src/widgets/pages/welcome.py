@@ -22,6 +22,11 @@ class WelcomePage(Adw.NavigationPage):
                     if jellyfin.checkHealth():
                         GLib.idle_add(root.root_navigationview.push_by_tag, 'login')
                         GLib.idle_add(root.root_navigationview.find_page('login').reset)
+                    else:
+                        toast = Adw.Toast(
+                            title=_("Error connecting to server")
+                        )
+                        GLib.idle_add(root.toast_overlay.add_toast, toast)
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> str:

@@ -755,8 +755,12 @@ class Jellyfin(GObject.Object):
 
     def getLoginDisclaimer(self) -> str:
         # Does NOT need to be logged in to work
-        results = requests.get(self.getUrl("Branding/Configuration")).json()
-        return results.get('LoginDisclaimer') or ''
+        try:
+            results = requests.get(self.getUrl("Branding/Configuration")).json()
+            return results.get('LoginDisclaimer') or ''
+        except:
+            pass
+        return ''
 
     def checkHealth(self) -> bool:
         # Check if server is ok
@@ -777,4 +781,5 @@ class Jellyfin(GObject.Object):
                 return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
+
 

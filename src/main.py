@@ -134,11 +134,10 @@ class PopcornApplication(Adw.Application):
             threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
         elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
-            if self.get_property('settings').get_value("user").unpack():
-                toast = Adw.Toast(
-                    title=_("Error logging in")
-                )
-                GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
+            toast = Adw.Toast(
+                title=_("Error logging in")
+            )
+            GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
             GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
         else: # First Login
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome'])
@@ -155,4 +154,5 @@ def main(version):
     print("Popcorn version", version)
     set_popcorn_version(version)
     return PopcornApplication(version).run(sys.argv)
+
 
