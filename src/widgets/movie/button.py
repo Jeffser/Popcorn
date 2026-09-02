@@ -15,6 +15,10 @@ class MovieButton(Gtk.Box):
         return tall_paintable if is_tall else wide_paintable
 
     @Gtk.Template.Callback()
+    def format_progressbar_visible(self, obj, progress:float) -> bool:
+        return 0 < progress < 1
+
+    @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
 
