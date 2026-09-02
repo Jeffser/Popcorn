@@ -8,6 +8,15 @@ class PlayerWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornPictureInPictureWindow'
 
     player_page = Gtk.Template.Child()
+    window_handle = Gtk.Template.Child()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        model = self.window_handle.observe_controllers()
+        for i in range(model.get_n_items()):
+            controller = model.get_item(i)
+            if isinstance(controller, Gtk.GestureClick):
+                self.window_handle.remove_controller(controller)
 
     @Gtk.Template.Callback()
     def on_close(self, window):

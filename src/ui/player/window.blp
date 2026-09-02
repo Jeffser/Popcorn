@@ -15,7 +15,7 @@ template $PopcornPictureInPictureWindow: Adw.ApplicationWindow {
     key-pressed => $on_key_pressed();
     propagation-phase: capture;
   }
-  content: Gtk.WindowHandle {
+  content: Gtk.WindowHandle window_handle {
     child: $PopcornPlayerPage player_page {
       player: bind template.application as <$PopcornApplication> .player;
     };
