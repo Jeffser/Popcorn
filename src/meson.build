@@ -4,6 +4,7 @@ gnome = import('gnome')
 
 blueprints = files(
   'ui/window.blp',
+  'ui/preferences.blp',
   'ui/shortcuts-dialog.blp',
 
   'ui/pages/login.blp',
@@ -79,6 +80,7 @@ popcorn_sources = [
   'window.py',
   'constants.py',
   'actions.py',
+  'preferences.py',
 ]
 
 install_data(popcorn_sources, install_dir: moduledir)

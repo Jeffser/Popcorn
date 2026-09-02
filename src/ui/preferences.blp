@@ -1,0 +1,16 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornPreferencesDialog: Adw.PreferencesDialog {
+  Adw.PreferencesPage {
+    title: _("General");
+    icon-name: "preferences-system-symbolic";
+    Adw.PreferencesGroup {
+      title: _("Appearance");
+      Adw.SwitchRow blur_effect_el {
+        title: _("Blur Effect");
+        subtitle: _("Apply blur effect in some areas");
+      }
+    }
+  }
+}

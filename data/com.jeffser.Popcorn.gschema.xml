@@ -13,6 +13,9 @@
 	  <key name="volume" type="d">
 	    <default>0.25</default>
 	  </key>
+	  <key name="blur-effect" type="b">
+	    <default>true</default>
+	  </key>
 	</schema>
 </schemalist>
 

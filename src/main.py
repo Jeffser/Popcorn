@@ -27,6 +27,7 @@ gi.require_version('Gst', '1.0')
 
 from gi.repository import Gtk, GObject, Gio, Adw, GLib
 from .window import PopcornWindow
+from .preferences import PopcornPreferences
 from . import widgets as Widgets
 from .integrations import Jellyfin
 from .constants import set_popcorn_version, TRANSLATORS
@@ -90,7 +91,7 @@ class PopcornApplication(Adw.Application):
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):
-        print('app.preferences action activated')
+        PopcornPreferences().present(self.props.active_window)
 
     def try_login(self):
         if self.jellyfin.ping():

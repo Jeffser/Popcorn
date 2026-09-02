@@ -89,3 +89,13 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.toggle_played)
         self.create_action(actions.reload_page, shortcuts=['<ctrl>r'], parameter_type=None)
         self.create_action(actions.toggle_favorite)
+
+        settings = self.get_application().get_property('settings')
+        settings.connect('changed::blur-effect', self.css_toggled, 'blur-effect')
+        self.css_toggled(settings, 'blur-effect', 'blur-effect')
+
+    def css_toggled(self, settings, key:str, css_class:str):
+        if settings.get_value(key).unpack():
+            self.add_css_class(css_class)
+        else:
+            self.remove_css_class(css_class)

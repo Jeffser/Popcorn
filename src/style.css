@@ -17,13 +17,17 @@ button.p0, menubutton.p0 > button, label.ph5 {
   border-bottom-right-radius: 9px;
 }
 
-.blur-backdrop {
+window.blur-effect .blur-backdrop {
   backdrop-filter: blur(10px);
+}
+
+.blur-backdrop {
   background: color-mix(in srgb, var(--view-bg-color) 75%, transparent);
+  transition: backdrop-filter .2s;
 }
 
 button.blur-backdrop {
-  transition: background .2s;
+  transition: background .2s, backdrop-filter .2s;
 }
 
 button.blur-backdrop:hover {
