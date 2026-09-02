@@ -12,58 +12,82 @@ template $PopcornLoginPage: Adw.NavigationPage {
       show-title: false;
     }
 
-    content: Adw.StatusPage {
-      icon-name: "com.jeffser.Popcorn";
-      title: _("Welcome to Popcorn");
-      description: _("Login to your Jellyfin server");
-      child: Gtk.Box {
-        spacing: 20;
-        orientation: vertical;
-        halign: center;
-        width-request: 320;
-
-        Gtk.ListBox {
-          styles [
-            "boxed-list"
-          ]
-          hexpand: true;
-          selection-mode: none;
-          Adw.EntryRow url_el {
-            title: _("Url");
-            changed => $entry_changed();
-          }
-          Adw.EntryRow user_el {
-            title: _("User");
-            changed => $entry_changed();
-          }
-          Adw.PasswordEntryRow password_el {
-            title: _("Password");
-            changed => $entry_changed();
-            entry-activated => $login_requested();
-          }
-        }
-
-        Gtk.Button login_button_el {
-          styles [
-            "suggested-action",
-            "pill"
-          ]
-          label: _("Login");
-          tooltip-text: _("Login");
-          halign: center;
-          clicked => $login_requested();
-        }
-
-        Gtk.Button quick_connect_button_el {
-          styles [
-            "pill"
-          ]
-          label: _("Use Quick Connect");
-          tooltip-text: _("Use Quick Connect");
-          halign: center;
-          clicked => $quick_connect_requested();
-        }
+    content: Gtk.Overlay {
+      child: Gtk.Picture {
+        styles [
+          "login-background"
+        ]
+        content-fit: cover;
+        paintable: bind template.splash-paintable;
+        hexpand: true;
+        vexpand: true;
       };
+
+      [overlay]
+      Adw.StatusPage {
+        styles [
+          "card",
+          "view"
+        ]
+        title: _("Sign in to Continue");
+        valign: center;
+        halign: center;
+        child: Gtk.Box {
+          spacing: 20;
+          orientation: vertical;
+          halign: center;
+          width-request: 320;
+
+          Gtk.ListBox {
+            styles [
+              "boxed-list"
+            ]
+            hexpand: true;
+            selection-mode: none;
+            Adw.EntryRow user_el {
+              title: _("User");
+            }
+            Adw.PasswordEntryRow password_el {
+              title: _("Password");
+              entry-activated => $login_requested();
+            }
+          }
+
+          Gtk.Button login_button_el {
+            styles [
+              "suggested-action",
+              "pill"
+            ]
+            label: _("Login");
+            tooltip-text: _("Login");
+            halign: center;
+            clicked => $login_requested();
+            sensitive: bind $format_login_sensitivity(user_el.text, password_el.text);
+          }
+
+          Gtk.Button quick_connect_button_el {
+            styles [
+              "pill"
+            ]
+            label: _("Use Quick Connect");
+            tooltip-text: _("Use Quick Connect");
+            halign: center;
+            clicked => $quick_connect_requested();
+          }
+
+          Gtk.Label {
+            styles [
+              "dimmed",
+              "body"
+            ]
+            label: bind template.disclaimer;
+            visible: bind $format_to_bool(template.disclaimer);
+            justify: center;
+            wrap-mode: word_char;
+            wrap: true;
+          }
+        };
+      }
     };
   };
 }

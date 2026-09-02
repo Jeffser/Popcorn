@@ -117,3 +117,7 @@ button.toggle.toggle-with-accent:checked {
 picture.page-background {
   animation: slideDown 1s ease-out;
 }
+
+picture.login-background {
+  filter: brightness(75%);
+}

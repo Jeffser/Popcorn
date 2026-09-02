@@ -1,6 +1,6 @@
 # login.py
 
-from gi.repository import Gtk, Adw, Gio, GLib
+from gi.repository import GObject, Gtk, Adw, Gio, GLib, Gdk
 from ...integrations import secret
 import threading, time
 
@@ -8,39 +8,42 @@ import threading, time
 class LoginPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornLoginPage'
 
-    url_el = Gtk.Template.Child()
+    disclaimer = GObject.Property(type=str)
+    splash_paintable = GObject.Property(type=Gdk.Paintable)
     user_el = Gtk.Template.Child()
     password_el = Gtk.Template.Child()
     login_button_el = Gtk.Template.Child()
     quick_connect_button_el = Gtk.Template.Child()
 
-    def __init__(self):
-        super().__init__()
-        self.reset()
+    def set_jellyfin_details(self, jellyfin):
+        self.set_property('splash-paintable', jellyfin.getLoginSplash())
+        self.set_property('disclaimer', jellyfin.getLoginDisclaimer())
 
     def reset(self):
-        settings = Gio.Settings(schema_id="com.jeffser.Popcorn")
-        self.url_el.set_text(settings.get_value('url').unpack())
-        self.user_el.set_text(settings.get_value('user').unpack())
+        if root := self.get_root():
+            if app := root.get_application():
+                if settings := app.get_property('settings'):
+                    self.user_el.set_text(settings.get_value('user').unpack())
+                if jellyfin := app.jellyfin:
+                    threading.Thread(target=self.set_jellyfin_details, args=(jellyfin,), daemon=True).start()
         self.password_el.set_text('')
-        self.entry_changed()
 
     @Gtk.Template.Callback()
-    def entry_changed(self, entry=None):
-        has_url = self.url_el.get_text()
-        has_user = self.user_el.get_text()
-        has_password = self.password_el.get_text()
-        self.login_button_el.set_sensitive(has_url and has_user and has_password)
-        self.quick_connect_button_el.set_sensitive(has_url)
+    def format_to_bool(self, obj, value) -> bool:
+        return bool(value)
+
+    @Gtk.Template.Callback()
+    def format_login_sensitivity(self, obj, user_text:str, password_text:str) -> bool:
+        return user_text and password_text
 
     @Gtk.Template.Callback()
     def login_requested(self, widget=None):
         if root := self.get_root():
             if app := root.get_application():
-                app.jellyfin.set_property('url', self.url_el.get_text())
-                app.jellyfin.set_property('user', self.user_el.get_text())
-                secret.store_password(self.password_el.get_text())
-                threading.Thread(target=self.get_root().get_application().try_login, daemon=True).start()
+                if jellyfin := app.jellyfin:
+                    jellyfin.set_property('user', self.user_el.get_text())
+                    secret.store_password(self.password_el.get_text())
+                    threading.Thread(target=self.get_root().get_application().try_login, daemon=True).start()
 
     @Gtk.Template.Callback()
     def quick_connect_requested(self, button):
@@ -66,7 +69,7 @@ class LoginPage(Adw.NavigationPage):
                 body=data.get("Code") or _("Error getting code"),
                 extra_child=Gtk.LinkButton(
                     label=_("Quick Connect Page"),
-                    uri="{}/web/#/quickconnect".format(self.url_el.get_text())
+                    uri="{}/web/#/quickconnect".format(integration.get_property('url'))
                 )
             )
             dialog.add_response(
@@ -83,6 +86,6 @@ class LoginPage(Adw.NavigationPage):
 
         if root := self.get_root():
             if app := root.get_application():
-                integration = app.jellyfin
-                integration.set_property('url', self.url_el.get_text())
-                threading.Thread(target=run, args=(integration,), daemon=True).start()
+                if integration := app.jellyfin:
+                    threading.Thread(target=run, args=(integration,), daemon=True).start()
+

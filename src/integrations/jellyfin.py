@@ -753,4 +753,28 @@ class Jellyfin(GObject.Object):
             }
         return results
 
+    def getLoginDisclaimer(self) -> str:
+        # Does NOT need to be logged in to work
+        results = requests.get(self.getUrl("Branding/Configuration")).json()
+        return results.get('LoginDisclaimer') or ''
+
+    def checkHealth(self) -> bool:
+        # Check if server is ok
+        # Does NOT need to be logged in to work
+        try:
+            return requests.get(self.getUrl("health")).status_code == 200
+        except:
+            return False
+
+    def getLoginSplash(self) -> Gdk.Paintable | None:
+        # Does NOT need to be logged in to work
+        try:
+            url = self.getUrl('Branding/Splashscreen')
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            if raw_bytes := response.content:
+                gbytes = GLib.Bytes.new(raw_bytes)
+                return Gdk.Texture.new_from_bytes(gbytes)
+        except:
+            pass
 

@@ -125,21 +125,24 @@ class PopcornApplication(Adw.Application):
         threading.Thread(target=open_preferences_dialog, daemon=True).start()
 
     def try_login(self):
-        if self.jellyfin.ping():
+        if self.jellyfin.ping(): # Login Ok
             settings = self.get_property('settings')
             settings.set_string('url', self.jellyfin.get_property('url'))
             settings.set_string('user', self.jellyfin.get_property('user'))
             settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['home'])
             threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
-        else:
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
-            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
+        elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
             if self.get_property('settings').get_value("user").unpack():
                 toast = Adw.Toast(
                     title=_("Error logging in")
                 )
                 GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
+            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
+        else: # First Login
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome'])
+            GLib.idle_add(self.main_window.root_navigationview.find_page('welcome').reset)
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         action = Gio.SimpleAction.new(name, parameter_type)

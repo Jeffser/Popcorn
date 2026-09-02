@@ -1,0 +1,47 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornWelcomePage: Adw.NavigationPage {
+  title: _("Welcome");
+  tag: "welcome";
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+    }
+
+    content: Adw.StatusPage {
+      icon-name: "com.jeffser.Popcorn";
+      title: _("Welcome to Popcorn");
+      description: _("Connect to your Jellyfin server");
+      child: Gtk.Box {
+        spacing: 20;
+        orientation: vertical;
+        halign: center;
+        width-request: 320;
+
+        Adw.EntryRow url_entry {
+          styles [
+            "card"
+          ]
+          title: _("Url");
+          entry-activated => $connect_requested();
+        }
+
+        Gtk.Button {
+          styles [
+            "suggested-action",
+            "pill"
+          ]
+          label: _("Connect");
+          tooltip-text: _("Connect");
+          halign: center;
+          clicked => $connect_requested();
+          sensitive: bind $format_to_bool(url_entry.text);
+        }
+      };
+    };
+  };
+}

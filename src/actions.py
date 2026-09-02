@@ -138,8 +138,8 @@ def logout(app):
         settings.set_string('user', '')
 
     if main_window := app.main_window:
-        main_window.root_navigationview.replace_with_tags(['login'])
-        main_window.root_navigationview.find_page('login').reset()
+        main_window.root_navigationview.replace_with_tags(['welcome'])
+        main_window.root_navigationview.find_page('welcome').reset()
         for dialog in main_window.get_dialogs():
             dialog.close()
 
