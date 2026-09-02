@@ -107,7 +107,7 @@ class PopcornApplication(Adw.Application):
             threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
         else:
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['login'])
-            threading.Thread(target=self.main_window.root_navigationview.find_page('login').reset).start()
+            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
             if self.get_property('settings').get_value("user").unpack():
                 toast = Adw.Toast(
                     title=_("Error logging in")

@@ -139,7 +139,7 @@ def logout(app):
 
     if main_window := app.main_window:
         main_window.root_navigationview.replace_with_tags(['login'])
-        threading.Thread(target=main_window.root_navigationview.find_page('login').reset).start()
+        main_window.root_navigationview.find_page('login').reset()
         for dialog in main_window.get_dialogs():
             dialog.close()
 
