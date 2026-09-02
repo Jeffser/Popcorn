@@ -280,21 +280,21 @@ class Jellyfin(GObject.Object):
         return series_models
 
     def getResume(self) -> list:
-        # Returns list of episode model
-        episode_models = []
+        # Returns list of episode / movie models
+        models = []
         items = self.makeRequest(
             action='Users/{userId}/Items/Resume',
             params={
                 'limit': 10,
                 'mediaTypes': 'Video',
-                'Types': 'Episode',
+                'Types': 'Episode,Movie',
                 'fields': 'Overview'
             }
         ).get('Items', [])
         for item in items:
             if model := self.__makeModel(item):
-                episode_models.append(model)
-        return episode_models
+                models.append(model)
+        return models
 
     def getNextUp(self) -> list:
         # Returns list of episode model

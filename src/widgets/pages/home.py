@@ -6,6 +6,7 @@ from ..series import SeriesOverview, SeriesButton
 from ..episode import EpisodeButton
 from ..movie import MovieButton
 from ..containers import Carousel
+from ...integrations import models
 from ... import constants
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/home.ui')
@@ -39,12 +40,17 @@ class HomePage(Adw.NavigationPage):
                 UserViewButton(model=userView)
             )
 
-        episode_widgets = []
-        for episode in jellyfin.getResume():
-            episode_widgets.append(
-                EpisodeButton(model=episode)
-            )
-        GLib.idle_add(self.continue_watching_container.set_widgets, episode_widgets)
+        resume_widgets = []
+        for model in jellyfin.getResume():
+            if isinstance(model, models.Episode):
+                resume_widgets.append(
+                    EpisodeButton(model=model)
+                )
+            elif isinstance(model, models.Movie):
+                resume_widgets.append(
+                    MovieButton(model=model)
+                )
+        GLib.idle_add(self.continue_watching_container.set_widgets, resume_widgets)
 
         episode_widgets = []
         for episode in jellyfin.getNextUp():
