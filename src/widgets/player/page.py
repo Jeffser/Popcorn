@@ -321,9 +321,12 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def on_gesture_clicked(self, gesture, n_clicks:int, x:float, y:float):
         if n_clicks == 2:
-            if x > self.get_width() / 2:
+            percentage = x / self.get_width()
+            if 0 <= percentage <= 0.4 :
                 self.seek(None, None, GLib.Variant('i', 10))
-            else:
+            elif 0.4 <= percentage <= 0.6:
+                self.toggle_playback(None, None, None)
+            elif 0.6 <= percentage <= 1:
                 self.seek(None, None, GLib.Variant('i', -10))
             return True
 
