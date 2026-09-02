@@ -334,7 +334,7 @@ class PlayerPage(Adw.NavigationPage):
         self.set_property('overlay-progress', 0)
         if self.overlay_icon_timeout_id:
             GLib.source_remove(self.overlay_icon_timeout_id)
-        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
+        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
     def change_volume(self, obj, action_name, volume):
         volume = volume.unpack()
@@ -348,7 +348,7 @@ class PlayerPage(Adw.NavigationPage):
         self.set_property('overlay-progress', volume*5)
         if self.overlay_icon_timeout_id:
             GLib.source_remove(self.overlay_icon_timeout_id)
-        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
+        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
     def toggle_playback(self, obj, action_name, param):
         icon_name = ''
@@ -366,5 +366,5 @@ class PlayerPage(Adw.NavigationPage):
         self.set_property('overlay-progress', 0)
         if self.overlay_icon_timeout_id:
             GLib.source_remove(self.overlay_icon_timeout_id)
-        self.overlay_icon_timeout_id = GLib.timeout_add(3000, self.reset_overlay_icon)
+        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
