@@ -95,15 +95,26 @@ template $PopcornEpisodePage: Adw.NavigationPage {
                 };
               }
 
-              Gtk.Label {
+              Gtk.Button {
                 styles [
-                  "title-3"
+                  "p0",
+                  "flat"
                 ]
-                ellipsize: end;
-                wrap: true;
-                wrap-mode: word_char;
-                lines: 2;
-                label: bind template.series-model as <$PopcornSeries> .Name;
+                child: Gtk.Label {
+                  styles [
+                    "title-3"
+                  ]
+                  ellipsize: end;
+                  wrap: true;
+                  wrap-mode: word_char;
+                  lines: 2;
+                  label: bind template.series-model as <$PopcornSeries> .Name;
+                  justify: center;
+                };
+                tooltip-text: bind template.series-model as <$PopcornSeries> .Name;
+                action-name: "app.show_series";
+                action-target: bind $format_action_target(template.series-model as <$PopcornSeries>. Id, 's');
+                halign: center;
               }
 
               Gtk.Label {
