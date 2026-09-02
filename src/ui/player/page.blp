@@ -255,9 +255,9 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                     ]
                     valign: center;
                     tooltip-text: _("Toggle Favorite");
-                    action-name: "app.toggle_favorite";
-                    action-target: bind $format_action_target(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Id, 's');
                     icon-name: bind $format_heart_icon_name(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .IsFavorite);
+                    action-target: bind $format_action_target(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Id, 's');
+                    action-name: "app.toggle_favorite";
                   }
 
                   Gtk.MenuButton volume_menubutton {
