@@ -2,8 +2,8 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio
 from . import models, secret
-from ..constants import subtitle_timestamp_to_position, subtitle_text_to_pango
-import requests, io, urllib3, platform, webvtt
+from ..constants import subtitle_timestamp_to_position, subtitle_text_to_pango, get_device_id, POPCORN_VERSION
+import requests, io, urllib3, platform, webvtt, platform
 
 # Just so that the logs don't get cluttered with warnings if trust-server = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -11,7 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Jellyfin(GObject.Object):
     __gtype_name__ = 'PopcornIntegrationJellyfin'
 
-    AUTH_HEADER = 'MediaBrowser Client="Popcorn", Device="{}", DeviceId="{}", Version="1.0.0"'.format(platform.node(), str(abs(hash(platform.node()))))
+    AUTH_HEADER = ""
 
     # Loaded when login
     trustServer = GObject.Property(type=bool, default=False)
@@ -25,6 +25,8 @@ class Jellyfin(GObject.Object):
     loaded_models = {}
 
     def getBaseHeader(self) -> dict:
+        if not self.AUTH_HEADER:
+            self.AUTH_HEADER = 'MediaBrowser Client="Popcorn", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), POPCORN_VERSION)
         headers = {
             "Authorization": self.AUTH_HEADER
         }
@@ -37,6 +39,7 @@ class Jellyfin(GObject.Object):
         return '{}/{}'.format(self.get_property('url').strip('/'), action)
 
     def getStreamUrl(self, model_id:str) -> str:
+        # Can be called in main thread no problem
         return self.getUrl(
             'Videos/{model_id}/stream?static=true&api_key={api_key}',
             model_id=model_id,
@@ -606,8 +609,8 @@ class Jellyfin(GObject.Object):
                 ).get('UserData', {})
                 if parent_model := self.loaded_models.get(parentId):
                     parent_model.set_property("Played", item_user_data.get('Played', False))
-                    parent_model.set_property("Progress", item_user_data.get('PlayedPercentage', 0) / 100)
                     if isinstance(parent_model, models.Movie):
+                        parent_model.set_property("Progress", item_user_data.get('PlayedPercentage', 0) / 100)
                         return
 
                 items = self.makeRequest(
@@ -625,7 +628,6 @@ class Jellyfin(GObject.Object):
                         if isPlayed and isinstance(child_model, models.Episode):
                             child_model.set_property("Progress", 0)
 
-
     def setPlayedStatus(self, modelId:str, played:bool):
         self.makeRequest(
             action="Users/{userId}/PlayedItems/{itemId}",
@@ -636,9 +638,58 @@ class Jellyfin(GObject.Object):
         )
         self.__updatePlayedStatus(modelId)
 
-    def setProgress(self, modelId:str, progress:float):
-        # progress should be seconds with decimals
+    def StartSession(self, modelId:str):
+        # When starting a new movie / episode
         self.makeRequest(
-            action=""
+            action="Sessions/Playing",
+            params={
+                "ItemId": modelId,
+                "PositionTicks": 0,
+                "IsPaused": "false",
+                "CanSeek": "true",
+                "PlayMethod": "DirectPlay"
+            },
+            mode="POST"
         )
 
+    def UpdateSession(self, modelId:str, position:float, isPaused:bool):
+        # Sent every few seconds whilst playing a movie / episode
+        # position = seconds with decimals
+        self.makeRequest(
+            action="Sessions/Playing/Progress",
+            params={
+                "ItemId": modelId,
+                "PositionTicks": int(position * 10_000_000),
+                "IsPaused": "true" if isPaused else "false",
+                "CanSeek": "true"
+            },
+            mode="POST"
+        )
+
+    def StopSession(self, modelId:str, position:float):
+        # When finishing a movie / episode
+        # position = seconds with decimals
+        # also updates the Played and Progress properties of the model
+        self.makeRequest(
+            action="Sessions/Playing/Stopped",
+            params={
+                "ItemId": modelId,
+                "PositionTicks": int(position * 10_000_000)
+            },
+            mode="POST"
+        )
+        if model := self.loaded_models.get(modelId):
+            if position >= model.get_property('Duration') * 0.9:
+                self.setPlayedStatus(modelId, True)
+                self.__updatePlayedStatus(modelId)
+                return
+        self.makeRequest(
+            action="Users/{userId}/Items/{itemId}/UserData",
+            action_keys={
+                "itemId": modelId
+            },
+            params={
+                "PlaybackPositionTicks": int(position * 10_000_000)
+            }
+        )
+        self.__updatePlayedStatus(modelId)

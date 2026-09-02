@@ -103,3 +103,34 @@ def subtitle_text_to_pango(line:str) -> str:
     line = re.sub(r'</?c[^>]*>', '', line)
 
     return line
+
+def get_device_id():
+    device_id = None
+    if IN_FLATPAK:
+        try:
+            from pydbus import SessionBus
+            bus = SessionBus()
+            flatpak_portal = bus.get("org.freedesktop.portal.Flatpak", "/org/freedesktop/portal/Flatpak")
+            device_id = flatpak_portal.GetMachineId().strip()
+        except Exception as e:
+            pass
+    else:
+        for path in ["/etc/machine-id", "/var/lib/dbus/machine-id"]:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    device_id = f.read().strip()
+    if not device_id: #generate UUID as fallback
+        fallback_path = os.path.join(CONFIG_DIR, "device_id")
+        if os.path.exists(fallback_path):
+            with open(fallback_path, "r") as f:
+                device_id = f.read().strip()
+        else:
+            device_id = str(uuid.uuid4())
+            with open(fallback_path, "w") as f:
+                f.write(device_id)
+    return device_id
+
+POPCORN_VERSION = "0.1.0"
+def set_popcorn_version(version:str):
+    global POPCORN_VERSION
+    POPCORN_VERSION = version

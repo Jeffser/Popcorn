@@ -29,6 +29,7 @@ from gi.repository import Gtk, GObject, Gio, Adw, GLib
 from .window import PopcornWindow
 from . import widgets as Widgets
 from .integrations import Jellyfin
+from .constants import set_popcorn_version
 
 GLib.set_prgname('com.jeffser.Popcorn')
 GLib.set_application_name("Popcorn")
@@ -110,5 +111,6 @@ class PopcornApplication(Adw.Application):
 
 def main(version):
     print("Popcorn version", version)
+    set_popcorn_version(version)
     return PopcornApplication(version).run(sys.argv)
 

@@ -257,6 +257,10 @@ class Player(GObject.Object):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        # For handling Jellyfin.StopSession
+        self.last_model_id:str = None
+        self.last_reported_position:float = 0.0
+
         # MPRIS stuff
         self.event_adapter = PlayerEventAdapter(self)
 
@@ -274,11 +278,20 @@ class Player(GObject.Object):
         self.get_property('application').get_property('settings').connect("changed::volume", self.settings_volume_changed)
         self.gst.connect("notify::volume", self.gst_volume_changed)
         GLib.timeout_add(64, self.update_stream_progress)
+        GLib.timeout_add(10000, self.update_stream_progress_jellyfin)
+
+    def handle_jellyfin_session(self, new_model_id:str=""):
+        if jellyfin := self.get_property('application').jellyfin:
+            if self.last_model_id:
+                jellyfin.StopSession(self.last_model_id, self.last_reported_position)
+            self.last_model_id = new_model_id
+            if new_model_id:
+                jellyfin.StartSession(new_model_id)
 
     def model_changed(self, player, pspec):
         if jellyfin := self.get_property('application').jellyfin:
             if model := player.get_property(pspec.name):
-                self.past_model = model
+                threading.Thread(target=self.handle_jellyfin_session, args=(model.get_property('Id'),), daemon=True).start()
                 if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
                     self.get_property('gst').set_state(Gst.State.READY)
                     self.get_property('gst').set_property('uri', stream_url)
@@ -295,6 +308,8 @@ class Player(GObject.Object):
                     threading.Thread(target=self.update_media_segments, daemon=True).start()
                     threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
                     threading.Thread(target=self.update_subtitles, daemon=True).start()
+            else:
+                threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
 
     def update_subtitles(self):
         self.get_property('available-subtitles').remove_all()
@@ -367,6 +382,27 @@ class Player(GObject.Object):
     def update_stream_progress(self):
         success, position = self.get_property('gst').query_position(Gst.Format.TIME)
         self.set_property('position', position / Gst.SECOND)
+        return True
+
+    def update_stream_progress_jellyfin(self):
+        if jellyfin := self.get_property('application').jellyfin:
+            if model := self.get_property('model'):
+                is_paused = False
+                success, state, pending = self.get_property('gst').get_state(0)
+                if success:
+                    is_paused = state == Gst.State.PAUSED
+                if position := self.get_property("position"):
+                    if position > 0:
+                        self.last_reported_position = position
+                        threading.Thread(
+                            target=jellyfin.UpdateSession,
+                            args=(
+                                self.last_model_id,
+                                self.last_reported_position,
+                                is_paused
+                            ),
+                            daemon=True
+                        ).start()
         return True
 
     def stop(self):
