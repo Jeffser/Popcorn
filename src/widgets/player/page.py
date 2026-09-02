@@ -318,6 +318,15 @@ class PlayerPage(Adw.NavigationPage):
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 
+    @Gtk.Template.Callback()
+    def on_gesture_clicked(self, gesture, n_clicks:int, x:float, y:float):
+        if n_clicks == 2:
+            if x > self.get_width() / 2:
+                self.seek(None, None, GLib.Variant('i', 10))
+            else:
+                self.seek(None, None, GLib.Variant('i', -10))
+            return True
+
     def reset_overlay_icon(self):
         self.set_property('overlay-progress', 0)
         self.set_property('overlay-icon-name', '')

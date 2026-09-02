@@ -13,6 +13,10 @@ template $PopcornPlayerPage: Adw.NavigationPage {
     motion => $on_pointer_motion();
   }
 
+  Gtk.GestureClick {
+    pressed => $on_gesture_clicked();
+  }
+
   child: Adw.ToolbarView toolbarview {
     extend-content-to-top-edge: true;
     reveal-top-bars: false;
