@@ -1,13 +1,20 @@
 # preferences.py
 
 from gi.repository import GObject, GLib, Gtk, Adw, Gdk, Gio
-import threading
+import threading, os
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/preferences.ui')
 class PopcornPreferences(Adw.PreferencesDialog):
     __gtype_name__ = 'PopcornPreferencesDialog'
 
+    # General
     blur_effect_el = Gtk.Template.Child()
+
+    # Gnome Search
+    is_gnome = GObject.Property(type=bool, default="GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper())
+    gnome_search_movie_el = Gtk.Template.Child()
+    gnome_search_series_el = Gtk.Template.Child()
+    gnome_search_episode_el = Gtk.Template.Child()
 
     # Session
     session_server_name = GObject.Property(type=str)
@@ -20,6 +27,24 @@ class PopcornPreferences(Adw.PreferencesDialog):
             settings.bind(
                 "blur-effect",
                 self.blur_effect_el,
+                "active",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            settings.bind(
+                "gnome-search-include-movie",
+                self.gnome_search_movie_el,
+                "active",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            settings.bind(
+                "gnome-search-include-series",
+                self.gnome_search_series_el,
+                "active",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            settings.bind(
+                "gnome-search-include-episode",
+                self.gnome_search_episode_el,
                 "active",
                 Gio.SettingsBindFlags.DEFAULT
             )

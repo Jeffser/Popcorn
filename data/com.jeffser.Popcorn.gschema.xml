@@ -13,9 +13,24 @@
 	  <key name="volume" type="d">
 	    <default>0.25</default>
 	  </key>
+
+	  <!-- # Preferences -->
+	  <!-- ## General -->
 	  <key name="blur-effect" type="b">
 	    <default>true</default>
 	  </key>
+
+	  <!-- ## Gnome Search -->
+	  <key name="gnome-search-include-movie" type="b">
+	    <default>true</default>
+	  </key>
+	  <key name="gnome-search-include-series" type="b">
+	    <default>true</default>
+	  </key>
+	  <key name="gnome-search-include-episode" type="b">
+	    <default>false</default>
+	  </key>
+
 	</schema>
 </schemalist>
 

@@ -58,9 +58,8 @@ class PopcornSearchProvider:
         ]
         self.allowed_types = []
         for type_name in possible_types:
-            self.allowed_types.append(type_name)
-            #if self.settings.get_value('gnome-search-include-{}'.format(type_name)).unpack():
-            #    self.allowed_types.append(type_name)
+            if self.settings.get_value('gnome-search-include-{}'.format(type_name)).unpack():
+                self.allowed_types.append(type_name)
         return []
 
     def ActivateResult(self, identifier, terms, uid=None):
@@ -124,3 +123,4 @@ bus = SessionBus()
 bus.publish("com.jeffser.Popcorn.SearchProvider", PopcornSearchProvider())
 loop = GLib.MainLoop()
 loop.run()
+
