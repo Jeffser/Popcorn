@@ -6,6 +6,7 @@ template $PopcornUserViewButton: Gtk.Button {
     label: bind template.model as <$PopcornUserView> .Name;
     icon-name: bind $format_icon_name(template.model as <$PopcornUserView> .CollectionType);
   };
+  tooltip-text: bind template.model as <$PopcornUserView> .Name;
   action-name: "app.show_user_view";
   action-target: bind $format_action_target(template.model as <$PopcornUserView> .Id);
 }

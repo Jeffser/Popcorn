@@ -34,6 +34,16 @@ class HomePage(Adw.NavigationPage):
             )
         GLib.idle_add(self.overview_container.set_widgets, overview_widgets)
 
+        for widget in list(self.user_views_container):
+            GLib.idle_add(self.user_views_container.remove, widget)
+        GLib.idle_add(self.user_views_container.append, Gtk.Button(
+            tooltip_text=_("Search"),
+            child=Adw.ButtonContent(
+                label=_("Search"),
+                icon_name="system-search-symbolic"
+            ),
+            action_name="app.show_search_page"
+        ))
         user_view_models = jellyfin.getUserViews()
         for userView in user_view_models:
             GLib.idle_add(self.user_views_container.append,

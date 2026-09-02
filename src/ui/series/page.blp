@@ -31,7 +31,11 @@ template $PopcornSeriesPage: Adw.NavigationPage {
           tightening-threshold: 2000;
           child: Gtk.Overlay top_overlay {
             hexpand: true;
+
             child: Gtk.Picture {
+              styles [
+                "page-background"
+              ]
               paintable: bind template.model as <$PopcornSeries> .BackdropPaintable;
               content-fit: cover;
             };

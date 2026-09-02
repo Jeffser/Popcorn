@@ -36,6 +36,9 @@ template $PopcornEpisodePage: Adw.NavigationPage {
           child: Gtk.Overlay top_overlay {
             hexpand: true;
             child: Gtk.Picture {
+              styles [
+                "page-background"
+              ]
               paintable: bind template.series-model as <$PopcornSeries> .BackdropPaintable;
               content-fit: cover;
             };

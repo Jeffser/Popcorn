@@ -32,6 +32,9 @@ template $PopcornMoviePage: Adw.NavigationPage {
           child: Gtk.Overlay top_overlay {
             hexpand: true;
             child: Gtk.Picture {
+              styles [
+                "page-background"
+              ]
               paintable: bind template.model as <$PopcornMovie> .BackdropPaintable;
               content-fit: cover;
             };

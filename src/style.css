@@ -102,3 +102,18 @@ button.toggle.toggle-with-accent:checked {
   background: var(--accent-bg-color);
   opacity: 1;
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+picture.page-background {
+  animation: slideDown 1s ease forwards;
+}
