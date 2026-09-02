@@ -134,3 +134,5 @@ POPCORN_VERSION = "0.1.0"
 def set_popcorn_version(version:str):
     global POPCORN_VERSION
     POPCORN_VERSION = version
+
+TRANSLATORS = []

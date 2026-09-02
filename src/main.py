@@ -29,7 +29,7 @@ from gi.repository import Gtk, GObject, Gio, Adw, GLib
 from .window import PopcornWindow
 from . import widgets as Widgets
 from .integrations import Jellyfin
-from .constants import set_popcorn_version
+from .constants import set_popcorn_version, TRANSLATORS
 
 GLib.set_prgname('com.jeffser.Popcorn')
 GLib.set_application_name("Popcorn")
@@ -73,13 +73,20 @@ class PopcornApplication(Adw.Application):
         self.pip_window.present()
 
     def on_about_action(self, *args):
-        about = Adw.AboutDialog(application_name='Popcorn',
-                                application_icon='com.jeffser.Popcorn',
-                                developer_name='Jeffry Samuel',
-                                version='0.1.0',
-                                translator_credits = _('translator-credits'),
-                                developers=['Jeffry Samuel'],
-                                copyright='© 2026 Jeffry Samuel')
+        about = Adw.AboutDialog(
+            application_icon='com.jeffser.Popcorn',
+            application_name='Popcorn',
+            copyright='© 2026 Jeffry Samuel',
+            developer_name='Jeffry Samuel',
+            issue_url="https://github.com/Jeffser/Popcorn/issues",
+            license="GPL-3.0-or-later",
+            support_url="https://github.com/Jeffser/Popcorn/discussions",
+            version=self.version,
+            website="https://jeffser.com/popcorn",
+            developers=['Jeffser https://jeffser.com'],
+            designers=['Jeffser https://jeffser.com'],
+            translator_credits='\n'.join(TRANSLATORS),
+        )
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):
