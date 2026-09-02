@@ -52,7 +52,8 @@ class PopcornService:
         self.app = app
 
     def Search(self, query:str) -> dict:
-        print('QUERY', query)
+        if jellyfin := self.app.jellyfin:
+            return self.app.jellyfin.systemSearch(query)
         return {}
 
 class PopcornApplication(Adw.Application):

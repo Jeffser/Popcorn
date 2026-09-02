@@ -3,13 +3,10 @@
 import gettext, sys
 from pydbus import SessionBus
 from gi.repository import GLib, Gio
+from io import BytesIO
+from PIL import Image
 
 _ = gettext.gettext
-
-ACTION_STRINGS = {
-    'movie': _("Show Movie"),
-    'series': _("Show Series")
-}
 
 class PopcornSearchProvider:
     """
@@ -98,23 +95,32 @@ class PopcornSearchProvider:
         results = []
         for identifier in identifiers:
             if item := self.last_results.get(identifier):
-                if display := item.get('display'):
+                if title := item.get('title'):
                     icon = None
                     try:
                         if icon_bytes := item.get('icon'):
-                            if len(icon_bytes) > 0:
-                                gbytes = GLib.Bytes.new(icon_bytes)
+                            with Image.open(BytesIO(bytearray(icon_bytes))) as img:
+                                width, height = img.size
+                                side = min(width, height)
+                                left = (width - side) // 2
+                                top = (height - side) // 2
+                                right = left + side
+                                bottom = top + side
+                                cropped = img.crop((left, top, right, bottom))
+                                output = BytesIO()
+                                img_format = img.format if img.format else "JPEG"
+                                cropped.save(output, format=img_format)
+                                gbytes = GLib.Bytes.new(output.getvalue())
                                 icon = Gio.BytesIcon.new(gbytes).serialize()
-                    except:
-                        pass
+                    except Exception as e:
+                        print('ERROR', e)
                     if not icon:
-                        icon_name = 'video-clip-symbolic' if item.get('type') == 'movie' else 'tv-symbolic'
-                        icon = Gio.ThemedIcon.new(icon_name).serialize()
+                        icon = Gio.ThemedIcon.new('tv-symbolic').serialize()
 
                     results.append({
                         'id': GLib.Variant('s', identifier),
-                        'name': GLib.Variant('s', display),
-                        'description': GLib.Variant('s', item.get('description') or ACTION_STRINGS.get(item.get('type', ''), '')),
+                        'name': GLib.Variant('s', title),
+                        'description': GLib.Variant('s', item.get('subtitle')),
                         'icon': icon
                     })
         return results

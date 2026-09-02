@@ -249,13 +249,25 @@ class Jellyfin(GObject.Object):
             max_width=max_width
         )
 
-    def getPaintable(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
+    def getPaintableBytes(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> bytes | None:
         try:
             url = self.getImageUrl(item_id, image_type, max_width)
             response = requests.get(url, timeout=5)
             response.raise_for_status()
-            gbytes = GLib.Bytes.new(response.content)
-            return Gdk.Texture.new_from_bytes(gbytes)
+            return response.content
+        except:
+            pass
+        return None
+
+    def getPaintable(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> Gdk.Paintable | None:
+        try:
+            if raw_bytes := self.getPaintableBytes(
+                item_id,
+                image_type=image_type,
+                max_width=max_width
+            ):
+                gbytes = GLib.Bytes.new(raw_bytes)
+                return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
         return None
@@ -718,3 +730,27 @@ class Jellyfin(GObject.Object):
             pass
 
         return server_information
+
+    def systemSearch(self, query:str) -> dict:
+        # For use in Gnome Search
+        results = {}
+        items = self.makeRequest(
+            action="Search/Hints",
+            params={
+                "searchTerm": query,
+                "includeItemTypes": "Episode,Series,Movie",
+                "limit": 20,
+                "recursive": "true"
+            }
+        ).get('SearchHints', [])
+        for item in items:
+            icon_bytes = self.getPaintableBytes(item.get('Id'), image_type="primary", max_width=64)
+            results[item.get('Id')] = {
+                'type': GLib.Variant('s', item.get('Type').lower()),
+                'title': GLib.Variant('s', item.get('Name')),
+                'subtitle': GLib.Variant('s', item.get('Series') if item.get('Type') == 'Episode' else str(item.get('ProductionYear'))),
+                'icon': GLib.Variant('ay', bytearray(icon_bytes))
+            }
+        return results
+
+

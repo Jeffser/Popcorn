@@ -30,7 +30,6 @@
 	  <key name="gnome-search-include-episode" type="b">
 	    <default>false</default>
 	  </key>
-
 	</schema>
 </schemalist>
 
