@@ -80,18 +80,15 @@ template $PopcornPlayerPage: Adw.NavigationPage {
 
       [overlay]
       Adw.Clamp {
+        valign: end;
         maximum-size: 2400;
         child: Gtk.Box {
           orientation: vertical;
           margin-top: 10;
           margin-start: 10;
           margin-end: 10;
-          valign: end;
-          hexpand: true;
 
           Gtk.Overlay {
-            hexpand: true;
-
             Gtk.Label {
               styles [
                 "title-3",

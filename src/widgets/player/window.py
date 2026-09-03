@@ -7,7 +7,16 @@ from ..player import PlayerPage
 class PlayerWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornPictureInPictureWindow'
 
+    window_handle = Gtk.Template.Child()
     player_page = Gtk.Template.Child()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if controllers := self.window_handle.observe_controllers():
+            for i in range(controllers.get_n_items()):
+                if controller := controllers.get_item(i):
+                    if isinstance(controller, Gtk.GestureClick):
+                        controller.set_propagation_phase(Gtk.PropagationPhase.NONE)
 
     @Gtk.Template.Callback()
     def on_close(self, window):
