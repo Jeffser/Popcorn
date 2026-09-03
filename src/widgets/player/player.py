@@ -308,8 +308,15 @@ class Player(GObject.Object):
                     threading.Thread(target=self.update_media_segments, daemon=True).start()
                     threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
                     threading.Thread(target=self.update_subtitles, daemon=True).start()
+                    threading.Thread(target=self.update_trickplay, daemon=True).start()
             else:
                 threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
+
+    def update_trickplay(self):
+        if model := self.get_property('model'):
+            if app := self.get_property('application'):
+                if jellyfin := app.jellyfin:
+                    jellyfin.updateTrickplay(model.get_property('Id'))
 
     def update_subtitles(self):
         self.get_property('available-subtitles').remove_all()

@@ -76,11 +76,10 @@ class Jellyfin(GObject.Object):
                     headers=headers,
                     verify=not self.get_property('trustServer')
                 )
+            if mode == 'RAWGET':
+                return response
             if response.status_code in (200, 201):
-                if mode == 'RAWGET':
-                    return response
-                else:
-                    return response.json()
+                return response.json()
             elif response.status_code == 204:
                 return {'state': 'ok'}
         except Exception as e:
@@ -752,6 +751,50 @@ class Jellyfin(GObject.Object):
                 'icon': GLib.Variant('ay', bytearray(icon_bytes))
             }
         return results
+
+    def updateTrickplay(self, model_id:str):
+        if model := self.loaded_models.get(model_id):
+            if thumbnails := model.get_property('TrickplayThumbnails'):
+                if thumbnails.get_property('n-items') > 0:
+                    return
+            result = self.makeRequest(
+                action="Users/{userId}/Items/{itemId}",
+                action_keys={
+                    "itemId": model_id
+                }
+            ).get("Trickplay", {}).get(model_id, {})
+            if len(result) > 0:
+                size = list(result)[0]
+                data = result.get(size, {})
+                tile_rows = data.get('TileWidth', 0)
+                tile_columns = data.get('TileHeight', 0)
+                count = data.get('ThumbnailCount', 0)
+
+                model.set_property('TrickplayWidth', data.get('Width', 0))
+                model.set_property('TrickplayHeight', data.get('Height', 0))
+                model.set_property('TrickplayTileRows', tile_rows)
+                model.set_property('TrickplayTileColumns', tile_columns)
+                model.set_property('TrickplayCount', count)
+                thumbnail_liststore = Gio.ListStore.new(item_type=models.TrickplayTileBytes)
+
+                try:
+                    for i in range(int(count / (tile_rows * tile_columns))):
+                        result = self.makeRequest(
+                            action="Videos/{itemId}/Trickplay/{size}/{index}.jpg",
+                            action_keys={
+                                "itemId": model_id,
+                                "size": size,
+                                "index": i
+                            },
+                            mode="RAWGET"
+                        )
+                        result.raise_for_status()
+                        if raw_bytes := result.content:
+                            thumbnail_liststore.append(models.TrickplayTileBytes(content=GLib.Bytes.new(raw_bytes)))
+                    model.set_property('TrickplayThumbnails', thumbnail_liststore)
+                except Exception as e:
+                    print(e)
+                    pass
 
     def getLoginDisclaimer(self) -> str:
         # Does NOT need to be logged in to work

@@ -1,6 +1,8 @@
 # models.py
 
 from gi.repository import GObject, GLib, Gtk, Gio, Gdk
+import io
+from PIL import Image
 
 class BasicModel(GObject.Object):
     __gtype_name__ = 'PopcornBasicModel'
@@ -55,6 +57,12 @@ class Season(BasicModel):
     Played = GObject.Property(type=bool, default=False)
     IsFavorite = GObject.Property(type=bool, default=False)
 
+class TrickplayTileBytes(GObject.Object):
+    __gtype_name__ = 'PopcornTrickplayTileBytes'
+
+    content = GObject.Property(type=GLib.Bytes)
+
+
 class Playable(BasicModel):
     __gtype_name__ = 'PopcornPlayable'
     Id = GObject.Property(type=str)
@@ -68,6 +76,39 @@ class Playable(BasicModel):
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
     IsFavorite = GObject.Property(type=bool, default=False)
 
+    # These are filled only when updateTrickplay is called
+    TrickplayWidth = GObject.Property(type=int, default=0)
+    TrickplayHeight = GObject.Property(type=int, default=0)
+    TrickplayTileRows = GObject.Property(type=int, default=0)
+    TrickplayTileColumns = GObject.Property(type=int, default=0)
+    TrickplayCount = GObject.Property(type=int, default=0)
+    TrickplayThumbnails = GObject.Property(type=Gio.ListStore)
+
+    def getTrickplayThumbnail(self, index:int) -> Gdk.Paintable:
+        row_n = self.get_property('TrickplayTileRows')
+        column_n = self.get_property('TrickplayTileColumns')
+        if elements_per_tile := row_n * column_n:
+            if thumbnails := self.get_property('TrickplayThumbnails'):
+                tile_index = index // elements_per_tile
+                remainder = index % elements_per_tile
+                row = remainder // column_n
+                column = remainder & column_n
+                if tile_index < thumbnails.get_property('n-items'):
+                    if tile_thumbnail := list(thumbnails)[tile_index]:
+                        if raw_data := tile_thumbnail.get_property('content').get_data():
+                            with Image.open(io.BytesIO(raw_data)) as img:
+                                tile_width = self.get_property('TrickplayWidth')
+                                tile_height = self.get_property('TrickplayHeight')
+                                left = column * tile_width
+                                upper = row * tile_height
+                                right = left + tile_width
+                                lower = upper + tile_height
+                                cropped = img.crop((left, upper, right, lower))
+                                output_stream = io.BytesIO()
+                                cropped.save(output_stream, format='PNG')
+                                gbytes = GLib.Bytes.new(output_stream.getvalue())
+                                return Gdk.Texture.new_from_bytes(gbytes)
+                    print(type(thumbnails))
 class Episode(Playable):
     __gtype_name__ = 'PopcornEpisode'
 

@@ -330,6 +330,31 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                         pressed => $scale_pressed();
                         unpaired-release => $scale_released();
                     }
+                    Gtk.EventControllerMotion {
+                        motion => $scale_hover();
+                        leave => $scale_leave_hover();
+                    }
+                    Gtk.Popover scale_popover {
+                      autohide: false;
+                      position: top;
+                      child: Gtk.Box {
+                        orientation: vertical;
+                        spacing: 5;
+                        Adw.Clamp {
+                          maximum-size: 360;
+                          child: Gtk.Picture {
+                            styles [
+                              "card"
+                            ]
+                            content-fit: cover;
+                            paintable: bind $format_trickplay_thumbnail(template.current-trickplay-index);
+                          };
+                        }
+                        Gtk.Label {
+                          label: bind template.current-trickplay-timestamp;
+                        }
+                      };
+                    }
                     hexpand: true;
                     digits: 4;
                     value-changed => $adjustment_changed();

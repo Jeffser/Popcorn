@@ -1,9 +1,10 @@
 # page.py
 
-from gi.repository import Gtk, Adw, GLib, GObject, Gst, Gio
+from gi.repository import Gtk, Gdk, Adw, GLib, GObject, Gst, Gio
 from ...integrations import models
 from .player import Player
 from ...constants import get_future_time, format_time_display, SECTION_NAMES
+import threading
 
 class SubtitleCheckButton(Gtk.CheckButton):
     __gtype_name__ = 'PopcornSubtitleCheckButton'
@@ -20,6 +21,8 @@ class PlayerPage(Adw.NavigationPage):
     position = GObject.Property(type=float)
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
     current_subtitle_line = GObject.Property(type=models.SubtitleLine) # If subtitle line should be shown
+    current_trickplay_index = GObject.Property(type=int)
+    current_trickplay_timestamp = GObject.Property(type=str)
     overlay_icon_name = GObject.Property(type=str)
     overlay_progress = GObject.Property(type=float) # 0-1
     media_segments = {} # start time : segment
@@ -30,6 +33,7 @@ class PlayerPage(Adw.NavigationPage):
     subtitle_menu_button = Gtk.Template.Child()
     subtitle_options_container = Gtk.Template.Child()
     scale = Gtk.Template.Child()
+    scale_popover = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
     volume_adjustment = Gtk.Template.Child()
 
@@ -336,6 +340,36 @@ class PlayerPage(Adw.NavigationPage):
             return settings.get_value('fullscreen-content-fit').unpack()
         else:
             return Gtk.ContentFit.CONTAIN
+
+    @Gtk.Template.Callback()
+    def format_trickplay_thumbnail(self, obj, index:int) -> Gdk.Paintable | None:
+        if player := self.get_property('player'):
+            if model := player.get_property('model'):
+                return model.getTrickplayThumbnail(index)
+
+    @Gtk.Template.Callback()
+    def scale_hover(self, controller, x:float, y:float):
+        if player := self.get_property('player'):
+            if model := player.get_property('model'):
+                if trickplayCount := model.get_property('TrickplayCount'):
+                    if duration := model.get_property('Duration'):
+                        width = controller.get_widget().get_width()
+                        prc = min(1, max(0, x / width))
+                        position = duration * prc
+                        self.set_property('current-trickplay-timestamp', format_time_display(position, False))
+                        self.set_property('current-trickplay-index', int(trickplayCount * prc))
+        rect = Gdk.Rectangle()
+        rect.x = x
+        rect.y = 0
+        rect.width = 1
+        rect.height = 1
+        self.scale_popover.set_offset(0, -10)
+        self.scale_popover.set_pointing_to(rect)
+        self.scale_popover.popup()
+
+    @Gtk.Template.Callback()
+    def scale_leave_hover(self, controller):
+        self.scale_popover.popdown()
 
     def reset_overlay_icon(self):
         self.set_property('overlay-progress', 0)
