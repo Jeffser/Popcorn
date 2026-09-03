@@ -342,7 +342,8 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                         spacing: 5;
                         Adw.Clamp {
                           maximum-size: 360;
-                          child: Gtk.Picture {
+                          visible: bind $format_to_bool(trickplay_picture.paintable);
+                          child: Gtk.Picture trickplay_picture {
                             styles [
                               "card"
                             ]

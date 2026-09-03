@@ -351,12 +351,12 @@ class PlayerPage(Adw.NavigationPage):
     def scale_hover(self, controller, x:float, y:float):
         if player := self.get_property('player'):
             if model := player.get_property('model'):
-                if trickplayCount := model.get_property('TrickplayCount'):
-                    if duration := model.get_property('Duration'):
-                        width = controller.get_widget().get_width()
-                        prc = min(1, max(0, x / width))
-                        position = duration * prc
-                        self.set_property('current-trickplay-timestamp', format_time_display(position, False))
+                if duration := model.get_property('Duration'):
+                    width = controller.get_widget().get_width()
+                    prc = min(1, max(0, x / width))
+                    position = duration * prc
+                    self.set_property('current-trickplay-timestamp', format_time_display(position, False))
+                    if trickplayCount := model.get_property('TrickplayCount'):
                         self.set_property('current-trickplay-index', int(trickplayCount * prc))
         rect = Gdk.Rectangle()
         rect.x = x
