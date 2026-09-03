@@ -327,11 +327,11 @@ class PlayerPage(Adw.NavigationPage):
         if n_clicks == 2:
             percentage = x / self.get_width()
             if 0 <= percentage <= 0.4 :
-                self.seek(None, None, GLib.Variant('i', 10))
+                self.seek(None, None, GLib.Variant('i', -10))
             elif 0.4 <= percentage <= 0.6:
                 self.toggle_playback(None, None, None)
             elif 0.6 <= percentage <= 1:
-                self.seek(None, None, GLib.Variant('i', -10))
+                self.seek(None, None, GLib.Variant('i', 10))
             return True
 
     @Gtk.Template.Callback()
@@ -363,7 +363,7 @@ class PlayerPage(Adw.NavigationPage):
         rect.y = 0
         rect.width = 1
         rect.height = 1
-        self.scale_popover.set_offset(0, -10)
+        self.scale_popover.set_offset(0, -20)
         self.scale_popover.set_pointing_to(rect)
         self.scale_popover.popup()
 
