@@ -53,7 +53,7 @@ template $PopcornEpisodePage: Adw.NavigationPage {
               hexpand: true;
               orientation: vertical;
               spacing: 10;
-              margin-top: 240;
+              margin-top: 50;
 
               Adw.Clamp {
                 halign: center;
@@ -76,7 +76,7 @@ template $PopcornEpisodePage: Adw.NavigationPage {
                         ]
                         paintable: bind template.model as <$PopcornEpisode> .PrimaryPaintable;
                         halign: center;
-                        valign: center;
+                        valign: end;
                       };
                     }
                     Gtk.StackPage {
