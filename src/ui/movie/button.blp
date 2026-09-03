@@ -64,7 +64,7 @@ template $PopcornMovieButton: Gtk.Box {
             "osd",
             "circular"
           ]
-          tooltip-text: _("Play Movie");
+          tooltip-text: bind $format_play_button_label(template.model as <$PopcornEpisode> .Progress);
           action-name: "app.play_movie";
           action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
           icon-name: "media-playback-start-symbolic";

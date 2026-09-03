@@ -59,3 +59,7 @@ class EpisodeButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
+
+    @Gtk.Template.Callback()
+    def format_play_button_label(self, obj, progress:float):
+        return _("Resume Episode") if progress > 0 else _("Play Episode")

@@ -160,7 +160,7 @@ template $PopcornEpisodePage: Adw.NavigationPage {
                   action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
                   child: Adw.ButtonContent {
                     icon-name: "media-playback-start-symbolic";
-                    label: _("Play");
+                    label: bind $format_play_button_label(template.model as <$PopcornEpisode> .Progress);
                   };
                 }
 

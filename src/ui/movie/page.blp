@@ -121,7 +121,7 @@ template $PopcornMoviePage: Adw.NavigationPage {
                   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
                   child: Adw.ButtonContent {
                     icon-name: "media-playback-start-symbolic";
-                    label: _("Play");
+                    label: bind $format_play_button_label(template.model as <$PopcornMovie> .Progress);
                   };
                 }
                 Gtk.ToggleButton {
