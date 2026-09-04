@@ -31,7 +31,7 @@ from .window import PopcornWindow
 from .preferences import PopcornPreferences
 from . import widgets as Widgets
 from .integrations import Jellyfin
-from .constants import set_popcorn_version, TRANSLATORS
+from .constants import set_popcorn_version, TRANSLATORS, COPYRIGHT
 
 GLib.set_prgname('com.jeffser.Popcorn')
 GLib.set_application_name("Popcorn")
@@ -104,7 +104,7 @@ class PopcornApplication(Adw.Application):
         about = Adw.AboutDialog(
             application_icon='com.jeffser.Popcorn',
             application_name='Popcorn',
-            copyright='© 2026 Jeffry Samuel',
+            copyright=COPYRIGHT,
             developer_name='Jeffry Samuel',
             issue_url="https://github.com/Jeffser/Popcorn/issues",
             license="GPL-3.0-or-later",

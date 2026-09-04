@@ -5,6 +5,12 @@ from datetime import datetime, timedelta
 
 IN_FLATPAK = bool(os.getenv("FLATPAK_ID"))
 
+COPYRIGHT = """Popcorn © 2026 Jeffry Samuel, Jeffser
+
+Popcorn functions strictly as a client application. All network connections and data transfers are performed exclusively at the request and authorization of the server owner. Popcorn does not independently access or host any content.
+
+Popcorn does not facilitate, encourage, or provide mechanisms for piracy. Users are responsible for ensuring they have the legal right to access and stream the content hosted on the servers they connect to."""
+
 def get_xdg_home(env: str, default: str) -> str:
     base = os.getenv(env) or os.path.expanduser(default)
     if IN_FLATPAK:
