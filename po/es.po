@@ -24,36 +24,354 @@ msgstr ""
 msgid "A caption"
 msgstr ""
 
-#: src/main.py:61
-msgid "translator-credits"
+#: data/com.jeffser.Popcorn.SearchProvider.desktop.in:3
+msgid "Popcorn Search Provider"
 msgstr ""
 
-#: src/ui/pages/login.blp:5 src/ui/pages/login.blp:50 src/ui/pages/login.blp:51
+#. For translations
+#: src/constants.py:34
+msgid "Intro"
+msgstr ""
+
+#: src/constants.py:35
+msgid "Outro"
+msgstr ""
+
+#: src/integrations/jellyfin.py:123 src/widgets/episode/page.py:26
+#, python-brace-format
+msgid "Season {}"
+msgstr ""
+
+#: src/main.py:138
+msgid "Error logging in"
+msgstr ""
+
+#: src/ui/containers/carousel.blp:32
+msgid "Pan to the Left"
+msgstr ""
+
+#: src/ui/containers/carousel.blp:46
+msgid "Pan to the Right"
+msgstr ""
+
+#: src/ui/episode/button.blp:43 src/ui/episode/page.blp:174
+#: src/ui/movie/button.blp:43 src/ui/movie/page.blp:134
+#: src/ui/season/button.blp:42 src/ui/season/page.blp:150
+#: src/ui/series/button.blp:42 src/ui/series/page.blp:136
+msgid "Toggle Played"
+msgstr ""
+
+#: src/ui/episode/button.blp:83 src/ui/episode/page.blp:146
+#: src/ui/movie/button.blp:83 src/ui/movie/page.blp:107
+#: src/ui/player/page.blp:259 src/ui/season/button.blp:62
+#: src/ui/season/page.blp:122 src/ui/series/button.blp:62
+#: src/ui/series/page.blp:108
+msgid "Toggle Favorite"
+msgstr ""
+
+#: src/ui/episode/page.blp:158 src/ui/movie/page.blp:119
+#: src/ui/player/page.blp:212 src/ui/season/page.blp:134
+#: src/ui/season/page.blp:139 src/ui/series/page.blp:120
+#: src/ui/series/page.blp:125 src/widgets/episode/page.py:66
+#: src/widgets/movie/page.py:76
+msgid "Play"
+msgstr ""
+
+#: src/ui/episode/page.blp:254 src/ui/movie/page.blp:217
+#: src/ui/series/page.blp:228
+msgid "Overview"
+msgstr ""
+
+#: src/ui/misc/overview_carousel.blp:43 src/ui/misc/overview_carousel.blp:58
+msgid "Pan"
+msgstr ""
+
+#: src/ui/movie/page.blp:243 src/ui/series/page.blp:259
+msgid "Recommendations"
+msgstr ""
+
+#: src/ui/pages/home.blp:5
+msgid "Home"
+msgstr ""
+
+#: src/ui/pages/home.blp:49 src/ui/series/overview.blp:162
+msgid "Continue Watching"
+msgstr ""
+
+#: src/ui/pages/home.blp:54
+msgid "Next Up"
+msgstr ""
+
+#: src/ui/pages/home.blp:66
+msgid "Preferences"
+msgstr ""
+
+#: src/ui/pages/home.blp:70
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: src/ui/pages/home.blp:74
+msgid "About Popcorn"
+msgstr ""
+
+#: src/ui/pages/login.blp:5 src/ui/pages/login.blp:61 src/ui/pages/login.blp:62
 msgid "Login"
 msgstr ""
 
-#: src/ui/pages/login.blp:16
-msgid "Welcome to Popcorn"
+#: src/ui/pages/login.blp:32
+msgid "Sign in to Continue"
 msgstr ""
 
-#: src/ui/pages/login.blp:17
-msgid "Login to your Jellyfin server"
-msgstr ""
-
-#: src/ui/pages/login.blp:31
-msgid "Url"
-msgstr ""
-
-#: src/ui/pages/login.blp:35
+#: src/ui/pages/login.blp:48
 msgid "User"
 msgstr ""
 
-#: src/ui/pages/login.blp:39
+#: src/ui/pages/login.blp:51
 msgid "Password"
 msgstr ""
 
-#: src/ui/pages/login.blp:60 src/ui/pages/login.blp:61
+#: src/ui/pages/login.blp:72 src/ui/pages/login.blp:73
 msgid "Use Quick Connect"
+msgstr ""
+
+#: src/ui/pages/search.blp:5 src/ui/pages/search.blp:11
+#: src/ui/pages/search.blp:22 src/ui/shortcuts-dialog.blp:8
+#: src/widgets/pages/home.py:45 src/widgets/pages/home.py:47
+msgid "Search"
+msgstr ""
+
+#: src/ui/pages/search.blp:23
+msgid "Begin typing to search"
+msgstr ""
+
+#: src/ui/pages/search.blp:34
+msgid "No Results"
+msgstr ""
+
+#: src/ui/pages/search.blp:54
+msgid "Series"
+msgstr ""
+
+#: src/ui/pages/search.blp:59
+msgid "Movies"
+msgstr ""
+
+#: src/ui/pages/search.blp:64 src/ui/season/page.blp:168
+msgid "Episodes"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:5
+msgid "Welcome"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:17
+msgid "Welcome to Popcorn"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:18
+msgid "Connect to your Jellyfin server"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:29
+msgid "Url"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:34
+msgid "Trust server SSL certificates"
+msgstr ""
+
+#: src/ui/pages/welcome.blp:42 src/ui/pages/welcome.blp:43
+msgid "Connect"
+msgstr ""
+
+#: src/ui/pages/wrapbox_page.blp:58
+msgid "Bottom Reached"
+msgstr ""
+
+#: src/ui/player/next_up_button.blp:39
+msgid "Playing Next"
+msgstr ""
+
+#: src/ui/player/page.blp:9 src/ui/shortcuts-dialog.blp:19
+msgid "Player"
+msgstr ""
+
+#: src/ui/player/page.blp:32
+msgid "Watch in Picture-in-Picture"
+msgstr ""
+
+#: src/ui/player/page.blp:184
+msgid "Previous"
+msgstr ""
+
+#: src/ui/player/page.blp:200
+msgid "Pause"
+msgstr ""
+
+#: src/ui/player/page.blp:224
+msgid "Next"
+msgstr ""
+
+#: src/ui/player/page.blp:279
+msgid "Mute"
+msgstr ""
+
+#: src/ui/player/page.blp:297
+msgid "Full Volume"
+msgstr ""
+
+#: src/ui/preferences.blp:6 src/ui/shortcuts-dialog.blp:6
+msgid "General"
+msgstr ""
+
+#: src/ui/preferences.blp:9
+msgid "Appearance"
+msgstr ""
+
+#: src/ui/preferences.blp:11
+msgid "Blur Effect"
+msgstr ""
+
+#: src/ui/preferences.blp:12
+msgid "Apply blur effect in some areas"
+msgstr ""
+
+#: src/ui/preferences.blp:15
+msgid "Player Content Fit Mode"
+msgstr ""
+
+#: src/ui/preferences.blp:16
+msgid "Only applies when in fullscreen mode"
+msgstr ""
+
+#: src/ui/preferences.blp:19
+msgid "Fill"
+msgstr ""
+
+#: src/ui/preferences.blp:20
+msgid "Contain"
+msgstr ""
+
+#: src/ui/preferences.blp:21
+msgid "Cover"
+msgstr ""
+
+#: src/ui/preferences.blp:22
+msgid "Scale Down"
+msgstr ""
+
+#: src/ui/preferences.blp:29
+msgid "Gnome Search"
+msgstr ""
+
+#: src/ui/preferences.blp:30
+msgid ""
+"Search for your media directly from the system search bar while Popcorn is "
+"running. You can enable or disable this feature completely in System Settings"
+msgstr ""
+
+#: src/ui/preferences.blp:34
+msgid "Include Movies"
+msgstr ""
+
+#: src/ui/preferences.blp:37
+msgid "Include Series"
+msgstr ""
+
+#: src/ui/preferences.blp:40
+msgid "Include Episodes"
+msgstr ""
+
+#: src/ui/preferences.blp:45
+msgid "Session"
+msgstr ""
+
+#: src/ui/preferences.blp:70
+msgid "Logout"
+msgstr ""
+
+#: src/ui/season/button.blp:75
+msgid "Play Season"
+msgstr ""
+
+#: src/ui/series/button.blp:75
+msgid "Play Series"
+msgstr ""
+
+#: src/ui/series/page.blp:254
+msgid "Seasons"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:9
+msgid "Not available while a video is playing in the main window"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:13
+msgid "Reload Page"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:14
+msgid "The video player page cannot be reloaded"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:21
+msgid "Toggle Playback"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:25
+msgid "Seek Forward"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:29
+msgid "Seek Backward"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:33
+msgid "Raise Volume"
+msgstr ""
+
+#: src/ui/shortcuts-dialog.blp:37
+msgid "Lower Volume"
+msgstr ""
+
+#: src/ui/window.blp:19
+msgid "Loading"
+msgstr ""
+
+#: src/widgets/episode/button.py:17
+#, python-brace-format
+msgid "S{} E{}"
+msgstr ""
+
+#: src/widgets/episode/button.py:57 src/widgets/episode/page.py:54
+#: src/widgets/player/page.py:159
+#, python-brace-format
+msgid "Ends at {}"
+msgstr ""
+
+#: src/widgets/episode/button.py:65
+msgid "Resume Episode"
+msgstr ""
+
+#: src/widgets/episode/button.py:65
+msgid "Play Episode"
+msgstr ""
+
+#: src/widgets/episode/page.py:66 src/widgets/movie/page.py:76
+msgid "Resume"
+msgstr ""
+
+#: src/widgets/movie/button.py:39
+msgid "Resume Movie"
+msgstr ""
+
+#: src/widgets/movie/button.py:39
+msgid "Play Movie"
+msgstr ""
+
+#: src/widgets/pages/home.py:103
+#, python-brace-format
+msgid "Recently Added in {}"
 msgstr ""
 
 #: src/widgets/pages/login.py:68
@@ -71,3 +389,27 @@ msgstr ""
 #: src/widgets/pages/login.py:77
 msgid "Cancel"
 msgstr ""
+
+#: src/widgets/pages/welcome.py:29
+msgid "Error connecting to server"
+msgstr ""
+
+#: src/widgets/player/page.py:243
+#, python-brace-format
+msgid "Skip {}"
+msgstr ""
+
+#: src/widgets/player/page.py:243
+msgid "Segment"
+msgstr ""
+
+#: src/widgets/player/player.py:330
+msgid "Off"
+msgstr ""
+
+#: src/widgets/series/overview.py:18 src/widgets/series/page.py:59
+#, python-brace-format
+msgid "{} Season"
+msgid_plural "{} Seasons"
+msgstr[0] ""
+msgstr[1] ""
