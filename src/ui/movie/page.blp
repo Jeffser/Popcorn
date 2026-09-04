@@ -10,8 +10,15 @@ template $PopcornMoviePage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {
       styles [
-        "osd"
+        "button-osd"
       ]
+      title-widget:
+        Adw.WindowTitle {
+          styles [
+            "text-osd"
+          ]
+          title: bind template.model as <$PopcornMovie> .Name;
+        };
     }
 
     content: Gtk.ScrolledWindow {
@@ -52,14 +59,13 @@ template $PopcornMoviePage: Adw.NavigationPage {
               margin-top: 50;
 
               Adw.Clamp {
-                halign: center;
+                halign: start;
                 orientation: vertical;
                 maximum-size: 360;
                 child: Adw.Clamp {
-                  maximum-size: 480;
+                  maximum-size: 400;
                   child: Gtk.Stack {
-                    width-request: 420;
-                    height-request: 420;
+                    height-request: 425;
                     hhomogeneous: false;
                     vhomogeneous: false;
                     visible-child-name: bind $format_stack_visible_child_name(template.model as <$PopcornMovie> .LogoPaintable);
@@ -96,12 +102,13 @@ template $PopcornMoviePage: Adw.NavigationPage {
               Adw.WrapBox {
                 child-spacing: 10;
                 line-spacing: 10;
-                halign: center;
+                halign: start;
                 Gtk.ToggleButton {
                   styles [
                     "circular",
                     "flat",
-                    "toggle-with-accent"
+                    "toggle-with-accent",
+                    "white"
                   ]
                   valign: center;
                   tooltip-text: _("Toggle Favorite");
@@ -128,30 +135,35 @@ template $PopcornMoviePage: Adw.NavigationPage {
                   styles [
                     "circular",
                     "flat",
-                    "toggle-with-accent"
+                    "toggle-with-accent",
+                    "white"
                   ]
                   valign: center;
                   tooltip-text: _("Toggle Played");
                   action-name: "app.toggle_played";
                   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
                   active: bind template.model as <$PopcornMovie> .Played;
-                  icon-name: "checkmark-symbolic";
+                  icon-name: "check-plain-symbolic";
                 }
               }
 
               Adw.WrapBox {
                 line-spacing: 10;
                 child-spacing: 10;
-                halign: center;
+                halign: start;
                 Gtk.Box {
                   spacing: 5;
                   visible: bind $format_to_bool(template.model as <$PopcornMovie> .CommunityRating);
                   Gtk.Image {
+                    styles [
+                      "white"
+                    ]
                     icon-name: "starred-symbolic";
                   }
                   Gtk.Label {
                     styles [
-                      "numeric"
+                      "numeric",
+                      "white"
                     ]
                     label: bind $format_one_decimal(template.model as <$PopcornMovie> .CommunityRating);
                   }
@@ -163,7 +175,8 @@ template $PopcornMoviePage: Adw.NavigationPage {
 
                 Gtk.Label {
                   styles [
-                    "numeric"
+                    "numeric",
+                    "white"
                   ]
                   label: bind template.model as <$PopcornMovie> .ProductionYear;
                   visible: bind $format_to_bool(template.model as <$PopcornMovie> .ProductionYear);
@@ -175,15 +188,28 @@ template $PopcornMoviePage: Adw.NavigationPage {
 
                 Gtk.Label {
                   styles [
-                    "monospace"
+                    "monospace",
+                    "white"
                   ]
                   label: bind template.model as <$PopcornMovie> .OfficialRating;
                   visible: bind $format_to_bool(template.model as <$PopcornMovie> .OfficialRating);
                 }
               }
+              Gtk.Label overview_label {
+                styles [
+                  "body",
+                  "white"
+                ]
+                wrap-mode: word;
+                wrap: true;
+                lines: 1;
+                xalign: 0;
+                label: bind template.model as <$PopcornMovie> .Overview;
+              }
             }
           };
         }
+
         Adw.Clamp {
           maximum-size: 2000;
           tightening-threshold: 800;
@@ -194,50 +220,6 @@ template $PopcornMoviePage: Adw.NavigationPage {
             ]
             orientation: vertical;
             spacing: 10;
-
-            Gtk.Box {
-              styles [
-                "card",
-                "p10"
-              ]
-              hexpand: true;
-              orientation: vertical;
-              spacing: 5;
-              visible: bind $format_to_bool(template.model as <$PopcornMovie> .Overview);
-              Gtk.Box {
-                orientation: horizontal;
-                spacing: 5;
-                Gtk.Label {
-                  styles [
-                    "heading"
-                  ]
-                  ellipsize: end;
-                  xalign: 0;
-                  hexpand: true;
-                  label: _("Overview");
-                }
-
-                Gtk.ToggleButton overview_toggle_button {
-                  styles [
-                    "p0",
-                    "flat"
-                  ]
-                  icon-name: bind $format_overview_button_icon_name(overview_toggle_button.active);
-                }
-              }
-
-              Gtk.Label overview_label {
-                styles [
-                  "body"
-                ]
-                wrap-mode: word;
-                wrap: true;
-                lines: 1;
-                ellipsize: bind $format_overview_ellipsize(overview_toggle_button.active);
-                xalign: 0;
-                label: bind template.model as <$PopcornMovie> .Overview;
-              }
-            }
 
             $PopcornCarousel recommendations_container {
               title: _("Recommendations");

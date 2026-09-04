@@ -12,7 +12,7 @@
     <file alias="icons/scalable/status/media-playlist-consecutive-symbolic.svg">icons/media-playlist-consecutive-symbolic.svg</file>
     <file alias="icons/scalable/status/pan-down-symbolic.svg">icons/pan-down-symbolic.svg</file>
     <file alias="icons/scalable/status/pan-up-symbolic.svg">icons/pan-up-symbolic.svg</file>
-    <file alias="icons/scalable/status/checkmark-symbolic.svg">icons/checkmark-symbolic.svg</file>
+    <file alias="icons/scalable/status/check-plain-symbolic.svg">icons/check-plain-symbolic.svg</file>
     <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
     <file alias="icons/scalable/status/media-playback-pause-symbolic.svg">icons/media-playback-pause-symbolic.svg</file>
     <file alias="icons/scalable/status/media-skip-backward-symbolic.svg">icons/media-skip-backward-symbolic.svg</file>

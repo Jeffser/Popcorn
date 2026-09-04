@@ -10,16 +10,6 @@ template $PopcornLibraryPage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {
       show-title: false;
-
-      [end]
-      Gtk.Button {
-        styles [
-          "circular",
-          "button-osd"
-        ]
-        icon-name: "system-search-symbolic";
-        action-name: "app.show_search_page";
-      }
     }
 
     content: Gtk.ScrolledWindow {

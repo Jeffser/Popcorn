@@ -46,13 +46,6 @@ listview > row {
   font-weight: 500;
 }
 
-.overview-shadow {
-    background-color: transparent;
-    background-image: linear-gradient(to top, rgba(0,0,0,0.25), rgba(0,0,0,0));
-    box-shadow: none;
-    border: none;
-}
-
 window.blur-effect .blur-backdrop {
   backdrop-filter: blur(10px);
 }
@@ -102,7 +95,7 @@ button.active_appearance_button:disabled {
 }
 
 .gradient-background {
-  background: linear-gradient(0deg, var(--window-bg-color), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
 }
 
 .black-background {
@@ -124,35 +117,37 @@ button.toggle.toggle-with-accent:checked {
   opacity: 1;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0.5;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-picture.page-background {
-  animation: slideDown 1s ease-out;
-}
-
 picture.login-background {
   filter: brightness(75%);
 }
 
+.text-osd {
+    color: white;
+    text-shadow:
+      0px 0px 5px rgba(0, 0, 0, 0.9),
+      0px 0px 10px rgba(0, 0, 0, 0.7),
+      0px 0px 15px rgba(0, 0, 0, 0.5);
+}
+
 .button-osd {
-    -gtk-icon-shadow:
-      0px 0px 25px rgba(255, 255, 255, 4),
-      0px 0px 20px rgba(255, 255, 255, 3),
-      0px 0px 15px rgba(255, 255, 255, 2.5),
-      0px 0px 10px rgba(255, 255, 255, 2);
+  color: white;
+  -gtk-icon-shadow:
+    0px 0px 25px rgba(0, 0, 0, 4),
+    0px 0px 20px rgba(0, 0, 0, 3),
+    0px 0px 15px rgba(0, 0, 0, 2.5),
+    0px 0px 10px rgba(0, 0, 0, 2);
+}
+
+.search-button-osd {
+  -gtk-icon-shadow:
+    0px 0px 25px rgba(255, 255, 255, 4),
+    0px 0px 20px rgba(255, 255, 255, 3),
+    0px 0px 15px rgba(255, 255, 255, 2.5),
+    0px 0px 10px rgba(255, 255, 255, 2);
 }
 
 @media (prefers-color-scheme: dark) {
-    .button-osd {
+    .search-button-osd {
         -gtk-icon-shadow:
           0px 0px 25px rgba(0, 0, 0, 4),
           0px 0px 20px rgba(0, 0, 0, 3),

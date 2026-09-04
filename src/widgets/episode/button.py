@@ -59,7 +59,7 @@ class EpisodeButton(Gtk.Box):
 
         played_row = ContextMenuRow(
             title=_("Mark as Unwatched") if model.get_property('Played') else _("Mark as Watched"),
-            icon_name="checkmark-symbolic",
+            icon_name="check-plain-symbolic",
         )
         played_row.connect('activated', lambda *_: self.activate_action(
             'app.toggle_played', GLib.Variant('s', model.get_property('Id'))
