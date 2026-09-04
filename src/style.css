@@ -111,10 +111,6 @@ headerbar.osd {
   background: black;
 }
 
-window.picture-in-picture headerbar, window.fullscreen headerbar {
-	background: none;
-}
-
 button.toggle.toggle-with-accent:checked {
   color: var(--accent-fg-color);
   background: var(--accent-bg-color);
