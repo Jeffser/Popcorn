@@ -17,6 +17,7 @@ class PlayerWindow(Adw.ApplicationWindow):
                 if controller := controllers.get_item(i):
                     if isinstance(controller, Gtk.GestureClick):
                         controller.set_propagation_phase(Gtk.PropagationPhase.NONE)
+                        break
 
     @Gtk.Template.Callback()
     def on_close(self, window):

@@ -22,6 +22,7 @@ window.blur-effect .blur-backdrop {
 }
 
 .blur-backdrop {
+  color: var(--view-fg-color);
   background: color-mix(in srgb, var(--view-bg-color) 75%, transparent);
   transition: backdrop-filter .2s;
 }
@@ -99,6 +100,7 @@ window.picture-in-picture headerbar, window.fullscreen headerbar {
 }
 
 button.toggle.toggle-with-accent:checked {
+  color: var(--accent-fg-color);
   background: var(--accent-bg-color);
   opacity: 1;
 }
@@ -121,3 +123,4 @@ picture.page-background {
 picture.login-background {
   filter: brightness(75%);
 }
+
