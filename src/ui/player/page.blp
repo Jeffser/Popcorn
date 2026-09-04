@@ -79,301 +79,297 @@ template $PopcornPlayerPage: Adw.NavigationPage {
       }
 
       [overlay]
-      Adw.Clamp {
+      Gtk.Box {
         valign: end;
-        maximum-size: 2400;
-        child: Gtk.Box {
-          orientation: vertical;
-          margin-top: 10;
-          margin-start: 10;
-          margin-end: 10;
+        hexpand: true;
+        orientation: vertical;
 
-          Gtk.Overlay {
-            Gtk.Label {
+        Gtk.Overlay {
+          Gtk.Label {
+            styles [
+              "title-3",
+              "no-bold",
+              "osd",
+              "rounded-corner",
+              "p10"
+            ]
+            hexpand: true;
+            halign: center;
+            justify: center;
+            wrap: true;
+            use-markup: true;
+            visible: bind $format_subtitle_visible(template.current_subtitle_line);
+            label: bind $format_subtitle_label(template.current_subtitle_line);
+          }
+
+          [overlay]
+          Gtk.Revealer button_revealer {
+            transition-duration: 250;
+            transition-type: crossfade;
+            halign: end;
+            valign: end;
+            child: Gtk.Stack button_revealer_stack {
               styles [
-                "title-3",
-                "no-bold",
-                "osd",
-                "rounded-corner",
                 "p10"
               ]
-              hexpand: true;
-              halign: center;
-              justify: center;
-              wrap: true;
-              use-markup: true;
-              visible: bind $format_subtitle_visible(template.current_subtitle_line);
-              label: bind $format_subtitle_label(template.current_subtitle_line);
-              margin-bottom: 10;
-            }
-
-            [overlay]
-            Gtk.Revealer button_revealer {
-              transition-duration: 250;
-              transition-type: crossfade;
-              halign: end;
-              valign: end;
-              child: Gtk.Stack button_revealer_stack {
-                hhomogeneous: false;
-                vhomogeneous: false;
-                Gtk.StackPage {
-                  name: "segment";
-                  child: Gtk.Button {
-                    styles [
-                      "suggested-action",
-                      "pill"
-                    ]
-                    margin-bottom: 10;
-                    halign: end;
-                    valign: end;
-                    clicked => $skip_segment_clicked();
-                    tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-                    child: Adw.ButtonContent {
-                      label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
-                      icon-name: "media-seek-forward-symbolic";
-                    };
+              hhomogeneous: false;
+              vhomogeneous: false;
+              Gtk.StackPage {
+                name: "segment";
+                child: Gtk.Button {
+                  styles [
+                    "suggested-action",
+                    "pill"
+                  ]
+                  halign: end;
+                  valign: end;
+                  clicked => $skip_segment_clicked();
+                  tooltip-text: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                  child: Adw.ButtonContent {
+                    label: bind $format_segment_skipper_label(template.current-media-segment as <$PopcornMediaSegment> .Type);
+                    icon-name: "media-seek-forward-symbolic";
                   };
-                }
-
-                Gtk.StackPage {
-                  name: "next-up";
-                  child: Adw.Clamp {
-                    margin-bottom: 10;
-                    maximum-size: 420;
-                    halign: end;
-                    valign: end;
-                    child: $PopcornNextUpButton {
-                      model: bind template.player as <$PopcornPlayer> .next-model as <$PopcornPlayable>;
-                    };
-                  };
-                }
-              };
-            }
-          }
-
-          Gtk.Revealer controls_revealer {
-            transition-duration: 250;
-            transition-type: slide_up;
-            child: Adw.BreakpointBin {
-              width-request: 335;
-              height-request: 10;
-              Adw.Breakpoint {
-                condition ("max-width: 360sp")
-                setters {
-                  end_time_label.visible: false;
-                }
+                };
               }
-              child: Gtk.Box {
-                styles [
-                  "osd",
-                  "player-controls-container"
-                ]
-                orientation: vertical;
-                spacing: 5;
-                margin-bottom: 10;
 
-                Gtk.Box {
-                  orientation: horizontal;
-                  spacing: 5;
-
-                  Gtk.Button {
-                    styles [
-                      "circular",
-                      "flat"
-                    ]
-                    tooltip-text: _("Previous");
-                    icon-name: "media-skip-backward-symbolic";
-                    sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .previous_model);
-                    clicked => $previous_clicked();
-                  }
-
-                  Gtk.Stack {
-                    transition-type: crossfade;
-                    visible-child-name: bind $format_visible_state_button(template.player as <$PopcornPlayer> .gst-state);
-                    Gtk.StackPage {
-                      name: "pause";
-                      child: Gtk.Button {
-                        styles [
-                          "circular",
-                          "flat"
-                        ]
-                        tooltip-text: _("Pause");
-                        icon-name: "media-playback-pause-symbolic";
-                        clicked => $pause_clicked();
-                      };
-                    }
-                    Gtk.StackPage {
-                      name: "play";
-                      child: Gtk.Button {
-                        styles [
-                          "circular",
-                          "flat"
-                        ]
-                        tooltip-text: _("Play");
-                        icon-name: "media-playback-start-symbolic";
-                        clicked => $play_clicked();
-                      };
-                    }
-                  }
-
-                  Gtk.Button {
-                    styles [
-                      "circular",
-                      "flat"
-                    ]
-                    tooltip-text: _("Next");
-                    icon-name: "media-skip-forward-symbolic";
-                    sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .next_model);
-                    clicked => $next_clicked();
-                  }
-
-                  Gtk.Label end_time_label {
-                    label: bind template.end-time;
-                    xalign: 0;
-                    ellipsize: middle;
-                  }
-
-                  Adw.Bin {
-                    hexpand: true;
-                  }
-
-                  Gtk.MenuButton subtitle_menu_button {
-                    styles [
-                      "flat"
-                    ]
-                    icon-name: "media-view-subtitles-symbolic";
-                    visible: bind $format_subtitle_button_visible(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
-                    popover: Gtk.Popover {
-                      child: Gtk.Box subtitle_options_container {
-                        orientation: vertical;
-                      };
-                    };
-                  }
-
-                  Gtk.Button {
-                    styles [
-                      "circular",
-                      "flat"
-                    ]
-                    valign: center;
-                    tooltip-text: _("Toggle Favorite");
-                    icon-name: bind $format_heart_icon_name(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .IsFavorite);
-                    action-target: bind $format_action_target(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Id, 's');
-                    action-name: "app.toggle_favorite";
-                  }
-
-                  Gtk.MenuButton volume_menubutton {
-                    styles [
-                      "flat"
-                    ]
-                    icon-name: bind $format_volume_icon_name(volume_adjustment.value);
-                    popover: Gtk.Popover {
-                      child: Gtk.Box {
-                        orientation: horizontal;
-
-                        Gtk.Button {
-                          styles [
-                            "flat"
-                          ]
-                          icon-name: "speaker-0-symbolic";
-                          tooltip-text: _("Mute");
-                          clicked => $mute_volume_clicked();
-                        }
-
-                        Gtk.Scale {
-                          adjustment: Gtk.Adjustment volume_adjustment {
-                            lower: 0;
-                            upper: 1;
-                            value: 0.25;
-                          };
-                          width-request: 150;
-                        }
-
-                        Gtk.Button {
-                          styles [
-                            "flat"
-                          ]
-                          icon-name: "speaker-3-symbolic";
-                          tooltip-text: _("Full Volume");
-                          clicked => $full_volume_clicked();
-                        }
-                      };
-                    };
-                  }
-
-                  Gtk.ToggleButton {
-                    styles [
-                      "flat"
-                    ]
-                    icon-name: "view-fullscreen-symbolic";
-                    active: bind template.root as <Gtk.Window> .fullscreened;
-                    notify::active => $fullscreen_toggled();
-                  }
-                }
-
-                Gtk.Box {
-                  orientation: horizontal;
-                  spacing: 5;
-
-                  Gtk.Label {
-                    styles [
-                      "numeric"
-                    ]
-                    label: bind $format_time_ellapsed(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
-                  }
-
-                  Gtk.Scale scale {
-                    Gtk.GestureClick {
-                        pressed => $scale_pressed();
-                        unpaired-release => $scale_released();
-                    }
-                    Gtk.EventControllerMotion {
-                        motion => $scale_hover();
-                        leave => $scale_leave_hover();
-                    }
-                    Gtk.Popover scale_popover {
-                      autohide: false;
-                      position: top;
-                      child: Gtk.Box {
-                        orientation: vertical;
-                        spacing: 5;
-                        Adw.Clamp {
-                          maximum-size: 360;
-                          visible: bind $format_to_bool(trickplay_picture.paintable);
-                          child: Gtk.Picture trickplay_picture {
-                            styles [
-                              "card"
-                            ]
-                            content-fit: cover;
-                            paintable: bind $format_trickplay_thumbnail(template.current-trickplay-index);
-                          };
-                        }
-                        Gtk.Label {
-                          label: bind template.current-trickplay-timestamp;
-                        }
-                      };
-                    }
-                    hexpand: true;
-                    digits: 4;
-                    value-changed => $adjustment_changed();
-                    adjustment: Gtk.Adjustment {
-                      lower: 0;
-                      upper: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration;
-                      value: bind template.position;
-                    };
-                  }
-
-                  Gtk.Label {
-                    styles [
-                      "numeric"
-                    ]
-                    label: bind $format_time_remaining(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
-                  }
-                }
-              };
+              Gtk.StackPage {
+                name: "next-up";
+                child: Adw.Clamp {
+                  maximum-size: 420;
+                  halign: end;
+                  valign: end;
+                  child: $PopcornNextUpButton {
+                    model: bind template.player as <$PopcornPlayer> .next-model as <$PopcornPlayable>;
+                  };
+                };
+              }
             };
           }
-        };
+        }
+
+        Gtk.Revealer controls_revealer {
+          styles [
+            "player-controls-container"
+          ]
+          transition-duration: 250;
+          transition-type: slide_up;
+          child: Adw.BreakpointBin {
+            width-request: 335;
+            height-request: 10;
+            Adw.Breakpoint {
+              condition ("max-width: 360sp")
+              setters {
+                end_time_label.visible: false;
+              }
+            }
+            child: Gtk.Box {
+              styles [
+                "p10"
+              ]
+              orientation: vertical;
+              spacing: 5;
+
+              Gtk.Box {
+                orientation: horizontal;
+                spacing: 5;
+
+                Gtk.Button {
+                  styles [
+                    "circular",
+                    "flat"
+                  ]
+                  tooltip-text: _("Previous");
+                  icon-name: "media-skip-backward-symbolic";
+                  sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .previous_model);
+                  clicked => $previous_clicked();
+                }
+
+                Gtk.Stack {
+                  transition-type: crossfade;
+                  visible-child-name: bind $format_visible_state_button(template.player as <$PopcornPlayer> .gst-state);
+                  Gtk.StackPage {
+                    name: "pause";
+                    child: Gtk.Button {
+                      styles [
+                        "circular",
+                        "flat"
+                      ]
+                      tooltip-text: _("Pause");
+                      icon-name: "media-playback-pause-symbolic";
+                      clicked => $pause_clicked();
+                    };
+                  }
+                  Gtk.StackPage {
+                    name: "play";
+                    child: Gtk.Button {
+                      styles [
+                        "circular",
+                        "flat"
+                      ]
+                      tooltip-text: _("Play");
+                      icon-name: "media-playback-start-symbolic";
+                      clicked => $play_clicked();
+                    };
+                  }
+                }
+
+                Gtk.Button {
+                  styles [
+                    "circular",
+                    "flat"
+                  ]
+                  tooltip-text: _("Next");
+                  icon-name: "media-skip-forward-symbolic";
+                  sensitive: bind $format_to_bool(template.player as <$PopcornPlayer> .next_model);
+                  clicked => $next_clicked();
+                }
+
+                Gtk.Label end_time_label {
+                  label: bind template.end-time;
+                  xalign: 0;
+                  ellipsize: middle;
+                }
+
+                Adw.Bin {
+                  hexpand: true;
+                }
+
+                Gtk.MenuButton subtitle_menu_button {
+                  styles [
+                    "flat"
+                  ]
+                  icon-name: "media-view-subtitles-symbolic";
+                  visible: bind $format_subtitle_button_visible(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
+                  popover: Gtk.Popover {
+                    child: Gtk.Box subtitle_options_container {
+                      orientation: vertical;
+                    };
+                  };
+                }
+
+                Gtk.Button {
+                  styles [
+                    "circular",
+                    "flat"
+                  ]
+                  valign: center;
+                  tooltip-text: _("Toggle Favorite");
+                  icon-name: bind $format_heart_icon_name(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .IsFavorite);
+                  action-target: bind $format_action_target(template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Id, 's');
+                  action-name: "app.toggle_favorite";
+                }
+
+                Gtk.MenuButton volume_menubutton {
+                  styles [
+                    "flat"
+                  ]
+                  icon-name: bind $format_volume_icon_name(volume_adjustment.value);
+                  popover: Gtk.Popover {
+                    child: Gtk.Box {
+                      orientation: horizontal;
+
+                      Gtk.Button {
+                        styles [
+                          "flat"
+                        ]
+                        icon-name: "speaker-0-symbolic";
+                        tooltip-text: _("Mute");
+                        clicked => $mute_volume_clicked();
+                      }
+
+                      Gtk.Scale {
+                        adjustment: Gtk.Adjustment volume_adjustment {
+                          lower: 0;
+                          upper: 1;
+                          value: 0.25;
+                        };
+                        width-request: 150;
+                      }
+
+                      Gtk.Button {
+                        styles [
+                          "flat"
+                        ]
+                        icon-name: "speaker-3-symbolic";
+                        tooltip-text: _("Full Volume");
+                        clicked => $full_volume_clicked();
+                      }
+                    };
+                  };
+                }
+
+                Gtk.ToggleButton {
+                  styles [
+                    "flat"
+                  ]
+                  icon-name: "view-fullscreen-symbolic";
+                  active: bind template.root as <Gtk.Window> .fullscreened;
+                  notify::active => $fullscreen_toggled();
+                }
+              }
+
+              Gtk.Box {
+                orientation: horizontal;
+                spacing: 5;
+
+                Gtk.Label {
+                  styles [
+                    "numeric"
+                  ]
+                  label: bind $format_time_ellapsed(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+                }
+
+                Gtk.Scale scale {
+                  Gtk.GestureClick {
+                      pressed => $scale_pressed();
+                      unpaired-release => $scale_released();
+                  }
+                  Gtk.EventControllerMotion {
+                      motion => $scale_hover();
+                      leave => $scale_leave_hover();
+                  }
+                  Gtk.Popover scale_popover {
+                    autohide: false;
+                    position: top;
+                    child: Gtk.Box {
+                      orientation: vertical;
+                      spacing: 5;
+                      Adw.Clamp {
+                        maximum-size: 360;
+                        visible: bind $format_to_bool(trickplay_picture.paintable);
+                        child: Gtk.Picture trickplay_picture {
+                          styles [
+                            "card"
+                          ]
+                          content-fit: cover;
+                          paintable: bind $format_trickplay_thumbnail(template.current-trickplay-index);
+                        };
+                      }
+                      Gtk.Label {
+                        label: bind template.current-trickplay-timestamp;
+                      }
+                    };
+                  }
+                  hexpand: true;
+                  digits: 4;
+                  value-changed => $adjustment_changed();
+                  adjustment: Gtk.Adjustment {
+                    lower: 0;
+                    upper: bind template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration;
+                    value: bind template.position;
+                  };
+                }
+
+                Gtk.Label {
+                  styles [
+                    "numeric"
+                  ]
+                  label: bind $format_time_remaining(template.position, template.player as <$PopcornPlayer> .model as <$PopcornPlayable> .Duration);
+                }
+              }
+            };
+          };
+        }
       }
     };
   };

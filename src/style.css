@@ -82,17 +82,33 @@ button.active_appearance_button:disabled {
   filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
 }
 
+headerbar.osd {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.35) 40%,
+    rgba(0, 0, 0, 0.1) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
 .gradient-background {
   background: linear-gradient(0deg, var(--window-bg-color), transparent);
 }
 
-.black-background {
-  background: black;
+.player-controls-container {
+  color: rgba(255,255,255,0.9);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.35) 40%,
+    rgba(0, 0, 0, 0.1) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
-.player-controls-container {
-  border-radius: 24px;
-  padding: 12px;
+.black-background {
+  background: black;
 }
 
 window.picture-in-picture headerbar, window.fullscreen headerbar {
