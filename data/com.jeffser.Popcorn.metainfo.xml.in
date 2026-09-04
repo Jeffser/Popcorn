@@ -5,9 +5,19 @@
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>Popcorn</name>
-  <summary>Enjoy your media</summary>
+  <summary>Explore your Jellyfin library with style</summary>
   <description>
     <p>A modern Jellyfin client</p>
+    <p>Features</p>
+    <ul>
+      <li>Dedicated pages for all types of elements</li>
+      <li>VTT subtitle support</li>
+      <li>Player gestures</li>
+      <li>Picture-in-Picture playback</li>
+      <li>Trickplay (scrobbing thumbnails)</li>
+      <li>Intro / Outro skipper</li>
+      <li>Cool interface</li>
+    </ul>
   </description>
 
   <developer id="com.jeffser">
@@ -42,18 +52,26 @@
   <content_rating type="oars-1.1" />
 
   <branding>
-    <color type="primary" scheme_preference="light">#8bf3f5</color>
-    <color type="primary" scheme_preference="dark">#08828a</color>
+    <color type="primary" scheme_preference="light">#ffbe6f</color>
+    <color type="primary" scheme_preference="dark">#a51d2d</color>
   </branding>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://example.org/example1.png</image>
-      <caption>A caption</caption>
+      <image>https://jeffser.com/images/popcorn/screenie1.png</image>
+      <caption>Main homepage</caption>
     </screenshot>
     <screenshot>
-      <image>https://example.org/example2.png</image>
-      <caption>A caption</caption>
+      <image>https://jeffser.com/images/popcorn/screenie2.png</image>
+      <caption>A series page</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://jeffser.com/images/popcorn/screenie3.png</image>
+      <caption>A movie page</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://jeffser.com/images/popcorn/screenie4.png</image>
+      <caption>A stream playing</caption>
     </screenshot>
   </screenshots>
 
