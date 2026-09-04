@@ -1,11 +1,15 @@
 # search.py
-
 from gi.repository import Gtk, GObject, Adw, Gio, GLib
 from ..movie import MovieButton
 from ..series import SeriesButton
 from ..episode import EpisodeButton
 from ...integrations import models
 import threading
+
+movie_widget_map = {models.Movie: MovieButton}
+series_widget_map = {models.Series: SeriesButton}
+episode_widget_map = {models.Episode: EpisodeButton}
+
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/search.ui')
 class SearchPage(Adw.NavigationPage):
@@ -16,13 +20,20 @@ class SearchPage(Adw.NavigationPage):
     movie_container = Gtk.Template.Child()
     series_container = Gtk.Template.Child()
     episode_container = Gtk.Template.Child()
+
     searching = False
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.movie_container.set_widget_map(movie_widget_map, is_tall=True)
+        self.series_container.set_widget_map(series_widget_map, is_tall=True)
+        self.episode_container.set_widget_map(episode_widget_map)
 
     def reset(self):
         self.get_root().set_focus(self.search_entry)
         self.search_entry.set_text('')
 
-    def search(self, query:str):
+    def search(self, query: str):
         if query != self.search_entry.get_text():
             threading.Thread(target=self.search, args=(self.search_entry.get_text(),), daemon=True).start()
             return
@@ -35,21 +46,20 @@ class SearchPage(Adw.NavigationPage):
             if app := root.get_application():
                 if jellyfin := app.jellyfin:
                     if results := jellyfin.search(query):
-                        movie_widgets = []
-                        series_widgets = []
-                        episode_widgets = []
-
+                        movie_models = []
+                        series_models = []
+                        episode_models = []
                         for model in results:
                             if isinstance(model, models.Movie):
-                                movie_widgets.append(MovieButton(model=model, is_tall=True))
+                                movie_models.append(model)
                             elif isinstance(model, models.Series):
-                                series_widgets.append(SeriesButton(model=model, is_tall=True))
+                                series_models.append(model)
                             elif isinstance(model, models.Episode):
-                                episode_widgets.append(EpisodeButton(model=model))
+                                episode_models.append(model)
 
-                        GLib.idle_add(self.movie_container.set_widgets, movie_widgets)
-                        GLib.idle_add(self.series_container.set_widgets, series_widgets)
-                        GLib.idle_add(self.episode_container.set_widgets, episode_widgets)
+                        GLib.idle_add(self.movie_container.set_items, movie_models)
+                        GLib.idle_add(self.series_container.set_items, series_models)
+                        GLib.idle_add(self.episode_container.set_items, episode_models)
                         GLib.idle_add(self.main_stack.set_visible_child_name, 'results')
                     else:
                         GLib.idle_add(self.main_stack.set_visible_child_name, 'no-results')

@@ -22,8 +22,8 @@ class WelcomePage(Adw.NavigationPage):
             if app := root.get_application():
                 if jellyfin := app.jellyfin:
                     if jellyfin.checkHealth():
-                        GLib.idle_add(root.root_navigationview.push_by_tag, 'login')
-                        GLib.idle_add(root.root_navigationview.find_page('login').reset)
+                        GLib.idle_add(root.auth_navigationview.push_by_tag, 'login')
+                        GLib.idle_add(root.auth_navigationview.find_page('login').reset)
                     else:
                         toast = Adw.Toast(
                             title=_("Error connecting to server")

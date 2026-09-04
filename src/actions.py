@@ -9,8 +9,9 @@ import threading, os
 
 def __show_page(app, page:Adw.NavigationPage):
     if main_window := app.main_window:
+        nav_view = main_window.get_active_nav_view()
         thread = threading.Thread(target=page.reset)
-        GLib.idle_add(main_window.root_navigationview.push, page)
+        GLib.idle_add(nav_view.push, page)
         GLib.idle_add(thread.start)
 
 def __play_model(app, model):
@@ -98,17 +99,22 @@ def show_user_view(app, user_view_id:str):
 
 def show_search_page(app):
     if main_window := app.main_window:
-        if current_page := main_window.root_navigationview.get_visible_page():
-            if current_page.get_tag() != 'player' or (app.pip_window and app.pip_window.get_visible()):
+        if main_window.main_stack.get_visible_child_name() == 'search':
+            if current_page := main_window.search_nav_view.get_visible_page():
                 if current_page.get_tag() == 'search':
                     main_window.set_focus(current_page.search_entry)
-                else:
-                    page = Widgets.SearchPage()
-                    __show_page(app, page)
+                    return
+        current_nav_view = main_window.get_active_nav_view()
+        if current_page := current_nav_view.get_visible_page():
+            if current_page.get_tag() == 'player' and app.pip_window and app.pip_window.get_visible():
+                return
+        GLib.idle_add(main_window.search_nav_view.pop_to_tag, 'search')
+        GLib.idle_add(main_window.main_stack.set_visible_child_name, 'search')
 
 def reload_page(app):
     if main_window := app.main_window:
-        if current_page := main_window.root_navigationview.get_visible_page():
+        nav_view = main_window.get_active_nav_view()
+        if current_page := nav_view.get_visible_page():
             thread = threading.Thread(target=current_page.reset)
             GLib.idle_add(thread.start)
 
@@ -138,13 +144,15 @@ def logout(app):
         settings.set_string('user', '')
 
     if main_window := app.main_window:
-        main_window.root_navigationview.replace_with_tags(['welcome'])
-        main_window.root_navigationview.find_page('welcome').reset()
+        main_window.home_nav_view.pop_to_tag('home')
+        main_window.search_nav_view.pop_to_tag('search')
+        main_window.main_stack.set_visible_child_name('home')
+        main_window.loading_stack.set_visible_child_name('auth')
+        main_window.auth_navigationview.replace_with_tags(['welcome'])
+        main_window.auth_navigationview.find_page('welcome').reset()
         for dialog in main_window.get_dialogs():
             dialog.close()
 
     if pip_window := app.pip_window:
         if pip_window.get_visible():
             pip_window.close()
-
-

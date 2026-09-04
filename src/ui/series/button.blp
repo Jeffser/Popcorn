@@ -1,23 +1,27 @@
 using Gtk 4.0;
+using Adw 1;
 
 template $PopcornSeriesButton: Gtk.Box {
   styles [
-    "watch_button"
+   "m6"
   ]
   halign: center;
   orientation: vertical;
   spacing: 5;
 
+  Gtk.GestureClick click_gesture {
+    button: 3;
+    pressed => $on_secondary_click();
+  }
+  Gtk.GestureLongPress long_press_gesture {
+    pressed => $on_long_press();
+  }
+
   Gtk.Overlay {
-    child: Gtk.Button {
-      styles [
-        "force_p0",
-        "card"
-      ]
+    child: Adw.Bin {
+      styles ["force_p0", "rounded-corner"]
       overflow: hidden;
       tooltip-text: bind template.model as <$PopcornSeries> .Name;
-      action-name: "app.show_series";
-      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
       child: Gtk.Picture {
         content-fit: cover;
         paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornSeries> .BackdropPaintable, template.model as <$PopcornSeries> .PrimaryPaintable);
@@ -27,96 +31,54 @@ template $PopcornSeriesButton: Gtk.Box {
     };
 
     [overlay]
-    Gtk.ToggleButton {
-      styles [
-        "circular",
-        "toggle-with-accent",
-        "osd"
-      ]
+    Gtk.Image {
+      styles ["badge"]
       valign: start;
       halign: end;
       margin-start: 10;
       margin-end: 10;
       margin-top: 10;
       margin-bottom: 10;
-      tooltip-text: _("Toggle Played");
-      action-name: "app.toggle_played";
-      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-      active: bind template.model as <$PopcornSeries> .Played;
+      visible: bind template.model as <$PopcornSeries> .Played;
       icon-name: "checkmark-symbolic";
     }
 
     [overlay]
-    Gtk.ToggleButton {
-      styles [
-        "circular",
-        "toggle-with-accent",
-        "osd"
-      ]
+    Gtk.Image {
+      styles ["badge"]
       valign: end;
       halign: end;
       margin-start: 10;
       margin-end: 10;
       margin-top: 10;
       margin-bottom: 10;
-      tooltip-text: _("Toggle Favorite");
-      action-name: "app.toggle_favorite";
-      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-      active: bind template.model as <$PopcornSeries> .IsFavorite;
-      icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeries> .IsFavorite);
-    }
-
-    [overlay]
-    Gtk.Button {
-      styles [
-        "osd",
-        "circular"
-      ]
-      tooltip-text: _("Play Series");
-      action-name: "app.play_series";
-      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-      icon-name: "media-playback-start-symbolic";
-      valign: end;
-      halign: start;
-      margin-start: 10;
-      margin-end: 10;
-      margin-top: 10;
-      margin-bottom: 10;
+      visible: bind template.model as <$PopcornSeries> .IsFavorite;
+      icon-name: "heart-filled-symbolic";
     }
   }
 
-  Gtk.Button {
-    styles [
-      "flat",
-      "p0"
-    ]
+  Gtk.Box {
+    orientation: vertical;
+    spacing: 5;
     tooltip-text: bind template.model as <$PopcornSeries> .Name;
-    action-name: "app.show_series";
-    action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-    child: Gtk.Box {
-      orientation: vertical;
-      spacing: 5;
-      Gtk.Label {
-        ellipsize: end;
-        justify: center;
-        label: bind template.model as <$PopcornSeries> .Name;
-        max-width-chars: 12;
-        styles [
-          "title-4"
-        ]
-      }
 
-      Gtk.Label {
-        ellipsize: end;
-        justify: center;
-        use-markup: true;
-        hexpand: true;
-        max-width-chars: 12;
-        label: bind template.model as <$PopcornSeries> .ProductionYear;
-        styles [
-          "dimmed"
-        ]
-      }
-    };
+    Gtk.Label {
+      ellipsize: end;
+      halign: fill;
+      xalign: 0;
+      label: bind template.model as <$PopcornSeries> .Name;
+      max-width-chars: 12;
+      styles ["card-title"]
+    }
+    Gtk.Label {
+      ellipsize: end;
+      halign: fill;
+      xalign: 0;
+      use-markup: true;
+      hexpand: true;
+      max-width-chars: 12;
+      label: bind template.model as <$PopcornSeries> .ProductionYear;
+      styles ["dimmed"]
+    }
   }
 }

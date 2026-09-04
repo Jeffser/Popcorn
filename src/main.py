@@ -125,23 +125,28 @@ class PopcornApplication(Adw.Application):
         threading.Thread(target=open_preferences_dialog, daemon=True).start()
 
     def try_login(self):
+        window = self.main_window
         if self.jellyfin.ping(): # Login Ok
             settings = self.get_property('settings')
             settings.set_string('url', self.jellyfin.get_property('url'))
             settings.set_string('user', self.jellyfin.get_property('user'))
             settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['home'])
-            threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
-        elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
+            GLib.idle_add(window.main_stack.set_visible_child_name, 'home')
+            GLib.idle_add(window.home_nav_view.pop_to_tag, 'home')
+            GLib.idle_add(window.loading_stack.set_visible_child_name, 'main')
+            threading.Thread(target=window.home_nav_view.find_page('home').reset).start()
+        elif window.auth_navigationview.get_visible_page_tag() == 'login': # Failed Login
+            GLib.idle_add(window.loading_stack.set_visible_child_name, 'auth')
+            GLib.idle_add(window.auth_navigationview.replace_with_tags, ['welcome', 'login'])
             toast = Adw.Toast(
                 title=_("Error logging in")
             )
-            GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
-            GLib.idle_add(self.main_window.root_navigationview.find_page('login').reset)
+            GLib.idle_add(window.toast_overlay.add_toast, toast)
+            GLib.idle_add(window.auth_navigationview.find_page('login').reset)
         else: # First Login
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome'])
-            GLib.idle_add(self.main_window.root_navigationview.find_page('welcome').reset)
+            GLib.idle_add(window.loading_stack.set_visible_child_name, 'auth')
+            GLib.idle_add(window.auth_navigationview.replace_with_tags, ['welcome'])
+            GLib.idle_add(window.auth_navigationview.find_page('welcome').reset)
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         action = Gio.SimpleAction.new(name, parameter_type)
@@ -154,5 +159,3 @@ def main(version):
     print("Popcorn version", version)
     set_popcorn_version(version)
     return PopcornApplication(version).run(sys.argv)
-
-

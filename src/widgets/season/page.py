@@ -1,13 +1,16 @@
 # page.py
-
 from gi.repository import Gtk, Adw, Gio, GLib, GObject, Pango
 from ...integrations import models
 from ..episode import EpisodeButton
 
+episodes_widget_map = {
+    models.Episode: EpisodeButton,
+}
+
+
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/season/page.ui')
 class SeasonPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornSeasonPage'
-
     model = GObject.Property(type=models.Season)
     series_model = GObject.Property(type=models.Series)
     episodes_container = Gtk.Template.Child()
@@ -29,22 +32,16 @@ class SeasonPage(Adw.NavigationPage):
         if not jellyfin or not model_id:
             return
 
-        episode_widgets = []
-        for episode_model in jellyfin.getEpisodesFromSeason(model_id):
-            episode_widgets.append(EpisodeButton(
-                model=episode_model,
-                mode='details'
-            ))
-        GLib.idle_add(self.episodes_container.set_widgets, episode_widgets)
+        episode_models = list(jellyfin.getEpisodesFromSeason(model_id))
+        self.episodes_container.set_widget_map(episodes_widget_map, mode='details')
+        GLib.idle_add(self.episodes_container.set_items, episode_models)
 
     @Gtk.Template.Callback()
     def format_stack_visible_child_name(self, obj, paintable) -> str:
         return 'logo' if paintable else 'label'
-
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
-
     @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"

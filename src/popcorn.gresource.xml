@@ -32,6 +32,7 @@
     <file alias="icons/scalable/status/heart-outline-thick-symbolic.svg">icons/heart-outline-thick-symbolic.svg</file>
     <file alias="icons/scalable/status/preferences-system-symbolic.svg">icons/preferences-system-symbolic.svg</file>
     <file alias="icons/scalable/status/external-link-symbolic.svg">icons/external-link-symbolic.svg</file>
+    <file alias="icons/scalable/status/library-symbolic.svg">icons/library-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="preferences.ui">ui/preferences.ui</file>
@@ -42,6 +43,7 @@
     <file alias="pages/search.ui">ui/pages/search.ui</file>
     <file alias="pages/wrapbox_page.ui">ui/pages/wrapbox_page.ui</file>
     <file alias="pages/welcome.ui">ui/pages/welcome.ui</file>
+    <file alias="pages/library.ui">ui/pages/library.ui</file>
 
     <file alias="misc/user_view_button.ui">ui/misc/user_view_button.ui</file>
     <file alias="misc/overview_carousel.ui">ui/misc/overview_carousel.ui</file>

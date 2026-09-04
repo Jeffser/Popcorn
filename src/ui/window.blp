@@ -5,18 +5,27 @@ template $PopcornWindow: Adw.ApplicationWindow {
   title: "Popcorn";
   width-request: 360;
   height-request: 560;
-  default-width: 1000;
-  default-height: 900;
+  default-width: 1250;
+  default-height: 750;
   close-request => $on_close();
   Gtk.EventControllerKey {
     key-pressed => $on_key_pressed();
     propagation-phase: capture;
   }
+
+  Adw.Breakpoint {
+    condition ("max-width: 700sp")
+    setters {
+      split_view.collapsed: true;
+    }
+  }
+
   content: Adw.ToastOverlay toast_overlay {
-    child: Adw.NavigationView root_navigationview {
-      Adw.NavigationPage {
-        tag: "loading";
-        title: _("Loading");
+    child: Gtk.Stack loading_stack {
+      transition-type: crossfade;
+
+      Gtk.StackPage {
+        name: "loading";
         child: Adw.ToolbarView {
           [top]
           Adw.HeaderBar {
@@ -25,9 +34,89 @@ template $PopcornWindow: Adw.ApplicationWindow {
           content: Adw.Spinner {};
         };
       }
-      $PopcornWelcomePage {}
-      $PopcornLoginPage {}
-      $PopcornHomePage {}
+
+      Gtk.StackPage {
+        name: "auth";
+        child: Adw.NavigationView auth_navigationview {
+          $PopcornWelcomePage {}
+          $PopcornLoginPage {}
+        };
+      }
+
+      Gtk.StackPage {
+        name: "main";
+        child: Adw.OverlaySplitView split_view {
+          min-sidebar-width: 200;
+          max-sidebar-width: 260;
+
+          sidebar: Adw.ToolbarView {
+            [top]
+            Adw.HeaderBar header_bar {
+              [end]
+              Gtk.MenuButton {
+                styles [
+                  "flat"
+                ]
+                primary: true;
+                icon-name: "open-menu-symbolic";
+                popover: Gtk.PopoverMenu {
+                  menu-model: primary_menu;
+                };
+              }
+            }
+
+            content: Adw.ViewSwitcherSidebar {
+              stack: main_stack;
+            };
+          };
+
+          content: Adw.ViewStack main_stack {
+            Adw.ViewStackPage {
+              name: "home";
+              title: _("Home");
+              icon-name: "user-home-symbolic";
+              child: Adw.NavigationView home_nav_view {
+                $PopcornHomePage {}
+              };
+            }
+
+            Adw.ViewStackPage {
+              name: "library";
+              title: _("Library");
+              icon-name: "library-symbolic";
+              child: Adw.NavigationView library_nav_view {
+                $PopcornLibraryPage {}
+              };
+            }
+
+            Adw.ViewStackPage {
+              name: "search";
+              title: _("Search");
+              icon-name: "system-search-symbolic";
+              child: Adw.NavigationView search_nav_view {
+                $PopcornSearchPage {}
+              };
+            }
+          };
+        };
+      }
     };
   };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+    item {
+      label: _("About Popcorn");
+      action: "app.about";
+    }
+  }
 }

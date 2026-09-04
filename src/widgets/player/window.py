@@ -22,7 +22,7 @@ class PlayerWindow(Adw.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_close(self, window):
         if app := self.get_application():
-            app.main_window.root_navigationview.push(PlayerPage(
+            app.main_window.get_active_nav_view().push(PlayerPage(
                 player=app.get_property('player')
             ))
             app.main_window.present()

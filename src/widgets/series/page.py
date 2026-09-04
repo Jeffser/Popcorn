@@ -1,15 +1,23 @@
 # page.py
-
 from gi.repository import Gtk, Adw, Gio, GLib, GObject, Pango
 from ...integrations import models
 from ..season import SeasonButton
 from ..series import SeriesButton
 from ..movie import MovieButton
 
+seasons_widget_map = {
+    models.Season: SeasonButton,
+}
+
+recommendations_widget_map = {
+    models.Series: SeriesButton,
+    models.Movie: MovieButton,
+}
+
+
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/series/page.ui')
 class SeriesPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornSeriesPage'
-
     model = GObject.Property(type=models.Series)
     seasons_container = Gtk.Template.Child()
     recommendations_container = Gtk.Template.Child()
@@ -31,53 +39,35 @@ class SeriesPage(Adw.NavigationPage):
         if not jellyfin or not model_id:
             return
 
-        season_widgets = []
-        for season_model in jellyfin.getSeasons(model_id):
-            season_widgets.append(SeasonButton(model=season_model))
-        GLib.idle_add(self.seasons_container.set_widgets, season_widgets)
+        season_models = list(jellyfin.getSeasons(model_id))
+        self.seasons_container.set_widget_map(seasons_widget_map)
+        GLib.idle_add(self.seasons_container.set_items, season_models)
 
-        recommendation_widgets = []
-        for model in jellyfin.getRecommendations(model_id):
-            if isinstance(model, models.Series):
-                recommendation_widgets.append(SeriesButton(
-                    model=model,
-                    is_tall=True
-                ))
-            elif isinstance(model, models.Movie):
-                recommendation_widgets.append(MovieButton(
-                    model=model,
-                    is_tall=True
-                ))
-        GLib.idle_add(self.recommendations_container.set_widgets, recommendation_widgets)
+        recommendation_models = list(jellyfin.getRecommendations(model_id))
+        self.recommendations_container.set_widget_map(recommendations_widget_map, is_tall=True)
+        GLib.idle_add(self.recommendations_container.set_items, recommendation_models)
 
     @Gtk.Template.Callback()
     def format_one_decimal(self, obj, value) -> str:
         return f"{value:.1f}"
-
     @Gtk.Template.Callback()
     def format_season_count(self, obj, value) -> str:
         return ngettext("{} Season", "{} Seasons", value).format(value)
-
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
-
     @Gtk.Template.Callback()
     def format_stack_visible_child_name(self, obj, paintable) -> str:
         return 'logo' if paintable else 'label'
-
     @Gtk.Template.Callback()
     def format_overview_ellipsize(self, obj, active:bool) -> Pango.EllipsizeMode:
         return Pango.EllipsizeMode.NONE if active else Pango.EllipsizeMode.END
-
     @Gtk.Template.Callback()
     def format_overview_button_icon_name(self, obj, active:bool) -> str:
         return "pan-up-symbolic" if active else "pan-down-symbolic"
-
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
-
     @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"

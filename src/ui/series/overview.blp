@@ -13,6 +13,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
   [overlay]
   Gtk.Box {
+    styles [
+      "overview-shadow"
+    ]
     hexpand: true;
     vexpand: true;
     valign: end;
@@ -73,9 +76,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       margin-end: 10;
       margin-bottom: 10;
       styles [
-        "blur-backdrop",
         "p10",
-        "card"
       ]
       Adw.WrapBox {
         line-spacing: 10;
@@ -85,11 +86,15 @@ template $PopcornSeriesOverview: Gtk.Overlay {
           spacing: 5;
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .CommunityRating);
           Gtk.Image {
+            styles [
+              "white"
+            ]
             icon-name: "starred-symbolic";
           }
           Gtk.Label {
             styles [
-              "numeric"
+              "numeric",
+              "white"
             ]
             label: bind $format_one_decimal(template.model as <$PopcornSeries> .CommunityRating);
           }
@@ -101,7 +106,8 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
         Gtk.Label {
           styles [
-            "numeric"
+            "numeric",
+            "white"
           ]
           label: bind template.model as <$PopcornSeries> .ProductionYear;
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .ProductionYear);
@@ -113,7 +119,8 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
         Gtk.Label {
           styles [
-            "monospace"
+            "monospace",
+            "white"
           ]
           label: bind template.model as <$PopcornSeries> .OfficialRating;
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .OfficialRating);
@@ -124,46 +131,44 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         }
 
         Gtk.Label {
+          styles [
+            "body",
+            "white"
+          ]
           label: bind $format_season_count(template.model as <$PopcornSeries> .SeasonCount);
           visible: bind $format_to_bool(template.model as <$PopcornSeries> .SeasonCount);
         }
       }
 
-      Adw.WrapBox {
-        wrap-policy: minimum;
-        justify: fill;
-        justify-last-line: true;
-        line-spacing: 10;
-        child-spacing: 10;
+      Gtk.Label {
+        styles [
+          "body",
+          "white"
+        ]
+        wrap-mode: word;
+        wrap: true;
+        lines: 3;
+        ellipsize: end;
+        xalign: 0;
+        width-request: 240;
         hexpand: true;
+        label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
+        visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
+      }
 
-        Gtk.Label {
-          styles [
-            "body"
-          ]
-          wrap-mode: word;
-          wrap: true;
-          lines: 3;
-          ellipsize: end;
-          xalign: 0;
-          width-request: 240;
-          hexpand: true;
-          label: bind $format_overview(template.model as <$PopcornSeries> .Overview);
-          visible: bind $format_to_bool(template.model as <$PopcornSeries> .Overview);
-        }
-
-        Gtk.Button {
-          styles [
-            "circular",
-            "accent"
-          ]
-          valign: end;
-          halign: center;
-          tooltip-text: _("Continue Watching");
-          action-name: "app.play_series";
-          action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      Gtk.Button {
+        styles [
+          "white"
+        ]
+        valign: start;
+        halign: start;
+        tooltip-text: _("Continue Watching");
+        action-name: "app.play_series";
+        action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+        child: Adw.ButtonContent {
           icon-name: "media-playback-start-symbolic";
-        }
+          label: _("Play");
+        };
       }
     }
   }

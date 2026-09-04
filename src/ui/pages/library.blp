@@ -1,9 +1,9 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PopcornHomePage: Adw.NavigationPage {
-  title: _("Home");
-  tag: "home";
+template $PopcornLibraryPage: Adw.NavigationPage {
+  title: _("Library");
+  tag: "library";
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
 
@@ -36,16 +36,9 @@ template $PopcornHomePage: Adw.NavigationPage {
           orientation: vertical;
           spacing: 10;
 
-          $PopcornOverviewCarousel overview_container {}
-
-          $PopcornCarousel continue_watching_container {
-            title: _("Continue Watching");
-            icon-name: "playback-symbolic";
-          }
-
-          $PopcornCarousel next_up_container {
-            title: _("Next Up");
-            icon-name: "media-playlist-consecutive-symbolic";
+          Adw.WrapBox user_views_container {
+            line-spacing: 10;
+            child-spacing: 10;
           }
         };
       };

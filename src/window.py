@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GLib, Gst, Gio
+from gi.repository import Gtk, Adw, GLib, Gst, Gio, Pango
 from . import widgets as Widgets
 from . import actions
 import threading
@@ -27,7 +27,23 @@ class PopcornWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'PopcornWindow'
 
     toast_overlay = Gtk.Template.Child()
-    root_navigationview = Gtk.Template.Child()
+    loading_stack = Gtk.Template.Child()
+    auth_navigationview = Gtk.Template.Child()
+    split_view = Gtk.Template.Child()
+    main_stack = Gtk.Template.Child()
+    home_nav_view = Gtk.Template.Child()
+    search_nav_view = Gtk.Template.Child()
+    library_nav_view = Gtk.Template.Child()
+    header_bar = Gtk.Template.Child()
+
+    def get_active_nav_view(self) -> Adw.NavigationView:
+        """The Adw.NavigationView belonging to whichever main_stack
+        section (home/search) is currently visible. Used to push
+        detail pages (series/movie/episode/season/player) on top of
+        the right section, and to inspect the currently visible page
+        (e.g. to check for the player tag on key events).
+        """
+        return self.main_stack.get_visible_child()
 
     @Gtk.Template.Callback()
     def on_close(self, window):
@@ -41,7 +57,10 @@ class PopcornWindow(Adw.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on_key_pressed(self, controller, keyval, keycode, modifier):
-        if visible_page := self.root_navigationview.get_visible_page():
+        if self.loading_stack.get_visible_child_name() != 'main':
+            return
+        nav_view = self.get_active_nav_view()
+        if visible_page := nav_view.get_visible_page():
             if visible_page.get_tag() == 'player':
                 if keycode == 111: #UP
                     visible_page.activate_action('player.change-volume', GLib.Variant('d', 0.1))
@@ -95,6 +114,8 @@ class PopcornWindow(Adw.ApplicationWindow):
         settings = self.get_application().get_property('settings')
         settings.connect('changed::blur-effect', self.css_toggled, 'blur-effect')
         self.css_toggled(settings, 'blur-effect', 'blur-effect')
+
+        list(list(list(list(self.header_bar)[0])[0])[1])[0].set_ellipsize(Pango.EllipsizeMode.NONE)
 
     def css_toggled(self, settings, key:str, css_class:str):
         if settings.get_value(key).unpack():

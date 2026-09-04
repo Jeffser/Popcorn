@@ -3,7 +3,6 @@ using Adw 1;
 
 template $PopcornCarousel: Gtk.Box {
   orientation: vertical;
-  spacing: 10;
 
   Gtk.Box {
     orientation: horizontal;
@@ -15,6 +14,7 @@ template $PopcornCarousel: Gtk.Box {
       halign: start;
       valign: center;
       hexpand: true;
+
       Gtk.Image {
         icon-name: bind template.icon_name;
       }
@@ -22,38 +22,8 @@ template $PopcornCarousel: Gtk.Box {
         xalign: 0;
         ellipsize: middle;
         label: bind template.title;
-        styles [
-          "title-2"
-        ]
+        styles ["title-4"]
       }
-    }
-
-    Gtk.Button pan_start_el {
-      tooltip-text: _("Pan to the Left");
-      icon-name: "pan-start-symbolic";
-      valign: center;
-      halign: end;
-      margin-start: 10;
-      clicked => $pan_start();
-      visible: bind $format_visible_button(list_el.n-pages);
-      styles [
-        "circular",
-        "accent"
-      ]
-    }
-
-    Gtk.Button pan_end_el {
-      tooltip-text: _("Pan to the Right");
-      icon-name: "pan-end-symbolic";
-      valign: center;
-      halign: end;
-      margin-end: 10;
-      clicked => $pan_end();
-      visible: bind $format_visible_button(list_el.n-pages);
-      styles [
-        "circular",
-        "accent"
-      ]
     }
   }
 
@@ -63,42 +33,28 @@ template $PopcornCarousel: Gtk.Box {
       halign: start;
       vexpand: true;
       width-request: 10;
-      styles [
-        "carousel-overlay-left"
-      ]
+      styles ["carousel-overlay-left"]
     }
-
     [overlay]
     Adw.Bin {
       halign: end;
       vexpand: true;
       width-request: 10;
-      styles [
-        "carousel-overlay-right"
-      ]
+      styles ["carousel-overlay-right"]
     }
-
     child: Adw.Clamp {
       orientation: vertical;
       maximum-size: 420;
-      child: Adw.Carousel list_el {
+      child: Gtk.ScrolledWindow scrolled_el {
         hexpand: true;
-        halign: fill;
-        spacing: 10;
-        allow-long-swipes: true;
-        allow-mouse-drag: true;
-        allow-scroll-wheel: false;
-        page-changed => $page_changed();
+        vscrollbar-policy: never;
+        hscrollbar-policy: external;
+        propagate-natural-height: true;
 
-        Gtk.EventControllerScroll {
-          scroll => $on_scroll();
-          flags: both_axes;
-        }
-
-        Adw.Spinner {
-          height-request: 240;
-          width-request: 240;
-        }
+        child: Gtk.ListView list_el {
+          orientation: horizontal;
+          single-click-activate: true;
+        };
       };
     };
   }
