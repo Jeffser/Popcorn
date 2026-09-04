@@ -1,13 +1,31 @@
-# Popcorn
+<p align="center"><img src="https://jeffser.com/images/popcorn/logo.svg">
+<h1 align="center">Popcorn</h1>
 
-> [!IMPORTANT]
-> Popcorn is a work in progress, it might not work
+<p align="center">Popcorn is a Jellyfin client that brings all your media library together in one place, Popcorn provides a nice and fully featured interface to navigate your library in a stylish way.</p>
+
+---
 
 > [!IMPORTANT]
 > Please be aware that [GNOME Code of Conduct](https://conduct.gnome.org) applies to Popcorn before interacting with this repository.
 
 > [!WARNING]
 > AI generated issues and PRs will be denied, repeated offence will result in a ban from the repository.
+
+## Features
+
+- Dedicated pages for all types of elements
+- VTT subtitle support
+- Player gestures
+- Picture-in-Picture playback
+- Trickplay (scrobbing thumbnails)
+- Intro / Outro skipper
+- Cool interface
+
+## Screenies
+
+HomePage | Movie Playing
+:------------------:|:-----------------:
+![screenie1](https://jeffser.com/images/popcorn/screenie1.png) | ![screenie2](https://jeffser.com/images/popcorn/screenie4.png)
 
 ## Legal Disclaimer
 
