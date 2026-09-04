@@ -5,7 +5,7 @@
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>Popcorn</name>
-  <summary>Explore your Jellyfin library with style</summary>
+  <summary>Explore Jellyfin with style</summary>
   <description>
     <p>A modern Jellyfin client</p>
     <p>Features</p>
