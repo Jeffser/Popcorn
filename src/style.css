@@ -92,7 +92,8 @@ headerbar.header-gradient {
     rgba(0, 0, 0, 0) 100%
   );
 }
-headerbar.header-gradient label, headerbar.header-gradient image {
+
+headerbar.header-gradient widget > label, headerbar.header-gradient widget > windowtitle label, headerbar.header-gradient image {
   filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
 }
 
