@@ -23,21 +23,6 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
   };
 
   [overlay]
-  Adw.Bin indicator_container {
-    styles [
-      "blur-backdrop",
-      "card"
-    ]
-    margin-top: 10;
-    halign: center;
-    valign: start;
-    visible: bind $format_visible_button(list_el.n-pages);
-    child: Adw.CarouselIndicatorDots {
-      carousel: list_el;
-    };
-  }
-
-  [overlay]
   Gtk.Button pan_start_button {
     tooltip-text: _("Pan");
     icon-name: "pan-start-symbolic";

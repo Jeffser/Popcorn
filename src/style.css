@@ -79,22 +79,29 @@ button.active_appearance_button:disabled {
 }
 
 .logo {
-  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
 }
 
-headerbar.header-gradient {
+.header-gradient {
+  background: linear-gradient(
+    to bottom,
+    alpha(@headerbar_bg_color, 0.80) 0%,
+    alpha(@headerbar_bg_color, 0.4) 70%,
+    alpha(@headerbar_bg_color, 0.2) 80%,
+    transparent 90%
+  );
+  padding-bottom: 10px;
+}
+
+.bottombar-gradient {
   color: rgba(255,255,255,0.9);
   background: linear-gradient(
-    180deg,
+    0deg,
     rgba(0, 0, 0, 0.7) 0%,
     rgba(0, 0, 0, 0.35) 40%,
     rgba(0, 0, 0, 0.1) 75%,
     rgba(0, 0, 0, 0) 100%
   );
-}
-
-headerbar.header-gradient widget > label, headerbar.header-gradient widget > windowtitle label, headerbar.header-gradient image {
-  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
 }
 
 .gradient-background {
@@ -113,7 +120,7 @@ headerbar.header-gradient widget > label, headerbar.header-gradient widget > win
 }
 
 .player-controls-container image, .player-controls-container label {
-  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
 }
 
 label.remove-filter {

@@ -7,7 +7,6 @@ class OverviewCarousel(Gtk.Overlay):
     __gtype_name__ = 'PopcornOverviewCarousel'
 
     list_el = Gtk.Template.Child()
-    indicator_container = Gtk.Template.Child()
     pan_start_button = Gtk.Template.Child()
     pan_end_button = Gtk.Template.Child()
 

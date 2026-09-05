@@ -1,69 +1,59 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PopcornWrapboxPage: Adw.NavigationPage {
-  child: Adw.ToolbarView {
-    extend-content-to-top-edge: true;
-
-    [top]
-    Adw.HeaderBar {}
-
-    content: Gtk.ScrolledWindow {
-      hexpand: true;
-      vexpand: true;
-      hscrollbar-policy: never;
-      edge-reached => $on_scroll_edge();
-      child: Adw.Clamp {
-        styles [
-          "p10"
-        ]
-        margin-top: 40;
-        maximum-size: 2000;
-        tightening-threshold: 800;
-        child: Gtk.Box {
-          orientation: vertical;
-          spacing: 10;
-          Adw.WrapBox list_el {
-            hexpand: true;
-            halign: center;
-            child-spacing: 10;
-            line-spacing: 10;
-            line-homogeneous: true;
-            wrap-policy: minimum;
-            justify: spread;
-            Adw.Spinner {
-              height-request: 240;
-              width-request: 240;
-            }
-          }
-          Gtk.Stack bottom_stack {
-            halign: center;
-            transition-type: crossfade;
-            hhomogeneous: false;
-            vhomogeneous: false;
-            vexpand: true;
-            Gtk.StackPage {
-              name: "loading";
-              child: Adw.Spinner {
-                width-request: 32;
-                height-request: 32;
-              };
-            }
-            Gtk.StackPage {
-              name: "label";
-              child: Gtk.Label {
-                styles [
-                  "dimmed"
-                ]
-                label: _("Bottom Reached");
-                wrap: true;
-                wrap-mode: word_char;
-                justify: center;
-              };
-            }
-          }
-        };
-      };
+template $PopcornWrapboxPage: Gtk.ScrolledWindow {
+  hexpand: true;
+  vexpand: true;
+  hscrollbar-policy: never;
+  edge-reached => $on_scroll_edge();
+  child: Adw.Clamp {
+    styles [
+      "p10"
+    ]
+    maximum-size: 2000;
+    tightening-threshold: 800;
+    child: Gtk.Box {
+      orientation: vertical;
+      spacing: 10;
+      Adw.WrapBox list_el {
+        hexpand: true;
+        halign: center;
+        child-spacing: 10;
+        line-spacing: 10;
+        line-homogeneous: true;
+        wrap-policy: minimum;
+        justify: spread;
+        Adw.Spinner {
+          height-request: 240;
+          width-request: 240;
+        }
+      }
+      Gtk.Stack bottom_stack {
+        halign: center;
+        transition-type: crossfade;
+        hhomogeneous: false;
+        vhomogeneous: false;
+        vexpand: true;
+        Gtk.StackPage {
+          name: "loading";
+          child: Adw.Spinner {
+            width-request: 32;
+            height-request: 32;
+          };
+        }
+        Gtk.StackPage {
+          name: "label";
+          child: Gtk.Label {
+            styles [
+              "dimmed"
+            ]
+            label: _("Bottom Reached");
+            wrap: true;
+            wrap-mode: word_char;
+            justify: center;
+          };
+        }
+      }
     };
   };
 }

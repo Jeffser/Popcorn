@@ -1,0 +1,62 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornMainPage: Adw.NavigationPage {
+  title: _("Main Page");
+  tag: "main";
+  child: Adw.ToolbarView {
+
+    [top]
+    Adw.HeaderBar header_bar {
+      show-title: bind template.is-wide;
+
+      title-widget: Adw.ViewSwitcher {
+        stack: view_stack;
+        policy: wide;
+      };
+
+      [start]
+      Gtk.MenuButton {
+        styles [
+          "flat"
+        ]
+        primary: true;
+        icon-name: "open-menu-symbolic";
+        popover: Gtk.PopoverMenu {
+          menu-model: primary_menu;
+        };
+      }
+    }
+
+    [bottom]
+    Adw.ViewSwitcherBar switcher_bar {
+      stack: view_stack;
+      reveal: bind template.is-wide inverted;
+    }
+
+    content: Adw.ViewStack view_stack {
+      hexpand: true;
+      vexpand: true;
+      vhomogeneous: false;
+      hhomogeneous: true;
+      enable-transitions: true;
+    };
+  };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+    item {
+      label: _("About Popcorn");
+      action: "app.about";
+    }
+  }
+}

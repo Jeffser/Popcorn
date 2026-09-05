@@ -10,7 +10,7 @@ from ...integrations import models
 from ... import constants
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/home.ui')
-class HomePage(Adw.NavigationPage):
+class HomePage(Gtk.ScrolledWindow):
     __gtype_name__ = 'PopcornHomePage'
 
     main_container = Gtk.Template.Child()
@@ -18,7 +18,6 @@ class HomePage(Adw.NavigationPage):
     user_views_container = Gtk.Template.Child()
     continue_watching_container = Gtk.Template.Child()
     next_up_container = Gtk.Template.Child()
-    widgets_to_delete_on_reset = []
 
     def reset(self):
         jellyfin = None
@@ -28,9 +27,8 @@ class HomePage(Adw.NavigationPage):
         if not jellyfin:
             return
 
-        for widget in self.widgets_to_delete_on_reset:
-            widget.unparent()
-        self.widgets_to_delete_on_reset = []
+        for widget in list(self.main_container):
+            self.main_container.remove(widget)
 
         overview_widgets = []
         for series in jellyfin.getFeaturedSeries():
@@ -103,7 +101,6 @@ class HomePage(Adw.NavigationPage):
                     title=_("Recently Added in {}").format(userView.get_property('Name').title()),
                     icon_name=constants.USERVIEWS_ICONS.get(userView.get_property('CollectionType')) or 'folder-symbolic'
                 )
-                self.widgets_to_delete_on_reset.append(new_carousel)
                 GLib.idle_add(self.main_container.append, new_carousel)
                 GLib.idle_add(new_carousel.set_widgets, latest_widgets)
 

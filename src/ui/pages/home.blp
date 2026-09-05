@@ -1,81 +1,41 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PopcornHomePage: Adw.NavigationPage {
-  title: _("Home");
-  tag: "home";
-  child: Adw.ToolbarView {
-    extend-content-to-top-edge: true;
-
-    [top]
-    Adw.HeaderBar {
+template $PopcornHomePage: Gtk.ScrolledWindow {
+  hexpand: true;
+  vexpand: true;
+  hscrollbar-policy: never;
+  child: Adw.Clamp {
+    maximum-size: 2000;
+    tightening-threshold: 800;
+    child: Gtk.Box {
       styles [
-        "header-gradient"
+        "p10"
       ]
-      show-title: false;
+      orientation: vertical;
+      spacing: 10;
 
-      [start]
-      Gtk.MenuButton {
-        styles [
-          "flat"
-        ]
-        primary: true;
-        icon-name: "open-menu-symbolic";
-        popover: Gtk.PopoverMenu {
-          menu-model: primary_menu;
-        };
+      $PopcornOverviewCarousel overview_container {}
+
+      Adw.WrapBox user_views_container {
+        line-spacing: 10;
+        child-spacing: 10;
       }
-    }
 
-    content: Gtk.ScrolledWindow {
-      vexpand: true;
-      hexpand: true;
-      hscrollbar-policy: never;
-      child: Adw.Clamp {
-        maximum-size: 2000;
-        tightening-threshold: 800;
-        child: Gtk.Box main_container {
-          styles [
-            "p10"
-          ]
-          orientation: vertical;
-          spacing: 10;
+      $PopcornCarousel continue_watching_container {
+        title: _("Continue Watching");
+        icon-name: "playback-symbolic";
+      }
 
-          $PopcornOverviewCarousel overview_container {}
+      $PopcornCarousel next_up_container {
+        title: _("Next Up");
+        icon-name: "media-playlist-consecutive-symbolic";
+      }
 
-          Adw.WrapBox user_views_container {
-            line-spacing: 10;
-            child-spacing: 10;
-          }
-
-          $PopcornCarousel continue_watching_container {
-            title: _("Continue Watching");
-            icon-name: "playback-symbolic";
-          }
-
-          $PopcornCarousel next_up_container {
-            title: _("Next Up");
-            icon-name: "media-playlist-consecutive-symbolic";
-          }
-        };
-      };
+      Gtk.Box main_container {
+        orientation: vertical;
+        spacing: 10;
+      }
     };
   };
-}
-
-menu primary_menu {
-  section {
-    item {
-      label: _("Preferences");
-      action: "app.preferences";
-    }
-    item {
-      label: _("Keyboard Shortcuts");
-      action: "app.shortcuts";
-    }
-    item {
-      label: _("About Popcorn");
-      action: "app.about";
-    }
-  }
 }

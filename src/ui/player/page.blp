@@ -343,7 +343,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                         visible: bind $format_to_bool(trickplay_picture.paintable);
                         child: Gtk.Picture trickplay_picture {
                           styles [
-                            "card"
+                            "rounded-corner"
                           ]
                           content-fit: cover;
                           paintable: bind $format_trickplay_thumbnail(template.current-trickplay-index);

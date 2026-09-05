@@ -7,6 +7,7 @@ widgets = [
   'search.py',
   'wrapbox_page.py',
   'welcome.py',
+  'main.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

@@ -3,11 +3,19 @@ using Adw 1;
 
 template $PopcornWindow: Adw.ApplicationWindow {
   title: "Popcorn";
-  width-request: 360;
+  width-request: 440;
   height-request: 580;
   default-width: 1000;
   default-height: 900;
   close-request => $on_close();
+
+  Adw.Breakpoint {
+    condition ("max-width: 550sp")
+    setters {
+      main_page.is-wide: false;
+    }
+  }
+
   Gtk.EventControllerKey {
     key-pressed => $on_key_pressed();
     propagation-phase: capture;
@@ -27,7 +35,7 @@ template $PopcornWindow: Adw.ApplicationWindow {
       }
       $PopcornWelcomePage {}
       $PopcornLoginPage {}
-      $PopcornHomePage {}
+      $PopcornMainPage main_page {}
     };
   };
 }

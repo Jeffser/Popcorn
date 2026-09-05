@@ -130,8 +130,8 @@ class PopcornApplication(Adw.Application):
             settings.set_string('url', self.jellyfin.get_property('url'))
             settings.set_string('user', self.jellyfin.get_property('user'))
             settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['home'])
-            threading.Thread(target=self.main_window.root_navigationview.find_page('home').reset).start()
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['main'])
+            GLib.idle_add(self.main_window.root_navigationview.find_page('main').setup)
         elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
             toast = Adw.Toast(
