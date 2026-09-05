@@ -8,7 +8,6 @@ class PopcornPreferences(Adw.PreferencesDialog):
     __gtype_name__ = 'PopcornPreferencesDialog'
 
     # General
-    blur_effect_el = Gtk.Template.Child()
     content_fit_el = Gtk.Template.Child()
 
     # Gnome Search
@@ -25,12 +24,6 @@ class PopcornPreferences(Adw.PreferencesDialog):
 
     def reset(self, app):
         if settings := app.get_property('settings'):
-            settings.bind(
-                "blur-effect",
-                self.blur_effect_el,
-                "active",
-                Gio.SettingsBindFlags.DEFAULT
-            )
             settings.bind(
                 "fullscreen-content-fit",
                 self.content_fit_el,

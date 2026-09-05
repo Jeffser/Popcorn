@@ -1,6 +1,6 @@
 # overview_carousel.py
 
-from gi.repository import Gtk, Gdk, Adw, GLib, Gst
+from gi.repository import GObject, Gtk, Gdk, Adw, GLib, Gst
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/misc/overview_carousel.ui')
 class OverviewCarousel(Gtk.Overlay):
@@ -9,6 +9,7 @@ class OverviewCarousel(Gtk.Overlay):
     list_el = Gtk.Template.Child()
     pan_start_button = Gtk.Template.Child()
     pan_end_button = Gtk.Template.Child()
+    auto_scroll = GObject.Property(type=bool, default=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -27,7 +28,7 @@ class OverviewCarousel(Gtk.Overlay):
             self.list_el.append(page)
 
     def auto_scroll_overview(self):
-        if self.list_el.get_n_pages() == 0:
+        if self.list_el.get_n_pages() == 0 or not self.get_property('auto-scroll'):
             return True
         position_float = self.list_el.get_position()
         position_int = int(position_float)

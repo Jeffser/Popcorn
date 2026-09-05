@@ -9,7 +9,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     ]
     allow-mouse-drag: true;
     allow-scroll-wheel: false;
-    height-request: 480;
+    height-request: 580;
 
     Gtk.EventControllerScroll {
       scroll => $on_scroll();
@@ -33,7 +33,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     clicked => $pan_start();
     styles [
       "circular",
-      "blur-backdrop"
+      "osd"
     ]
   }
 
@@ -48,7 +48,7 @@ template $PopcornOverviewCarousel: Gtk.Overlay {
     clicked => $pan_end();
     styles [
       "circular",
-      "blur-backdrop"
+      "osd"
     ]
   }
 

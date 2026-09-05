@@ -13,8 +13,7 @@ template $PopcornUserViewButton: Gtk.Button {
         "card"
       ]
       halign: center;
-      valign: center;
-      height-request: 180;
+      vexpand: true;
       width-request: 240;
       paintable: bind template.model as <$PopcornUserView> .PrimaryPaintable;
     }

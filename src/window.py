@@ -92,12 +92,3 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.open_uri)
         self.create_action(actions.logout, parameter_type=None)
 
-        settings = self.get_application().get_property('settings')
-        settings.connect('changed::blur-effect', self.css_toggled, 'blur-effect')
-        self.css_toggled(settings, 'blur-effect', 'blur-effect')
-
-    def css_toggled(self, settings, key:str, css_class:str):
-        if settings.get_value(key).unpack():
-            self.add_css_class(css_class)
-        else:
-            self.remove_css_class(css_class)

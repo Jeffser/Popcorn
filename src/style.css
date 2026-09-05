@@ -17,24 +17,6 @@ button.p0, menubutton.p0 > button, label.ph5 {
   border-bottom-right-radius: 9px;
 }
 
-window.blur-effect .blur-backdrop {
-  backdrop-filter: blur(10px);
-}
-
-.blur-backdrop {
-  color: var(--view-fg-color);
-  background: color-mix(in srgb, var(--view-bg-color) 75%, transparent);
-  transition: backdrop-filter .2s;
-}
-
-button.blur-backdrop {
-  transition: background .2s, backdrop-filter .2s;
-}
-
-button.blur-backdrop:hover {
-  background: color-mix(in srgb, var(--view-bg-color) 50%, transparent);
-}
-
 .translucent-picture {
   opacity: 0.5;
 }
@@ -98,6 +80,11 @@ headerbar.player-headerbar label {
 
 .gradient-background {
   background: linear-gradient(0deg, var(--window-bg-color), transparent);
+}
+
+.overview-info-container {
+  background: alpha(var(--window-bg-color), 0.9);
+  box-shadow: 0 -10px 15px -3px alpha(var(--window-bg-color), 0.2);
 }
 
 .player-controls-container {
