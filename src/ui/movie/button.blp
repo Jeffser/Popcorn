@@ -9,6 +9,14 @@ template $PopcornMovieButton: Gtk.Box {
   orientation: vertical;
   spacing: 5;
 
+  Gtk.GestureClick click_gesture {
+    button: 3;
+    pressed => $on_secondary_click();
+  }
+  Gtk.GestureLongPress long_press_gesture {
+    pressed => $on_long_press();
+  }
+
   Gtk.Overlay {
     child: Gtk.Button {
       styles [
@@ -16,7 +24,7 @@ template $PopcornMovieButton: Gtk.Box {
         "card"
       ]
       overflow: hidden;
-      tooltip-text:  bind template.model as <$PopcornMovie> .Name;
+      tooltip-text: bind template.model as <$PopcornMovie> .Name;
       action-name: "app.show_movie";
       action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
       child: Gtk.Picture {
@@ -26,7 +34,6 @@ template $PopcornMovieButton: Gtk.Box {
         width-request: bind $format_picture_width(template.is_tall);
       };
     };
-
     [overlay]
     Gtk.ToggleButton {
       styles [
@@ -44,9 +51,8 @@ template $PopcornMovieButton: Gtk.Box {
       action-name: "app.toggle_played";
       action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
       active: bind template.model as <$PopcornMovie> .Played;
-      icon-name: "checkmark-symbolic";
+      icon-name: "check-plain-symbolic";
     }
-
     [overlay]
     Gtk.Box {
       orientation: vertical;
@@ -57,23 +63,20 @@ template $PopcornMovieButton: Gtk.Box {
       margin-bottom: 10;
       valign: end;
       hexpand: true;
-
       Gtk.Box {
         Gtk.Button {
           styles [
             "osd",
             "circular"
           ]
-          tooltip-text: bind $format_play_button_label(template.model as <$PopcornEpisode> .Progress);
+          tooltip-text: bind $format_play_button_label(template.model as <$PopcornMovie> .Progress);
           action-name: "app.play_movie";
           action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
           icon-name: "media-playback-start-symbolic";
         }
-
         Adw.Bin {
           hexpand: true;
         }
-
         Gtk.ToggleButton {
           styles [
             "circular",
@@ -83,24 +86,22 @@ template $PopcornMovieButton: Gtk.Box {
           tooltip-text: _("Toggle Favorite");
           action-name: "app.toggle_favorite";
           action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
-          active: bind template.model as <$PopcornEpisode> .IsFavorite;
+          active: bind template.model as <$PopcornMovie> .IsFavorite;
           icon-name: bind $format_heart_icon_name(template.model as <$PopcornMovie> .IsFavorite);
         }
       }
-
       Gtk.ProgressBar {
         fraction: bind template.model as <$PopcornMovie> .Progress;
         visible: bind $format_progressbar_visible(template.model as <$PopcornMovie> .Progress);
       }
     }
   }
-
   Gtk.Button {
     styles [
       "flat",
       "p0"
     ]
-    tooltip-text:  bind template.model as <$PopcornMovie> .Name;
+    tooltip-text: bind template.model as <$PopcornMovie> .Name;
     action-name: "app.show_movie";
     action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
     child: Gtk.Box {
@@ -115,7 +116,6 @@ template $PopcornMovieButton: Gtk.Box {
           "title-4"
         ]
       }
-
       Gtk.Label {
         ellipsize: end;
         justify: center;

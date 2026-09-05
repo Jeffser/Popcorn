@@ -8,6 +8,14 @@ template $PopcornSeasonButton: Gtk.Box {
   orientation: vertical;
   spacing: 5;
 
+  Gtk.GestureClick click_gesture {
+    button: 3;
+    pressed => $on_secondary_click();
+  }
+  Gtk.GestureLongPress long_press_gesture {
+    pressed => $on_long_press();
+  }
+
   Gtk.Overlay {
     child: Gtk.Button {
       styles [
@@ -25,7 +33,6 @@ template $PopcornSeasonButton: Gtk.Box {
         width-request: 220;
       };
     };
-
     [overlay]
     Gtk.ToggleButton {
       styles [
@@ -43,9 +50,8 @@ template $PopcornSeasonButton: Gtk.Box {
       action-name: "app.toggle_played";
       action-target: bind $format_action_target(template.model as <$PopcornSeason> .Id, 's');
       active: bind template.model as <$PopcornSeason> .Played;
-      icon-name: "checkmark-symbolic";
+      icon-name: "check-plain-symbolic";
     }
-
     [overlay]
     Gtk.ToggleButton {
       styles [
@@ -65,7 +71,6 @@ template $PopcornSeasonButton: Gtk.Box {
       active: bind template.model as <$PopcornSeason> .IsFavorite;
       icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeason> .IsFavorite);
     }
-
     [overlay]
     Gtk.Button {
       styles [
@@ -84,7 +89,6 @@ template $PopcornSeasonButton: Gtk.Box {
       margin-bottom: 10;
     }
   }
-
   Gtk.Button {
     styles [
       "flat",
