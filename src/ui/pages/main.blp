@@ -25,6 +25,13 @@ template $PopcornMainPage: Adw.NavigationPage {
           menu-model: primary_menu;
         };
       }
+
+      [start]
+      Gtk.Button {
+        icon-name: "system-search-symbolic";
+        action-name: "app.show_search_page";
+        tooltip-text: _("Search");
+      }
     }
 
     [bottom]
