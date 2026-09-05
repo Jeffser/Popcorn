@@ -9,9 +9,6 @@ template $PopcornSeasonPage: Adw.NavigationPage {
 
     [top]
     Adw.HeaderBar {
-      styles [
-        "header-gradient"
-      ]
       title-widget: Adw.WindowTitle {
         title: bind template.series-model as <$PopcornSeries> .Name;
         subtitle: bind template.model as <$PopcornSeason> .Name;

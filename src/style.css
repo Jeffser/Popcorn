@@ -82,26 +82,21 @@ button.active_appearance_button:disabled {
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
 }
 
-.header-gradient {
-  background: linear-gradient(
-    to bottom,
-    alpha(@headerbar_bg_color, 0.80) 0%,
-    alpha(@headerbar_bg_color, 0.4) 70%,
-    alpha(@headerbar_bg_color, 0.2) 80%,
-    transparent 90%
-  );
-  padding-bottom: 10px;
+headerbar.player-headerbar {
+  background: none;
 }
 
-.bottombar-gradient {
-  color: rgba(255,255,255,0.9);
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.35) 40%,
-    rgba(0, 0, 0, 0.1) 75%,
-    rgba(0, 0, 0, 0) 100%
-  );
+headerbar.player-headerbar image,
+headerbar.player-headerbar label {
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+headerbar {
+  background: alpha(var(--window-bg-color), 0.8);
+}
+
+viewswitcherbar  {
+  background: alpha(var(--window-bg-color), 0.8);
 }
 
 .gradient-background {

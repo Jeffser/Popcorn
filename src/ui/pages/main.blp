@@ -5,6 +5,8 @@ template $PopcornMainPage: Adw.NavigationPage {
   title: _("Main Page");
   tag: "main";
   child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+    extend-content-to-bottom-edge: true;
 
     [top]
     Adw.HeaderBar header_bar {
