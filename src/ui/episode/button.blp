@@ -8,6 +8,14 @@ template $PopcornEpisodeButton: Gtk.Box {
   halign: center;
   orientation: vertical;
 
+  Gtk.GestureClick click_gesture {
+    button: 3;
+    pressed => $on_secondary_click();
+  }
+  Gtk.GestureLongPress long_press_gesture {
+    pressed => $on_long_press();
+  }
+
   Gtk.Overlay {
     child: Gtk.Button {
       styles [
@@ -44,7 +52,7 @@ template $PopcornEpisodeButton: Gtk.Box {
       action-name: "app.toggle_played";
       action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
       active: bind template.model as <$PopcornEpisode> .Played;
-      icon-name: "checkmark-symbolic";
+      icon-name: "check-plain-symbolic";
     }
 
     [overlay]
