@@ -289,28 +289,31 @@ class Player(GObject.Object):
                 jellyfin.StartSession(new_model_id)
 
     def model_changed(self, player, pspec):
-        if jellyfin := self.get_property('application').jellyfin:
-            if model := player.get_property(pspec.name):
-                threading.Thread(target=self.handle_jellyfin_session, args=(model.get_property('Id'),), daemon=True).start()
-                if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
-                    self.get_property('gst').set_state(Gst.State.READY)
-                    self.get_property('gst').set_property('uri', stream_url)
-                    self.get_property('gst').set_state(Gst.State.PLAYING)
+        if app := self.get_property('application'):
+            if jellyfin := app.jellyfin:
+                if model := player.get_property(pspec.name):
+                    GLib.idle_add(app.inhibit_idle)
+                    threading.Thread(target=self.handle_jellyfin_session, args=(model.get_property('Id'),), daemon=True).start()
+                    if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
+                        self.get_property('gst').set_state(Gst.State.READY)
+                        self.get_property('gst').set_property('uri', stream_url)
+                        self.get_property('gst').set_state(Gst.State.PLAYING)
 
-                    progress = model.get_property('Progress')
-                    duration = model.get_property('Duration')
-                    if 0 < progress < 1:
-                        GLib.timeout_add(500, lambda: self.get_property('gst').seek_simple(
-                            Gst.Format.TIME,
-                            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                            int(duration * progress * Gst.SECOND)
-                        ) and False)
-                    threading.Thread(target=self.update_media_segments, daemon=True).start()
-                    threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
-                    threading.Thread(target=self.update_subtitles, daemon=True).start()
-                    threading.Thread(target=self.update_trickplay, daemon=True).start()
-            else:
-                threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
+                        progress = model.get_property('Progress')
+                        duration = model.get_property('Duration')
+                        if 0 < progress < 1:
+                            GLib.timeout_add(500, lambda: self.get_property('gst').seek_simple(
+                                Gst.Format.TIME,
+                                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                                int(duration * progress * Gst.SECOND)
+                            ) and False)
+                        threading.Thread(target=self.update_media_segments, daemon=True).start()
+                        threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
+                        threading.Thread(target=self.update_subtitles, daemon=True).start()
+                        threading.Thread(target=self.update_trickplay, daemon=True).start()
+                else:
+                    threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
+                    GLib.idle_add(app.uninhibit_idle)
 
     def update_trickplay(self):
         if model := self.get_property('model'):

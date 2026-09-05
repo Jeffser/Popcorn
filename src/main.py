@@ -68,6 +68,7 @@ class PopcornApplication(Adw.Application):
              flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
              resource_base_path='/com/jeffser/Popcorn')
         self.version = version
+        self.idle_inhibit_cookie = None
         self.set_property('player', Widgets.Player(application=self))
         settings = self.get_property('settings')
         self.jellyfin = Jellyfin(
@@ -93,6 +94,19 @@ class PopcornApplication(Adw.Application):
             dbus_proxy = bus.get('org.freedesktop.DBus', '/org/freedesktop/DBus')
             if not dbus_proxy.NameHasOwner('com.jeffser.Popcorn.Service'):
                 bus.publish('com.jeffser.Popcorn.Service', ('/com/jeffser/Popcorn/Service', app_service))
+
+    def inhibit_idle(self):
+        if self.idle_inhibit_cookie is None:
+            self.idle_inhibit_cookie = self.inhibit(
+                self.get_active_window(),
+                Gtk.ApplicationInhibitFlags.IDLE,
+                _("Playing Media")
+            )
+
+    def uninhibit_idle(self):
+        if self.idle_inhibit_cookie is not None:
+            self.uninhibit(self.idle_inhibit_cookie)
+            self.idle_inhibit_cookie = None
 
     def open_pip_window(self):
         if window := self.pip_window:

@@ -89,6 +89,7 @@ headerbar.player-headerbar {
 headerbar.player-headerbar image,
 headerbar.player-headerbar label {
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+  color: rgba(255, 255, 255, 0.9);
 }
 
 headerbar {
@@ -167,7 +168,12 @@ carouselindicatordots {
 }
 
 .scale-popover label {
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   background: rgba(0, 0, 0, 0.7);
   padding: 5px 10px 5px 10px;
+}
+
+.player-gestures-indicator {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.7);
 }
