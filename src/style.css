@@ -116,6 +116,10 @@ headerbar.header-gradient widget > label, headerbar.header-gradient widget > win
   filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
 }
 
+label.remove-filter {
+  filter: none;
+}
+
 .black-background {
   background: black;
 }
@@ -157,6 +161,7 @@ carouselindicatordots {
   background: none;
   box-shadow: none;
   border: none;
+  padding: 0;
 }
 
 .scale-popover label {
