@@ -83,6 +83,7 @@ button.active_appearance_button:disabled {
 }
 
 headerbar.header-gradient {
+  color: rgba(255,255,255,0.9);
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.7) 0%,
