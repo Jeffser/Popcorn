@@ -14,6 +14,9 @@ class MainPage(Adw.NavigationPage):
     is_wide = GObject.Property(type=bool, default=True)
 
     def setup(self):
+        for page in self.view_stack.get_pages():
+            threading.Thread(target=page.get_child().reset, daemon=True).start()
+        return
         # Called in main thread only when login in / launching
 
         # Remove Pages

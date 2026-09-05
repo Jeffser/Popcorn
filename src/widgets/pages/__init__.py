@@ -6,3 +6,4 @@ from .wrapbox_page import WrapboxPage
 from .search import SearchPage
 from .welcome import WelcomePage
 from .main import MainPage
+from .libraries import LibrariesPage

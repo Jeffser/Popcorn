@@ -8,8 +8,6 @@ template $PopcornHomePage: Gtk.ScrolledWindow {
   child: Adw.Clamp {
     maximum-size: 2000;
     tightening-threshold: 800;
-    margin-top: 40;
-    margin-bottom: 40;
     child: Gtk.Box {
       styles [
         "p10"
@@ -19,11 +17,6 @@ template $PopcornHomePage: Gtk.ScrolledWindow {
 
       $PopcornOverviewCarousel overview_container {}
 
-      Adw.WrapBox user_views_container {
-        line-spacing: 10;
-        child-spacing: 10;
-      }
-
       $PopcornCarousel continue_watching_container {
         title: _("Continue Watching");
         icon-name: "playback-symbolic";
@@ -32,11 +25,6 @@ template $PopcornHomePage: Gtk.ScrolledWindow {
       $PopcornCarousel next_up_container {
         title: _("Next Up");
         icon-name: "media-playlist-consecutive-symbolic";
-      }
-
-      Gtk.Box main_container {
-        orientation: vertical;
-        spacing: 10;
       }
     };
   };

@@ -2,9 +2,26 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PopcornUserViewButton: Gtk.Button {
-  child: Adw.ButtonContent {
-    label: bind template.model as <$PopcornUserView> .Name;
-    icon-name: bind $format_icon_name(template.model as <$PopcornUserView> .CollectionType);
+  styles [
+    "flat"
+  ]
+  child: Gtk.Box {
+    orientation: vertical;
+    spacing: 5;
+    Gtk.Picture {
+      styles [
+        "card"
+      ]
+      halign: center;
+      valign: center;
+      height-request: 180;
+      width-request: 240;
+      paintable: bind template.model as <$PopcornUserView> .PrimaryPaintable;
+    }
+    Gtk.Label {
+      label: bind template.model as <$PopcornUserView> .Name;
+      ellipsize: end;
+    }
   };
   tooltip-text: bind template.model as <$PopcornUserView> .Name;
   action-name: "app.show_user_view";

@@ -1,0 +1,39 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornLibrariesPage: Gtk.ScrolledWindow {
+  hexpand: true;
+  vexpand: true;
+  hscrollbar-policy: never;
+  child: Adw.Clamp {
+    maximum-size: 2000;
+    tightening-threshold: 800;
+    child: Gtk.Stack main_stack {
+      Gtk.StackPage {
+        name: "loading";
+        child: Adw.Spinner {};
+      }
+
+      Gtk.StackPage {
+        name: "content";
+        child: Gtk.Box {
+          styles [
+            "p10"
+          ]
+          orientation: vertical;
+          spacing: 10;
+
+          $PopcornCarousel main_carousel {
+            icon-name: "library-symbolic";
+            title: _("All Libraries");
+          }
+
+          Gtk.Box main_container {
+            orientation: vertical;
+            spacing: 10;
+          }
+        };
+      }
+    };
+  };
+}     

@@ -180,7 +180,8 @@ class Jellyfin(GObject.Object):
                 self.loaded_models.get(item.get('Id')).update_data(
                     Id=item.get('Id'),
                     Name=item.get('Name'),
-                    CollectionType=item.get('CollectionType')
+                    CollectionType=item.get('CollectionType'),
+                    PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary')
                 )
         return self.loaded_models.get(item.get('Id'))
 

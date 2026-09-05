@@ -92,11 +92,7 @@ headerbar.player-headerbar label {
   color: rgba(255, 255, 255, 0.9);
 }
 
-headerbar {
-  background: alpha(var(--window-bg-color), 0.8);
-}
-
-viewswitcherbar  {
+.translucent-background {
   background: alpha(var(--window-bg-color), 0.8);
 }
 

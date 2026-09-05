@@ -28,6 +28,7 @@ class UserView(BasicModel):
     Id = GObject.Property(type=str)
     Name = GObject.Property(type=str)
     CollectionType = GObject.Property(type=str)
+    PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
 
 class Series(BasicModel):
     __gtype_name__ = 'PopcornSeries'
@@ -61,7 +62,6 @@ class TrickplayTileBytes(GObject.Object):
     __gtype_name__ = 'PopcornTrickplayTileBytes'
 
     content = GObject.Property(type=GLib.Bytes)
-
 
 class Playable(BasicModel):
     __gtype_name__ = 'PopcornPlayable'

@@ -5,9 +5,6 @@ template $PopcornMainPage: Adw.NavigationPage {
   title: _("Main Page");
   tag: "main";
   child: Adw.ToolbarView {
-    extend-content-to-top-edge: true;
-    extend-content-to-bottom-edge: true;
-
     [top]
     Adw.HeaderBar header_bar {
       show-title: bind template.is-wide;
@@ -42,6 +39,18 @@ template $PopcornMainPage: Adw.NavigationPage {
       vhomogeneous: false;
       hhomogeneous: true;
       enable-transitions: true;
+      Adw.ViewStackPage {
+        title: _("Home");
+        name: "home";
+        icon-name: "go-home-symbolic";
+        child: $PopcornHomePage {};
+      }
+      Adw.ViewStackPage {
+        title: _("Libraries");
+        name: "libraries";
+        icon-name: "library-symbolic";
+        child: $PopcornLibrariesPage {};
+      }
     };
   };
 }

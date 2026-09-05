@@ -11,9 +11,5 @@ class UserViewButton(Gtk.Button):
     model = GObject.Property(type=models.UserView)
 
     @Gtk.Template.Callback()
-    def format_icon_name(self, obj, value) -> str:
-        return constants.USERVIEWS_ICONS.get(value) or 'folder-symbolic'
-
-    @Gtk.Template.Callback()
     def format_action_target(self, obj, value) -> GLib.Variant:
         return GLib.Variant.new_string(value)

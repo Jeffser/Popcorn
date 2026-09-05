@@ -8,7 +8,11 @@ template $PopcornMoviePage: Adw.NavigationPage {
     extend-content-to-top-edge: true;
 
     [top]
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      styles [
+        "translucent-background"
+      ]
+    }
 
     content: Gtk.ScrolledWindow {
       vexpand: true;

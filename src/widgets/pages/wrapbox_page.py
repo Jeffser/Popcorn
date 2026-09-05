@@ -9,7 +9,7 @@ from ...integrations import models
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/wrapbox_page.ui')
-class WrapboxPage(Gtk.ScrolledWindow):
+class WrapboxPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornWrapboxPage'
 
     page_size = GObject.Property(type=int, default=20)

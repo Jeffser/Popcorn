@@ -8,6 +8,7 @@ widgets = [
   'wrapbox_page.py',
   'welcome.py',
   'main.py',
+  'libraries.py',
 ]
 
 install_data(widgets, install_dir: moduledir)
