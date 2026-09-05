@@ -1,7 +1,7 @@
 # secret.py
 
 from gi.repository import Secret
-import hashlib, secrets, string
+import hashlib, secrets, string, os
 from ..constants import FALLBACK_PASSWORD_PATH
 
 BASE_SCHEMA = Secret.Schema.new(
@@ -24,23 +24,23 @@ def store_password(password:str, schema_type:str="password"):
             password,
             None
         )
-    except Exception as e:
-        with open(FALLBACK_PASSWORD_PATH, 'w') as f:
+    except:
+        with open(FALLBACK_PASSWORD_PATH, 'w+') as f:
             f.write(password)
 
 def get_plain_password(schema_type:str="password") -> str:
     # returns plain password
     try:
         attributes = {"type": schema_type}
-
         return Secret.password_lookup_sync(
             BASE_SCHEMA,
             attributes,
             None
         )
-    except Exception as e:
-        with open(FALLBACK_PASSWORD_PATH, 'r') as f:
-            return f.read()
+    except:
+        if os.path.isfile(FALLBACK_PASSWORD_PATH):
+            with open(FALLBACK_PASSWORD_PATH, 'r') as f:
+                return f.read()
     return ""
 
 def get_hashed_password(schema_type:str="password") -> tuple:
