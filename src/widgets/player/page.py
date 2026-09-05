@@ -363,7 +363,7 @@ class PlayerPage(Adw.NavigationPage):
         rect.y = 0
         rect.width = 1
         rect.height = 1
-        self.scale_popover.set_offset(0, -20)
+        self.scale_popover.set_offset(0, -15)
         self.scale_popover.set_pointing_to(rect)
         self.scale_popover.popup()
 

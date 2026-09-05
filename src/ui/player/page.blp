@@ -329,7 +329,11 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                       leave => $scale_leave_hover();
                   }
                   Gtk.Popover scale_popover {
+                    styles [
+                      "scale-popover"
+                    ]
                     autohide: false;
+                    has-arrow: false;
                     position: top;
                     child: Gtk.Box {
                       orientation: vertical;
@@ -346,6 +350,10 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                         };
                       }
                       Gtk.Label {
+                        styles [
+                          "card"
+                        ]
+                        halign: center;
                         label: bind template.current-trickplay-timestamp;
                       }
                     };

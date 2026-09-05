@@ -147,3 +147,19 @@ picture.login-background {
 carouselindicatordots {
   padding-right: 5px;
 }
+
+.scale-popover {
+  box-shadow: none;
+}
+
+.scale-popover contents {
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+.scale-popover label {
+  color: rgba(255,255,255,0.9);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px 5px 10px;
+}
