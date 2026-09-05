@@ -7,7 +7,7 @@ template $PopcornMainPage: Adw.NavigationPage {
   child: Adw.ToolbarView {
     [top]
     Adw.HeaderBar header_bar {
-      show-title: bind template.is-wide;
+      show-title: bind template.root as <$PopcornWindow> .is-wide;
 
       title-widget: Adw.ViewSwitcher {
         stack: view_stack;
@@ -30,7 +30,7 @@ template $PopcornMainPage: Adw.NavigationPage {
     [bottom]
     Adw.ViewSwitcherBar switcher_bar {
       stack: view_stack;
-      reveal: bind template.is-wide inverted;
+      reveal: bind $format_invert_bool(template.root as <$PopcornWindow> .is-wide);
     }
 
     content: Adw.ViewStack view_stack {

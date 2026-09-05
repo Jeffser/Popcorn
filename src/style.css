@@ -160,3 +160,8 @@ carouselindicatordots {
   color: rgba(255, 255, 255, 0.9);
   background: rgba(0, 0, 0, 0.7);
 }
+
+entry.pill {
+  padding: 0 15px 0 15px;
+  border-radius: 25px;
+}

@@ -1,6 +1,6 @@
 # main.py
 
-from gi.repository import GObject, Gtk, Adw, Gio, GLib
+from gi.repository import Gtk, Adw, Gio, GLib
 from .home import HomePage
 from .wrapbox_page import WrapboxPage
 from ... import constants
@@ -11,7 +11,6 @@ class MainPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornMainPage'
 
     view_stack = Gtk.Template.Child()
-    is_wide = GObject.Property(type=bool, default=True)
 
     def setup(self):
         for page in self.view_stack.get_pages():
@@ -52,3 +51,6 @@ class MainPage(Adw.NavigationPage):
         # Called in different thread (ctrl+r)
         self.view_stack.get_visible_child().reset()
 
+    @Gtk.Template.Callback()
+    def format_invert_bool(self, obj, value:bool) -> bool:
+        return not value

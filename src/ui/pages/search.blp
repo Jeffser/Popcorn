@@ -7,8 +7,14 @@ template $PopcornSearchPage: Gtk.Overlay {
 
   [overlay]
   Gtk.SearchEntry search_entry {
-    valign: start;
+    styles [
+      "pill",
+      "osd"
+    ]
+    halign: center;
+    valign: bind $format_search_entry_valign(template.root as <$PopcornWindow> .is-wide);
     margin-top: 10;
+    margin-bottom: 10;
     margin-start: 10;
     margin-end: 10;
     search-changed => $search_changed();

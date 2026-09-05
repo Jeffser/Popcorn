@@ -64,3 +64,7 @@ class SearchPage(Gtk.Overlay):
                 threading.Thread(target=self.search, args=(query,), daemon=True).start()
             else:
                 self.main_stack.set_visible_child_name('empty')
+
+    @Gtk.Template.Callback()
+    def format_search_entry_valign(self, obj, is_wide:bool) -> Gtk.Align:
+        return Gtk.Align.START if is_wide else Gtk.Align.END

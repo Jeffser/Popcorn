@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GLib, Gst, Gio
+from gi.repository import GObject, Gtk, Adw, GLib, Gst, Gio
 from . import widgets as Widgets
 from . import actions
 import threading
@@ -28,6 +28,8 @@ class PopcornWindow(Adw.ApplicationWindow):
 
     toast_overlay = Gtk.Template.Child()
     root_navigationview = Gtk.Template.Child()
+
+    is_wide = GObject.Property(type=bool, default=True)
 
     @Gtk.Template.Callback()
     def on_close(self, window):
