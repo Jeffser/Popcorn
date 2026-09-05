@@ -27,7 +27,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         margin-start: 10;
         margin-end: 10;
         margin-top: 10;
-        maximum-size: 360;
+        maximum-size: 480;
         child: Gtk.Button {
           styles [
             "flat"
@@ -70,7 +70,7 @@ template $PopcornSeriesOverview: Gtk.Overlay {
       orientation: vertical;
       spacing: 10;
       styles [
-        "osd",
+        "overview-information-container",
         "p10"
       ]
       Adw.WrapBox {
@@ -125,13 +125,9 @@ template $PopcornSeriesOverview: Gtk.Overlay {
         }
       }
 
-      Adw.WrapBox {
-        wrap-policy: minimum;
-        justify: fill;
-        justify-last-line: true;
-        line-spacing: 10;
-        child-spacing: 10;
+      Gtk.Box {
         hexpand: true;
+        spacing: 10;
 
         Gtk.Label {
           styles [
@@ -150,12 +146,10 @@ template $PopcornSeriesOverview: Gtk.Overlay {
 
         Gtk.Button {
           styles [
-            "circular",
-            "accent"
+            "circular"
           ]
-          valign: end;
-          halign: center;
-          tooltip-text: _("Continue Watching");
+          valign: center;
+          tooltip-text: _("Play");
           action-name: "app.play_series";
           action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
           icon-name: "media-playback-start-symbolic";

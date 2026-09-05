@@ -165,3 +165,18 @@ entry.pill {
   padding: 0 15px 0 15px;
   border-radius: 25px;
 }
+
+.overview-information-container {
+  color: rgba(255,255,255,0.9);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.52) 20%,
+    rgba(0, 0, 0, 0.43) 40%,
+    rgba(0, 0, 0, 0.31) 60%,
+    rgba(0, 0, 0, 0.18) 75%,
+    rgba(0, 0, 0, 0.08) 88%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  text-shadow: 0px 2px 12px rgba(0, 0, 0, 0.7);
+}
