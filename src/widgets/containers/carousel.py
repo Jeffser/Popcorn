@@ -10,65 +10,36 @@ class Carousel(Gtk.Box):
     icon_name = GObject.Property(type=str)
 
     list_el = Gtk.Template.Child()
-    pan_start_el = Gtk.Template.Child()
-    pan_end_el = Gtk.Template.Child()
+    start_value = 0
+    has_dragged = False
 
     def remove_all(self):
         for page in list(self.list_el):
             self.list_el.remove(page)
 
     def set_widgets(self, widgets:list):
-        def scroll_to_middle():
-            if self.list_el.get_n_pages() > 0:
-                middle_index = int((self.list_el.get_n_pages()-1)/2)
-                page = self.list_el.get_nth_page(max(0, middle_index))
-                if page:
-                    self.list_el.scroll_to(page, True)
-
         self.set_visible(len(widgets) > 0)
-        if self.list_el.get_n_pages() > 0:
-            self.remove_all()
-        for i, page in enumerate(widgets):
+        self.remove_all()
+        for page in widgets:
             self.list_el.append(page)
-        GLib.timeout_add(200, scroll_to_middle)
 
     @Gtk.Template.Callback()
-    def format_visible_button(self, obj, n_pages:int) -> bool:
-        return n_pages > 1
+    def drag_begin(self, gesture, start_x:float, start_y:float):
+        self.start_value = gesture.get_widget().get_hadjustment().get_value()
+        self.has_dragged = False
 
     @Gtk.Template.Callback()
-    def on_scroll(self, controller, dx, dy):
-        position = self.list_el.get_position()
-        if position == int(position):
-            event = controller.get_current_event()
-            state = event.get_modifier_state()
-            if (state & Gdk.ModifierType.SHIFT_MASK) or dx != 0:
-                direction = dy or dx
-                next_position = int(max(0, min(position + direction, self.list_el.get_n_pages())))
-                next_page = self.list_el.get_nth_page(next_position)
-                if next_page:
-                    self.list_el.scroll_to(next_page, True)
-        return Gdk.EVENT_PROPAGATE
+    def drag_update(self, gesture, offset_x:float, offset_y:float):
+        new_value = self.start_value - offset_x
 
-    def pan(self, to_end:bool):
-        if first_page := self.list_el.get_nth_page(0):
-            visible_pages_n = int(self.list_el.get_width() / first_page.get_width())
-            if to_end:
-                next_position = int(self.list_el.get_position() + visible_pages_n)
-            else:
-                next_position = int(self.list_el.get_position() - visible_pages_n)
-            next_position = max(min(next_position, self.list_el.get_n_pages() - 1), 0)
-            self.list_el.scroll_to(self.list_el.get_nth_page(next_position), True)
+        if not self.has_dragged and abs(offset_x) > 5:
+            self.has_dragged = True
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED)
 
-    @Gtk.Template.Callback()
-    def pan_start(self, button):
-        self.pan(False)
+        if self.has_dragged:
+            hadjustment = gesture.get_widget().get_hadjustment()
+            lower = hadjustment.get_lower()
+            upper = hadjustment.get_upper() - hadjustment.get_page_size()
+            hadjustment.set_value(max(lower, min(new_value, upper)))
 
-    @Gtk.Template.Callback()
-    def pan_end(self, button):
-        self.pan(True)
 
-    @Gtk.Template.Callback()
-    def page_changed(self, carousel, index):
-        self.pan_start_el.set_sensitive(index != 0)
-        self.pan_end_el.set_sensitive(index != carousel.get_n_pages() - 1)

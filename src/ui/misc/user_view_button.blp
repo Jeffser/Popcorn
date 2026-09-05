@@ -19,6 +19,9 @@ template $PopcornUserViewButton: Gtk.Button {
       paintable: bind template.model as <$PopcornUserView> .PrimaryPaintable;
     }
     Gtk.Label {
+      styles [
+        "title-4"
+      ]
       label: bind template.model as <$PopcornUserView> .Name;
       ellipsize: end;
     }
