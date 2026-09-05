@@ -80,7 +80,7 @@ class PopcornApplication(Adw.Application):
 
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
-        self.create_action('preferences', self.on_preferences_action)
+        self.create_action('preferences', self.on_preferences_action, ['<control>comma'])
 
     def do_activate(self):
         if not self.main_window:
@@ -154,5 +154,6 @@ def main(version):
     print("Popcorn version", version)
     set_popcorn_version(version)
     return PopcornApplication(version).run(sys.argv)
+
 
 
