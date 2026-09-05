@@ -25,13 +25,6 @@ template $PopcornMainPage: Adw.NavigationPage {
           menu-model: primary_menu;
         };
       }
-
-      [start]
-      Gtk.Button {
-        icon-name: "system-search-symbolic";
-        action-name: "app.show_search_page";
-        tooltip-text: _("Search");
-      }
     }
 
     [bottom]
@@ -51,6 +44,12 @@ template $PopcornMainPage: Adw.NavigationPage {
         name: "home";
         icon-name: "go-home-symbolic";
         child: $PopcornHomePage {};
+      }
+      Adw.ViewStackPage {
+        title: _("Search");
+        name: "search";
+        icon-name: "system-search-symbolic";
+        child: $PopcornSearchPage {};
       }
       Adw.ViewStackPage {
         title: _("Libraries");

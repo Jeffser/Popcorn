@@ -8,7 +8,7 @@ from ...integrations import models
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/search.ui')
-class SearchPage(Adw.NavigationPage):
+class SearchPage(Gtk.Overlay):
     __gtype_name__ = 'PopcornSearchPage'
 
     search_entry = Gtk.Template.Child()
