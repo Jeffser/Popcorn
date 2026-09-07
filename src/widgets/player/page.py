@@ -72,26 +72,7 @@ class PlayerPage(Adw.NavigationPage):
                     Gio.SettingsBindFlags.DEFAULT
                 )
 
-    def on_root_changed(self, widget, pspec=None):
-        if not widget.get_property('root'):
-            if player := self.get_property('player'):
-                if app := player.get_property('application'):
-                    if not app.pip_window or not app.pip_window.get_visible():
-                        player.stop()
-
-    def media_segments_changed(self, widget, pspec=None):
-        self.scale.clear_marks()
-        self.media_segments = {}
-        for segment in list(widget):
-            self.scale.add_mark(
-                segment.get_property('StartPosition'),
-                Gtk.PositionType.BOTTOM
-            )
-            self.scale.add_mark(
-                segment.get_property('EndPosition'),
-                Gtk.PositionType.BOTTOM
-            )
-            self.media_segments[segment.get_property('StartPosition')] = segment
+    # Subtitles
 
     def available_subtitles_changed(self, widget, pspec=None):
         for item in list(self.subtitle_options_container):
@@ -108,6 +89,36 @@ class PlayerPage(Adw.NavigationPage):
             if not first_check:
                 first_check = check_button
             self.subtitle_options_container.append(check_button)
+
+    def check_subtitles(self):
+        subtitle_model = None
+        for option in list(self.subtitle_options_container):
+            if option.get_active():
+                subtitle_model = option.get_property('model')
+                break
+
+        if subtitle_model:
+            if position := self.get_property('position'):
+                for line in list(subtitle_model.get_property('Lines') or []):
+                    if line.get_property('StartPosition') < position < line.get_property('EndPosition'):
+                        self.set_property('current-subtitle-line', line)
+                        return True
+        self.set_property('current-subtitle-line', models.SubtitleLine())
+        return True
+
+    @Gtk.Template.Callback()
+    def format_subtitle_visible(self, obj, subtitle_line) -> bool:
+        if subtitle_line:
+            return bool(subtitle_line.get_property('Text'))
+        return False
+
+    @Gtk.Template.Callback()
+    def format_subtitle_label(self, obj, subtitle_line) -> str:
+        if subtitle_line:
+            return subtitle_line.get_property('Text').strip()
+        return ''
+
+    # Audio Tracks
 
     def available_audio_changed(self, widget, pspec=None):
         def checkbox_changed(button):
@@ -131,6 +142,64 @@ class PlayerPage(Adw.NavigationPage):
             if not first_check:
                 first_check = check_button
             self.audio_options_container.append(check_button)
+
+
+    def on_root_changed(self, widget, pspec=None):
+        if not widget.get_property('root'):
+            if player := self.get_property('player'):
+                if app := player.get_property('application'):
+                    if not app.pip_window or not app.pip_window.get_visible():
+                        player.stop()
+
+    def media_segments_changed(self, widget, pspec=None):
+        self.scale.clear_marks()
+        self.media_segments = {}
+        for segment in list(widget):
+            self.scale.add_mark(
+                segment.get_property('StartPosition'),
+                Gtk.PositionType.BOTTOM
+            )
+            self.scale.add_mark(
+                segment.get_property('EndPosition'),
+                Gtk.PositionType.BOTTOM
+            )
+            self.media_segments[segment.get_property('StartPosition')] = segment
+
+    # Volume
+
+    @Gtk.Template.Callback()
+    def format_volume_icon_name(self, obj, value:float) -> str:
+        if value == 0:
+            return "speaker-0-symbolic"
+        elif value < 0.33:
+            return "speaker-1-symbolic"
+        elif value < 0.66:
+            return "speaker-2-symbolic"
+        return "speaker-3-symbolic"
+
+    @Gtk.Template.Callback()
+    def mute_volume_clicked(self, button):
+        self.volume_adjustment.set_value(0)
+
+    @Gtk.Template.Callback()
+    def full_volume_clicked(self, button):
+        self.volume_adjustment.set_value(1)
+
+    def change_volume(self, obj, action_name, volume):
+        volume = volume.unpack()
+        if root := self.get_root():
+            if app := root.get_application():
+                volume = app.settings.get_value("volume").unpack() + volume
+                app.settings.set_double("volume", max(0, min(volume, 1)))
+                icon_name = self.format_volume_icon_name(None, volume)
+
+        self.set_property('overlay-icon-name', icon_name)
+        self.set_property('overlay-progress', volume*5)
+        if self.overlay_icon_timeout_id:
+            GLib.source_remove(self.overlay_icon_timeout_id)
+        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
+
+    # Segments
 
     def check_segments(self):
         self.button_revealer_stack.set_sensitive(True)
@@ -160,31 +229,21 @@ class PlayerPage(Adw.NavigationPage):
         self.button_revealer.set_reveal_child(False)
         return True
 
-    def check_subtitles(self):
-        subtitle_model = None
-        for option in list(self.subtitle_options_container):
-            if option.get_active():
-                subtitle_model = option.get_property('model')
-                break
+    @Gtk.Template.Callback()
+    def skip_segment_clicked(self, button):
+        self.button_revealer_stack.set_sensitive(False)
+        if segment := self.get_property('current-media-segment'):
+            self.get_property('player').get_property('gst').seek_simple(
+                Gst.Format.TIME,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                int(segment.get_property('EndPosition') * Gst.SECOND)
+            )
 
-        if subtitle_model:
-            if position := self.get_property('position'):
-                for line in list(subtitle_model.get_property('Lines') or []):
-                    if line.get_property('StartPosition') < position < line.get_property('EndPosition'):
-                        self.set_property('current-subtitle-line', line)
-                        return True
-        self.set_property('current-subtitle-line', models.SubtitleLine())
-        return True
+    @Gtk.Template.Callback()
+    def format_segment_skipper_label(self, obj, segment_type:str) -> str:
+        return _("Skip {}").format(SECTION_NAMES.get(segment_type) or _("Segment"))
 
-    def reset(self):
-        pass
-
-    def update_end_time(self):
-        if player := self.get_property('player'):
-            if model := player.get_property('model'):
-                duration = model.get_property('Duration')
-                self.set_property('end-time', _("Ends at {}").format(get_future_time(duration-self.get_property('position'))))
-        return True
+    # Seek / Position
 
     def update_position(self):
         if not self.get_property('scale-seeking'):
@@ -218,6 +277,32 @@ class PlayerPage(Adw.NavigationPage):
         GLib.timeout_add(500, self.set_property, 'scale-seeking', False)
         GLib.timeout_add(500, lambda: self.update_end_time() and False)
 
+    def seek(self, obj, action_name, seek_amount):
+        seek_amount = seek_amount.unpack()
+        icon_name = 'media-seek-{}-symbolic'.format('forward' if seek_amount > 0 else 'backward')
+        self.get_property('player').get_property('gst').seek_simple(
+            Gst.Format.TIME,
+            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+            int((self.get_property('position') + seek_amount) * Gst.SECOND)
+        )
+        self.set_property('overlay-icon-name', icon_name)
+        self.set_property('overlay-progress', 0)
+        if self.overlay_icon_timeout_id:
+            GLib.source_remove(self.overlay_icon_timeout_id)
+        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
+
+    def reset(self):
+        pass
+
+    def update_end_time(self):
+        if player := self.get_property('player'):
+            if model := player.get_property('model'):
+                duration = model.get_property('Duration')
+                self.set_property('end-time', _("Ends at {}").format(get_future_time(duration-self.get_property('position'))))
+        return True
+
+    # Gestures / Controls Toggling
+
     @Gtk.Template.Callback()
     def fullscreen_toggled(self, button, pspec):
         if button.get_property(pspec.name):
@@ -243,10 +328,6 @@ class PlayerPage(Adw.NavigationPage):
         self.hide_timeout_id = GLib.timeout_add(3000, self.toggle_controls, False)
 
     @Gtk.Template.Callback()
-    def format_to_bool(self, obj, value) -> bool:
-        return bool(value)
-
-    @Gtk.Template.Callback()
     def on_pointer_motion(self, controller, x, y):
         if self.last_motion_coordinates != [x, y]:
             self.last_motion_coordinates = [x, y]
@@ -264,20 +345,6 @@ class PlayerPage(Adw.NavigationPage):
                     app.open_pip_window()
                     navigationview.pop()
                     root.unfullscreen()
-
-    @Gtk.Template.Callback()
-    def format_segment_skipper_label(self, obj, segment_type:str) -> str:
-        return _("Skip {}").format(SECTION_NAMES.get(segment_type) or _("Segment"))
-
-    @Gtk.Template.Callback()
-    def skip_segment_clicked(self, button):
-        self.button_revealer_stack.set_sensitive(False)
-        if segment := self.get_property('current-media-segment'):
-            self.get_property('player').get_property('gst').seek_simple(
-                Gst.Format.TIME,
-                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                int(segment.get_property('EndPosition') * Gst.SECOND)
-            )
 
     @Gtk.Template.Callback()
     def format_visible_state_button(self, obj, state) -> str:
@@ -308,34 +375,8 @@ class PlayerPage(Adw.NavigationPage):
                 self.get_property('player').set_property('model', model)
 
     @Gtk.Template.Callback()
-    def format_volume_icon_name(self, obj, value:float) -> str:
-        if value == 0:
-            return "speaker-0-symbolic"
-        elif value < 0.33:
-            return "speaker-1-symbolic"
-        elif value < 0.66:
-            return "speaker-2-symbolic"
-        return "speaker-3-symbolic"
-
-    @Gtk.Template.Callback()
-    def mute_volume_clicked(self, button):
-        self.volume_adjustment.set_value(0)
-
-    @Gtk.Template.Callback()
-    def full_volume_clicked(self, button):
-        self.volume_adjustment.set_value(1)
-
-    @Gtk.Template.Callback()
-    def format_subtitle_visible(self, obj, subtitle_line) -> bool:
-        if subtitle_line:
-            return bool(subtitle_line.get_property('Text'))
-        return False
-
-    @Gtk.Template.Callback()
-    def format_subtitle_label(self, obj, subtitle_line) -> str:
-        if subtitle_line:
-            return subtitle_line.get_property('Text').strip()
-        return ''
+    def format_to_bool(self, obj, value) -> bool:
+        return bool(value)
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
@@ -397,34 +438,6 @@ class PlayerPage(Adw.NavigationPage):
     def reset_overlay_icon(self):
         self.set_property('overlay-progress', 0)
         self.set_property('overlay-icon-name', '')
-
-    def seek(self, obj, action_name, seek_amount):
-        seek_amount = seek_amount.unpack()
-        icon_name = 'media-seek-{}-symbolic'.format('forward' if seek_amount > 0 else 'backward')
-        self.get_property('player').get_property('gst').seek_simple(
-            Gst.Format.TIME,
-            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-            int((self.get_property('position') + seek_amount) * Gst.SECOND)
-        )
-        self.set_property('overlay-icon-name', icon_name)
-        self.set_property('overlay-progress', 0)
-        if self.overlay_icon_timeout_id:
-            GLib.source_remove(self.overlay_icon_timeout_id)
-        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
-
-    def change_volume(self, obj, action_name, volume):
-        volume = volume.unpack()
-        if root := self.get_root():
-            if app := root.get_application():
-                volume = app.settings.get_value("volume").unpack() + volume
-                app.settings.set_double("volume", max(0, min(volume, 1)))
-                icon_name = self.format_volume_icon_name(None, volume)
-
-        self.set_property('overlay-icon-name', icon_name)
-        self.set_property('overlay-progress', volume*5)
-        if self.overlay_icon_timeout_id:
-            GLib.source_remove(self.overlay_icon_timeout_id)
-        self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
     def toggle_playback(self, obj, action_name, param):
         icon_name = ''
