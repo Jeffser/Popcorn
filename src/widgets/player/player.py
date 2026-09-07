@@ -252,6 +252,7 @@ class Player(GObject.Object):
     media_segments = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.MediaSegment))
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
     available_subtitles = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.Subtitle))
+    available_audio_tracks = GObject.Property(type=Gtk.StringList, default=Gtk.StringList())
     gst_state = GObject.Property(type=Gst.State, default=Gst.State.NULL)
 
     def __init__(self, **kwargs):
@@ -311,9 +312,30 @@ class Player(GObject.Object):
                         threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
                         threading.Thread(target=self.update_subtitles, daemon=True).start()
                         threading.Thread(target=self.update_trickplay, daemon=True).start()
+                        GLib.timeout_add(1000, self.update_audio_tracks)
                 else:
                     threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
                     GLib.idle_add(app.uninhibit_idle)
+
+    def update_audio_tracks(self):
+        track_list = self.get_property('available-audio-tracks')
+        gst = self.get_property('gst')
+        n_tracks = gst.get_property('n-audio')
+
+        if removal_n := track_list.get_property('n-items'):
+            track_list.splice(0, removal_n)
+
+        for i in range(n_tracks):
+            lang = _("Unknown")
+            codec = _("Unknown")
+            if tags := gst.emit('get-audio-tags', i):
+                success, lang = tags.get_string(Gst.TAG_LANGUAGE_CODE)
+                if not success:
+                    lang = _("Unknown")
+                success, codec = tags.get_string(Gst.TAG_AUDIO_CODEC)
+                if not success:
+                    codec = _("Unknown")
+            track_list.append('{} ({})'.format(lang, codec))
 
     def update_trickplay(self):
         if model := self.get_property('model'):

@@ -34,6 +34,7 @@
     <file alias="icons/scalable/status/external-link-symbolic.svg">icons/external-link-symbolic.svg</file>
     <file alias="icons/scalable/status/go-home-symbolic.svg">icons/go-home-symbolic.svg</file>
     <file alias="icons/scalable/status/library-symbolic.svg">icons/library-symbolic.svg</file>
+    <file alias="icons/scalable/status/music-note-single-symbolic.svg">icons/music-note-single-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="preferences.ui">ui/preferences.ui</file>
@@ -71,4 +72,5 @@
     <file alias="containers/wrapbox.ui">ui/containers/wrapbox.ui</file>
   </gresource>
 </gresources>
+
 

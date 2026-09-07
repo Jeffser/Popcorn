@@ -32,6 +32,8 @@ class PlayerPage(Adw.NavigationPage):
     button_revealer_stack = Gtk.Template.Child()
     subtitle_menu_button = Gtk.Template.Child()
     subtitle_options_container = Gtk.Template.Child()
+    audio_menu_button = Gtk.Template.Child()
+    audio_options_container = Gtk.Template.Child()
     scale = Gtk.Template.Child()
     scale_popover = Gtk.Template.Child()
     volume_menubutton = Gtk.Template.Child()
@@ -57,8 +59,10 @@ class PlayerPage(Adw.NavigationPage):
         if player := widget.get_property('player'):
             player.get_property('media-segments').connect('notify::n-items', self.media_segments_changed)
             player.get_property('available-subtitles').connect('notify::n-items', self.available_subtitles_changed)
+            player.get_property('available-audio-tracks').connect('notify::n-items', self.available_audio_changed)
             self.available_subtitles_changed(player.get_property('available-subtitles'))
             self.media_segments_changed(player.get_property('media-segments'))
+            self.available_audio_changed(player.get_property('available-audio-tracks'))
             GLib.idle_add(self.update_end_time)
             if app := player.get_property('application'):
                 app.settings.bind(
@@ -104,6 +108,29 @@ class PlayerPage(Adw.NavigationPage):
             if not first_check:
                 first_check = check_button
             self.subtitle_options_container.append(check_button)
+
+    def available_audio_changed(self, widget, pspec=None):
+        def checkbox_changed(button):
+            if button.get_active():
+                index = list(self.audio_options_container).index(button)
+                if player := self.get_property('player'):
+                    if gst := player.get_property('gst'):
+                        gst.set_property('current-audio', index)
+
+        for item in list(self.audio_options_container):
+            self.audio_options_container.remove(item)
+        first_check = None
+        options_list = list(widget)
+        for i, name in enumerate(options_list):
+            check_button = Gtk.CheckButton(
+                label=name.get_string(),
+                group=first_check,
+                active=i==0
+            )
+            check_button.connect('toggled', checkbox_changed)
+            if not first_check:
+                first_check = check_button
+            self.audio_options_container.append(check_button)
 
     def check_segments(self):
         self.button_revealer_stack.set_sensitive(True)
@@ -199,7 +226,7 @@ class PlayerPage(Adw.NavigationPage):
             self.get_root().unfullscreen()
 
     def toggle_controls(self, visible:bool):
-        if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active() or self.subtitle_menu_button.get_active()):
+        if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active() or self.subtitle_menu_button.get_active() or self.audio_menu_button.get_active()):
             return
         self.toolbarview.set_reveal_top_bars(visible)
         self.controls_revealer.set_reveal_child(visible)
@@ -297,10 +324,6 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def full_volume_clicked(self, button):
         self.volume_adjustment.set_value(1)
-
-    @Gtk.Template.Callback()
-    def format_subtitle_button_visible(self, obj, n_subtitles):
-        return n_subtitles > 1
 
     @Gtk.Template.Callback()
     def format_subtitle_visible(self, obj, subtitle_line) -> bool:

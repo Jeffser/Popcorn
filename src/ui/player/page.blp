@@ -234,12 +234,25 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   hexpand: true;
                 }
 
+                Gtk.MenuButton audio_menu_button {
+                  styles [
+                    "flat"
+                  ]
+                  icon-name: "music-note-single-symbolic";
+                  visible: bind $format_to_bool(template.player as <$PopcornPlayer> .available-audio-tracks as <Gtk.StringList> .n-items);
+                  popover: Gtk.Popover {
+                    child: Gtk.Box audio_options_container {
+                      orientation: vertical;
+                    };
+                  };
+                }
+
                 Gtk.MenuButton subtitle_menu_button {
                   styles [
                     "flat"
                   ]
                   icon-name: "media-view-subtitles-symbolic";
-                  visible: bind $format_subtitle_button_visible(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
+                  visible: bind $format_to_bool(template.player as <$PopcornPlayer> .available-subtitles as <Gio.ListStore> .n-items);
                   popover: Gtk.Popover {
                     child: Gtk.Box subtitle_options_container {
                       orientation: vertical;
