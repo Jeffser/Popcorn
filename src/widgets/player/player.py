@@ -8,7 +8,7 @@ from mpris_server.server import Server
 from mpris_server import Metadata, ValidMetadata, Track, Position, Volume, Rate, PlayState, DbusObj, MetadataObj, ActivePlaylist, PlaylistEntry, MprisInterface
 from ...integrations import models
 
-import threading, logging
+import threading, logging, pycountry
 
 logger = logging.getLogger(__name__)
 
@@ -329,13 +329,15 @@ class Player(GObject.Object):
             lang = _("Unknown")
             codec = _("Unknown")
             if tags := gst.emit('get-audio-tags', i):
-                success, lang = tags.get_string(Gst.TAG_LANGUAGE_CODE)
-                if not success:
-                    lang = _("Unknown")
-                success, codec = tags.get_string(Gst.TAG_AUDIO_CODEC)
-                if not success:
-                    codec = _("Unknown")
-            track_list.append('{} ({})'.format(lang, codec))
+                success, lang_code = tags.get_string(Gst.TAG_LANGUAGE_CODE)
+                if success:
+                    if language := pycountry.languages.get(alpha_2=lang_code):
+                        if name := language.name:
+                            lang = name
+                success, codec_str = tags.get_string(Gst.TAG_AUDIO_CODEC)
+                if success:
+                    codec = codec_str
+            track_list.append('{}, {}'.format(lang, codec))
 
     def update_trickplay(self):
         if model := self.get_property('model'):
