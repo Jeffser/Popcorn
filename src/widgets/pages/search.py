@@ -8,7 +8,7 @@ from ...integrations import models
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/search.ui')
-class SearchPage(Gtk.Overlay):
+class SearchPage(Gtk.Box):
     __gtype_name__ = 'PopcornSearchPage'
 
     search_entry = Gtk.Template.Child()
@@ -65,6 +65,3 @@ class SearchPage(Gtk.Overlay):
             else:
                 self.main_stack.set_visible_child_name('empty')
 
-    @Gtk.Template.Callback()
-    def format_search_entry_valign(self, obj, is_wide:bool) -> Gtk.Align:
-        return Gtk.Align.START if is_wide else Gtk.Align.END

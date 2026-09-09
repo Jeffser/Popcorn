@@ -1,26 +1,24 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PopcornSearchPage: Gtk.Overlay {
+template $PopcornSearchPage: Gtk.Box {
   hexpand: true;
   vexpand: true;
+  orientation: vertical;
 
-  [overlay]
-  Gtk.SearchEntry search_entry {
-    styles [
-      "pill",
-      "osd"
-    ]
-    halign: center;
-    valign: bind $format_search_entry_valign(template.root as <$PopcornWindow> .is-wide);
-    margin-top: 10;
-    margin-bottom: 10;
+  Adw.Clamp {
+    maximum-size: 375;
+    tightening-threshold: 400;
     margin-start: 10;
     margin-end: 10;
-    search-changed => $search_changed();
+    margin-bottom: 10;
+    child: Gtk.SearchEntry search_entry {
+      search-changed => $search_changed();
+      placeholder-text: _("Search");
+    };
   }
 
-  child: Gtk.Stack main_stack {
+  Gtk.Stack main_stack {
     transition-type: crossfade;
     Gtk.StackPage {
       name: "empty";
@@ -44,6 +42,9 @@ template $PopcornSearchPage: Gtk.Overlay {
     Gtk.StackPage {
       name: "results";
       child: Gtk.ScrolledWindow {
+        styles [
+          "overshoot-top"
+        ]
         vexpand: true;
         hexpand: true;
         hscrollbar-policy: never;
@@ -74,5 +75,5 @@ template $PopcornSearchPage: Gtk.Overlay {
         };
       };
     }
-  };
+  }
 }
