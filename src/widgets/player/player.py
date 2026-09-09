@@ -266,6 +266,7 @@ class Player(GObject.Object):
         self.event_adapter = PlayerEventAdapter(self)
 
         # GST stuff
+        self.get_property('gst').set_property('subtitle-font-desc', "Sans, 18")
         self.get_property('gst').set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
         self.get_property('gst').connect("source-setup", self.on_source_setup)
         self.bus = self.get_property('gst').get_bus()
@@ -273,9 +274,11 @@ class Player(GObject.Object):
         self.bus.connect("message::eos", self.stream_ended)
         self.bus.connect("message::error", lambda bus, msg: logger.error(msg.parse_error()[0]))
         self.bus.connect("message::state-changed", self.handle_message_state_changed)
+        self.bus.connect("message::async-done", self.on_async_done)
         self.connect("notify::model", self.model_changed)
         self.set_property('paintable', self.get_property('gst').get_property('video-sink').get_property('paintable'))
         self.updating_volume = False
+        self.async_done = False
         self.get_property('application').get_property('settings').connect("changed::volume", self.settings_volume_changed)
         self.gst.connect("notify::volume", self.gst_volume_changed)
         GLib.timeout_add(64, self.update_stream_progress)
@@ -289,6 +292,23 @@ class Player(GObject.Object):
             if new_model_id:
                 jellyfin.StartSession(new_model_id)
 
+    def on_async_done(self, bus, message):
+        if not self.async_done:
+            self.async_done = True
+            if model := self.get_property('model'):
+                progress = model.get_property('Progress')
+                duration = model.get_property('Duration')
+                self.get_property('gst').seek_simple(
+                    Gst.Format.TIME,
+                    Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
+                    int(duration * progress * Gst.SECOND)
+                )
+            GLib.idle_add(self.update_audio_tracks)
+            threading.Thread(target=self.update_trickplay, daemon=True).start()
+            threading.Thread(target=self.update_external_subtitles, daemon=True).start()
+            threading.Thread(target=self.update_media_segments, daemon=True).start()
+            threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
+
     def model_changed(self, player, pspec):
         if app := self.get_property('application'):
             if jellyfin := app.jellyfin:
@@ -297,22 +317,9 @@ class Player(GObject.Object):
                     threading.Thread(target=self.handle_jellyfin_session, args=(model.get_property('Id'),), daemon=True).start()
                     if stream_url := jellyfin.getStreamUrl(model.get_property('Id')):
                         self.get_property('gst').set_state(Gst.State.READY)
+                        self.async_done = False
                         self.get_property('gst').set_property('uri', stream_url)
                         self.get_property('gst').set_state(Gst.State.PLAYING)
-
-                        progress = model.get_property('Progress')
-                        duration = model.get_property('Duration')
-                        if 0 < progress < 1:
-                            GLib.timeout_add(500, lambda: self.get_property('gst').seek_simple(
-                                Gst.Format.TIME,
-                                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                                int(duration * progress * Gst.SECOND)
-                            ) and False)
-                        threading.Thread(target=self.update_media_segments, daemon=True).start()
-                        threading.Thread(target=self.get_adjacent_episodes, daemon=True).start()
-                        threading.Thread(target=self.update_subtitles, daemon=True).start()
-                        threading.Thread(target=self.update_trickplay, daemon=True).start()
-                        GLib.timeout_add(1000, self.update_audio_tracks)
                 else:
                     threading.Thread(target=self.handle_jellyfin_session, daemon=True).start()
                     GLib.idle_add(app.uninhibit_idle)
@@ -345,17 +352,37 @@ class Player(GObject.Object):
                 if jellyfin := app.jellyfin:
                     jellyfin.updateTrickplay(model.get_property('Id'))
 
-    def update_subtitles(self):
+    def update_external_subtitles(self):
         self.get_property('available-subtitles').remove_all()
         if model := self.get_property('model'):
             if app := self.get_property('application'):
                 if jellyfin := app.jellyfin:
-                    if subtitles := jellyfin.getSubtitles(model.get_property('Id')):
+                    if subtitles := jellyfin.getExternalSubtitles(model.get_property('Id')):
                         self.get_property('available-subtitles').splice(
                             0,
                             0,
-                            [models.Subtitle(Title=_("Off"), Lines=[]), *subtitles]
+                            [models.Subtitle(Title=_("Off")), *subtitles]
                         )
+        GLib.idle_add(self.update_internal_subtitles)
+
+    def update_internal_subtitles(self):
+        n_text = self.get_property('gst').get_property('n-text')
+        for i in range(n_text):
+            lang = _("Unknown")
+            title = _("Unknown")
+            if tags := gst.emit('get-text-tags', i):
+                success, lang_code = tags.get_string(Gst.TAG_LANGUAGE_CODE)
+                if success:
+                    if language := pycountry.languages.get(alpha_2=lang_code):
+                        if name := language.name:
+                            lang = name
+                success, title_str = tags.get_string(Gst.TAG_TITLE)
+                if success:
+                    title = title_str
+            self.get_property('available-subtitles').append(models.InternalSubtitle(
+                Title='{} ({})'.format(title, lang),
+                Index=i
+            ))
 
     def get_adjacent_episodes(self):
         if jellyfin := self.get_property('application').jellyfin:

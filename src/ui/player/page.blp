@@ -85,23 +85,6 @@ template $PopcornPlayerPage: Adw.NavigationPage {
         orientation: vertical;
 
         Gtk.Overlay {
-          Gtk.Label {
-            styles [
-              "title-3",
-              "no-bold",
-              "osd",
-              "rounded-corner",
-              "p10"
-            ]
-            hexpand: true;
-            halign: center;
-            justify: center;
-            wrap: true;
-            use-markup: true;
-            visible: bind $format_subtitle_visible(template.current_subtitle_line);
-            label: bind $format_subtitle_label(template.current_subtitle_line);
-          }
-
           [overlay]
           Gtk.Revealer button_revealer {
             transition-duration: 250;
@@ -239,7 +222,7 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                     "flat"
                   ]
                   icon-name: "music-note-single-symbolic";
-                  visible: bind $format_to_bool(template.player as <$PopcornPlayer> .available-audio-tracks as <Gtk.StringList> .n-items);
+                  visible: bind $format_audio_menu_visible(template.player as <$PopcornPlayer> .available-audio-tracks as <Gtk.StringList> .n-items);
                   popover: Gtk.Popover {
                     child: Gtk.Box audio_options_container {
                       orientation: vertical;

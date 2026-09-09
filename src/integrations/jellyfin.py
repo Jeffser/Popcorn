@@ -525,7 +525,24 @@ class Jellyfin(GObject.Object):
                         break
         return previous_model, next_model
 
-    def getSubtitles(self, playable_id:str) -> list:
+    def getSubtitleUrl(self, playable_id:str) -> str:
+        subtitle_models = []
+        items = self.makeRequest(
+            action='Users/{userId}/Items/{item_id}',
+            action_keys={
+                'item_id': playable_id
+            }
+        ).get("MediaSources", [])
+        for item in items:
+            for stream in item.get("MediaStreams", []):
+                if stream.get("Type") == "Subtitle":
+                    return self.getUrl('Videos/{item_id}/{msi}/Subtitles/{index}/Stream.srt',
+                        item_id=playable_id,
+                        msi=item.get("Id"),
+                        index=stream.get("Index")
+                    )
+
+    def getExternalSubtitles(self, playable_id:str) -> list:
         # Return list of subtitle models
         subtitle_models = []
         items = self.makeRequest(
@@ -538,28 +555,15 @@ class Jellyfin(GObject.Object):
             for stream in item.get("MediaStreams", []):
                 if stream.get("Type") == "Subtitle":
                     try:
-                        subtitle_model = models.Subtitle(
-                            Title=stream.get('DisplayTitle'),
-                            Lines=Gio.ListStore.new(item_type=models.SubtitleLine)
+                        external_url = self.getUrl('Videos/{item_id}/{msi}/Subtitles/{index}/Stream.srt',
+                            item_id=playable_id,
+                            msi=item.get("Id"),
+                            index=stream.get("Index")
                         )
-                        result = self.makeRequest(
-                            action='Videos/{item_id}/{media_source_id}/Subtitles/{index}/Stream.vtt',
-                            action_keys={
-                                'item_id': playable_id,
-                                'media_source_id': item.get("Id"),
-                                'index': stream.get("Index")
-                            },
-                            mode='RAWGET'
-                        ).content.decode('utf8')
-                        vtt = webvtt.from_string(result)
-                        for caption in vtt:
-                            line_model = models.SubtitleLine(
-                                StartPosition=subtitle_timestamp_to_position(caption.start),
-                                EndPosition=subtitle_timestamp_to_position(caption.end),
-                                Text=subtitle_text_to_pango(caption.raw_text)
-                            )
-                            subtitle_model.get_property('Lines').append(line_model)
-                        subtitle_models.append(subtitle_model)
+                        subtitle_models.append(models.ExternalSubtitle(
+                            Title=stream.get('DisplayTitle'),
+                            Uri=external_url
+                        ))
                     except Exception as e:
                         print(e)
         return subtitle_models

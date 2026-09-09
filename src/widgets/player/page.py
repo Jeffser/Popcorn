@@ -20,7 +20,6 @@ class PlayerPage(Adw.NavigationPage):
     scale_seeking = GObject.Property(type=bool, default=False)
     position = GObject.Property(type=float)
     current_media_segment = GObject.Property(type=models.MediaSegment) # If inside of a segment
-    current_subtitle_line = GObject.Property(type=models.SubtitleLine) # If subtitle line should be shown
     current_trickplay_index = GObject.Property(type=int)
     current_trickplay_timestamp = GObject.Property(type=str)
     overlay_icon_name = GObject.Property(type=str)
@@ -42,7 +41,6 @@ class PlayerPage(Adw.NavigationPage):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         GLib.timeout_add(1000, self.check_segments)
-        GLib.timeout_add(1000, self.check_subtitles)
         GLib.timeout_add(60000, self.update_end_time)
         GLib.timeout_add(64, self.update_position)
         self.hide_timeout_id = None
@@ -75,6 +73,28 @@ class PlayerPage(Adw.NavigationPage):
     # Subtitles
 
     def available_subtitles_changed(self, widget, pspec=None):
+        def checkbox_changed(button):
+            if button.get_active():
+                if model := button.get_property('model'):
+                    if player := self.get_property('player'):
+                        if gst := player.get_property('gst'):
+                            success, position = gst.query_position(Gst.Format.TIME)
+                            if success:
+                                gst.set_state(Gst.State.READY)
+                                if isinstance(model, models.InternalSubtitle):
+                                    gst.set_property('current-text', model.get_property('Index'))
+                                elif isinstance(model, models.ExternalSubtitle):
+                                    gst.set_property('suburi', model.get_property('Uri'))
+                                else:
+                                    gst.set_property('suburi', '')
+                                    gst.set_property('current-text', -1)
+                                GLib.timeout_add(100, lambda: gst.seek_simple(
+                                    Gst.Format.TIME,
+                                    Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
+                                    position
+                                ) and False)
+                                gst.set_state(Gst.State.PLAYING)
+
         for item in list(self.subtitle_options_container):
             self.subtitle_options_container.remove(item)
         first_check = None
@@ -86,37 +106,12 @@ class PlayerPage(Adw.NavigationPage):
                 model=model,
                 active=i==min(1, len(options_list))
             )
+            if check_button.get_active():
+                checkbox_changed(check_button)
+            check_button.connect('toggled', checkbox_changed)
             if not first_check:
                 first_check = check_button
             self.subtitle_options_container.append(check_button)
-
-    def check_subtitles(self):
-        subtitle_model = None
-        for option in list(self.subtitle_options_container):
-            if option.get_active():
-                subtitle_model = option.get_property('model')
-                break
-
-        if subtitle_model:
-            if position := self.get_property('position'):
-                for line in list(subtitle_model.get_property('Lines') or []):
-                    if line.get_property('StartPosition') < position < line.get_property('EndPosition'):
-                        self.set_property('current-subtitle-line', line)
-                        return True
-        self.set_property('current-subtitle-line', models.SubtitleLine())
-        return True
-
-    @Gtk.Template.Callback()
-    def format_subtitle_visible(self, obj, subtitle_line) -> bool:
-        if subtitle_line:
-            return bool(subtitle_line.get_property('Text'))
-        return False
-
-    @Gtk.Template.Callback()
-    def format_subtitle_label(self, obj, subtitle_line) -> str:
-        if subtitle_line:
-            return subtitle_line.get_property('Text').strip()
-        return ''
 
     # Audio Tracks
 
@@ -126,7 +121,7 @@ class PlayerPage(Adw.NavigationPage):
                 index = list(self.audio_options_container).index(button)
                 if player := self.get_property('player'):
                     if gst := player.get_property('gst'):
-                        gst.set_property('current-audio', index)
+                        gst.set_property('current-audio', index - 1)
 
         for item in list(self.audio_options_container):
             self.audio_options_container.remove(item)
@@ -235,7 +230,7 @@ class PlayerPage(Adw.NavigationPage):
         if segment := self.get_property('current-media-segment'):
             self.get_property('player').get_property('gst').seek_simple(
                 Gst.Format.TIME,
-                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
                 int(segment.get_property('EndPosition') * Gst.SECOND)
             )
 
@@ -271,7 +266,7 @@ class PlayerPage(Adw.NavigationPage):
     def scale_released(self, *args):
         self.get_property('player').get_property('gst').seek_simple(
             Gst.Format.TIME,
-            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+            Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
             int(self.get_property('position') * Gst.SECOND)
         )
         GLib.timeout_add(500, self.set_property, 'scale-seeking', False)
@@ -282,7 +277,7 @@ class PlayerPage(Adw.NavigationPage):
         icon_name = 'media-seek-{}-symbolic'.format('forward' if seek_amount > 0 else 'backward')
         self.get_property('player').get_property('gst').seek_simple(
             Gst.Format.TIME,
-            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+            Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
             int((self.get_property('position') + seek_amount) * Gst.SECOND)
         )
         self.set_property('overlay-icon-name', icon_name)
@@ -457,3 +452,6 @@ class PlayerPage(Adw.NavigationPage):
             GLib.source_remove(self.overlay_icon_timeout_id)
         self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
+    @Gtk.Template.Callback()
+    def format_audio_menu_visible(self, obj, n_items:int) -> bool:
+        return n_items > 1

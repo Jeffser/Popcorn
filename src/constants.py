@@ -23,6 +23,7 @@ def get_xdg_home(env: str, default: str) -> str:
 DATA_DIR = get_xdg_home("XDG_DATA_HOME", "~/.local/share")
 CONFIG_DIR = get_xdg_home("XDG_CONFIG_HOME", "~/.config")
 CACHE_DIR = get_xdg_home("XDG_CACHE_HOME", "~/.cache")
+SUBTITLE_PATH = os.path.join(CACHE_DIR, "subtitle.srt")
 FALLBACK_PASSWORD_PATH = os.path.join(CONFIG_DIR, 'pass.txt')
 
 USERVIEWS_ICONS = {
