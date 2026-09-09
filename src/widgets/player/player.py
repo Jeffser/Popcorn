@@ -370,7 +370,7 @@ class Player(GObject.Object):
         for i in range(n_text):
             lang = _("Unknown")
             title = _("Unknown")
-            if tags := gst.emit('get-text-tags', i):
+            if tags := self.get_property('gst').emit('get-text-tags', i):
                 success, lang_code = tags.get_string(Gst.TAG_LANGUAGE_CODE)
                 if success:
                     if language := pycountry.languages.get(alpha_2=lang_code):
