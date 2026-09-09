@@ -13,6 +13,8 @@ class WrapboxPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornWrapboxPage'
 
     page_size = GObject.Property(type=int, default=20)
+    search_entry = Gtk.Template.Child()
+    main_stack = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
     bottom_stack = Gtk.Template.Child()
     current_index = 0
@@ -31,17 +33,18 @@ class WrapboxPage(Adw.NavigationPage):
         threading.Thread(target=self.populate, daemon=True).start()
 
     def show_search(self):
-        pass
+        self.search_entry.grab_focus()
 
     def populate(self):
         if self.populating:
             return
+        GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if root := self.get_root():
             if app := root.get_application():
                 if jellyfin := app.jellyfin:
                     self.populating = True
                     size = self.get_property('page-size')
-                    result_models = self.getter_cb(size, self.current_index, jellyfin)
+                    result_models = self.getter_cb(jellyfin, size, self.current_index, self.search_entry.get_text())
                     self.current_index += size
                     for model in result_models:
                         if isinstance(model, models.Movie):
@@ -52,9 +55,19 @@ class WrapboxPage(Adw.NavigationPage):
                             GLib.idle_add(self.list_el.append, SeasonButton(model=model))
                         elif isinstance(model, models.Episode):
                             GLib.idle_add(self.list_el.append, EpisodeButton(model=model))
+                    if len(result_models) == 0:
+                        GLib.idle_add(self.main_stack.set_visible_child_name, 'no-results' if self.search_entry.get_text() else 'empty')
+                    else:
+                        GLib.idle_add(self.main_stack.set_visible_child_name, 'results')
                     GLib.idle_add(self.bottom_stack.set_visible_child_name, 'label' if len(result_models) < size else 'loading')
         self.populating = False
 
+    @Gtk.Template.Callback()
+    def search_changed(self, entry):
+        self.list_el.remove_all()
+        self.populating = False
+        self.current_index = 0
+        threading.Thread(target=self.populate, daemon=True).start()
 
     @Gtk.Template.Callback()
     def on_scroll_edge(self, sb, position):

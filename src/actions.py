@@ -89,7 +89,7 @@ def play_movie(app, movie_id:str):
 def show_user_view(app, user_view_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.getModel(user_view_id):
-            getter_function = lambda limit, startIndex, jellyfin, uvid=user_view_id: jellyfin.getModelsFromFolder(uvid, limit, startIndex)
+            getter_function = lambda jellyfin, limit, startIndex, searchTerm, uvid=user_view_id: jellyfin.getModelsFromFolder(uvid, limit, startIndex, searchTerm)
             page = Widgets.WrapboxPage(
                 getter_cb=getter_function,
                 title=model.get_property('Name')

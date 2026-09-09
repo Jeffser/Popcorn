@@ -3,10 +3,14 @@ using Adw 1;
 
 template $PopcornWrapboxPage: Adw.NavigationPage {
   child: Adw.ToolbarView {
-    extend-content-to-top-edge: true;
 
     [top]
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      title-widget: Gtk.SearchEntry search_entry {
+        placeholder-text: bind template.title;
+        search-changed => $search_changed();
+      };
+    }
 
     content: Gtk.ScrolledWindow {
       hexpand: true;
@@ -20,47 +24,71 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
         margin-top: 40;
         maximum-size: 2000;
         tightening-threshold: 800;
-        child: Gtk.Box {
-          orientation: vertical;
-          spacing: 10;
-          Adw.WrapBox list_el {
-            hexpand: true;
-            halign: center;
-            child-spacing: 10;
-            line-spacing: 10;
-            line-homogeneous: true;
-            wrap-policy: minimum;
-            justify: spread;
-            Adw.Spinner {
-              height-request: 240;
-              width-request: 240;
-            }
+        child: Gtk.Stack main_stack {
+          transition-type: crossfade;
+          Gtk.StackPage {
+            name: "loading";
+            child: Adw.Spinner {};
           }
-          Gtk.Stack bottom_stack {
-            halign: center;
-            transition-type: crossfade;
-            hhomogeneous: false;
-            vhomogeneous: false;
-            vexpand: true;
-            Gtk.StackPage {
-              name: "loading";
-              child: Adw.Spinner {
-                width-request: 32;
-                height-request: 32;
-              };
-            }
-            Gtk.StackPage {
-              name: "label";
-              child: Gtk.Label {
-                styles [
-                  "dimmed"
-                ]
-                label: _("Bottom Reached");
-                wrap: true;
-                wrap-mode: word_char;
-                justify: center;
-              };
-            }
+          Gtk.StackPage {
+            name: "empty";
+            child: Adw.StatusPage {
+              title: _("No Content Found");
+              icon-name: "sad-computer-symbolic";
+            };
+          }
+          Gtk.StackPage {
+            name: "no-results";
+            child: Adw.StatusPage {
+              title: _("No Results");
+              icon-name: "sad-computer-symbolic";
+            };
+          }
+          Gtk.StackPage {
+            name: "results";
+            child: Gtk.Box {
+              orientation: vertical;
+              spacing: 10;
+              Adw.WrapBox list_el {
+                hexpand: true;
+                halign: center;
+                child-spacing: 10;
+                line-spacing: 10;
+                line-homogeneous: true;
+                wrap-policy: minimum;
+                justify: spread;
+                Adw.Spinner {
+                  height-request: 240;
+                  width-request: 240;
+                }
+              }
+              Gtk.Stack bottom_stack {
+                halign: center;
+                transition-type: crossfade;
+                hhomogeneous: false;
+                vhomogeneous: false;
+                vexpand: true;
+                Gtk.StackPage {
+                  name: "loading";
+                  child: Adw.Spinner {
+                    width-request: 32;
+                    height-request: 32;
+                  };
+                }
+                Gtk.StackPage {
+                  name: "label";
+                  child: Gtk.Label {
+                    styles [
+                      "dimmed"
+                    ]
+                    label: _("Bottom Reached");
+                    wrap: true;
+                    wrap-mode: word;
+                    justify: center;
+                  };
+                }
+              }
+            };
           }
         };
       };
