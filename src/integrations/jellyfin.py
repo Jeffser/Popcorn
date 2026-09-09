@@ -568,7 +568,7 @@ class Jellyfin(GObject.Object):
                         print(e)
         return subtitle_models
 
-    def getModelsFromFolder(self, userViewId:str, limit:int, startIndex:int, searchTerm:str) -> list:
+    def getModelsFromFolder(self, userViewId:str, limit:int, startIndex:int, searchTerm:str, filters:list) -> list:
         # returns list of models (can be anything, check types on return)
         model_list = []
         items = self.makeRequest(
@@ -580,6 +580,7 @@ class Jellyfin(GObject.Object):
                 'startIndex': startIndex,
                 "includeItemTypes": "Series,Movie",
                 'recursive': 'true',
+                'filters': filters,
                 'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'
             }
         ).get('Items', [])

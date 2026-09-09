@@ -4,7 +4,8 @@ widgets = [
   '__init__.py',
   'user_view.py',
   'overview_carousel.py',
-  'context.py'
+  'context.py',
+  'filter_checkbutton.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

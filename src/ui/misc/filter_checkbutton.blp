@@ -1,0 +1,6 @@
+using Gtk 4.0;
+
+template $PopcornFilterCheckButton: Gtk.CheckButton {
+  label: bind template.model as <$PopcornFilter> .Name;
+  toggled => $on_toggled();
+}

@@ -9,7 +9,19 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
       title-widget: Gtk.SearchEntry search_entry {
         placeholder-text: bind template.title;
         search-changed => $search_changed();
+        visible: bind template.can-search;
       };
+      [start]
+      Gtk.MenuButton filter_menubutton {
+        icon-name: "filter-symbolic";
+        tooltip-text: _("Filters");
+        visible: false;
+        popover: Gtk.Popover {
+          child: Gtk.Box filter_container {
+            orientation: vertical;
+          };
+        };
+      }
     }
 
     content: Gtk.ScrolledWindow {

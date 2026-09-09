@@ -7,10 +7,6 @@ from PIL import Image
 class BasicModel(GObject.Object):
     __gtype_name__ = 'PopcornBasicModel'
 
-    def __init__(self, **kwargs):
-        super().__init__()
-        self.update_data(**kwargs)
-
     def update_data(self, **kwargs):
         for prop in self.list_properties():
             if prop.get_name() in kwargs:
@@ -153,3 +149,11 @@ class ExternalSubtitle(Subtitle):
     __gtype_name__ = 'PopcornExternalSubtitle'
 
     Uri = GObject.Property(type=str)
+
+class Filter(BasicModel):
+    __gtype_name__ = 'PopcornFilter'
+
+    Name = GObject.Property(type=str)
+    ActiveValue = GObject.Property(type=str) # When marked with Check
+    InconsistentValue = GObject.Property(type=str) # When marked with X (optional)
+

@@ -2,7 +2,7 @@
 
 from gi.repository import Adw, GLib, Gio
 from . import widgets as Widgets
-from .integrations import secret
+from .integrations import secret, models
 import threading, os
 
 # -- Helpers --
@@ -89,9 +89,13 @@ def play_movie(app, movie_id:str):
 def show_user_view(app, user_view_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.getModel(user_view_id):
-            getter_function = lambda jellyfin, limit, startIndex, searchTerm, uvid=user_view_id: jellyfin.getModelsFromFolder(uvid, limit, startIndex, searchTerm)
+            #filters = [
+            #    models.Filter(Name=_("Played"), ActiveValue="IsPlayed", InconsistentValue="IsUnplayed")
+            #]
+            getter_function = lambda jellyfin, limit, startIndex, searchTerm, filters, uvid=user_view_id: jellyfin.getModelsFromFolder(uvid, limit, startIndex, searchTerm, filters)
             page = Widgets.WrapboxPage(
                 getter_cb=getter_function,
+                #filters=filters,
                 title=model.get_property('Name')
             )
             __show_page(app, page)

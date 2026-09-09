@@ -17,6 +17,7 @@ blueprints = files(
 
   'ui/misc/user_view_button.blp',
   'ui/misc/overview_carousel.blp',
+  'ui/misc/filter_checkbutton.blp',
 
   'ui/series/overview.blp',
   'ui/series/button.blp',

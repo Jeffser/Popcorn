@@ -2,3 +2,4 @@
 
 from .user_view import UserViewButton
 from .overview_carousel import OverviewCarousel
+from .filter_checkbutton import FilterCheckButton
