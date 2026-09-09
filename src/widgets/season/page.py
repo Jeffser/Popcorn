@@ -37,6 +37,9 @@ class SeasonPage(Adw.NavigationPage):
             ))
         GLib.idle_add(self.episodes_container.set_widgets, episode_widgets)
 
+    def show_search(self):
+        pass
+
     @Gtk.Template.Callback()
     def format_stack_visible_child_name(self, obj, paintable) -> str:
         return 'logo' if paintable else 'label'

@@ -43,6 +43,9 @@ class MoviePage(Adw.NavigationPage):
                 ))
         GLib.idle_add(self.recommendations_container.set_widgets, recommendation_widgets)
 
+    def show_search(self):
+        pass
+
     @Gtk.Template.Callback()
     def format_one_decimal(self, obj, value) -> str:
         return f"{value:.1f}"

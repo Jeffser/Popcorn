@@ -21,6 +21,9 @@ class EpisodePage(Adw.NavigationPage):
     def reset(self):
         pass
 
+    def show_search(self):
+        pass
+
     @Gtk.Template.Callback()
     def format_name_number(self, obj, name:str, season_number:int, episode_number:int) -> str:
         return "{} - {}. {}".format(_('Season {}').format(season_number), episode_number, name)

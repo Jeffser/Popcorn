@@ -54,3 +54,7 @@ class MainPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def format_invert_bool(self, obj, value:bool) -> bool:
         return not value
+
+    def show_search(self):
+        self.view_stack.set_visible_child_name("search")
+        self.view_stack.get_visible_child().search_entry.grab_focus()

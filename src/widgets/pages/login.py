@@ -23,10 +23,10 @@ class LoginPage(Adw.NavigationPage):
         if root := self.get_root():
             if app := root.get_application():
                 if settings := app.get_property('settings'):
-                    self.user_el.set_text(settings.get_value('user').unpack())
+                    GLib.idle_add(self.user_el.set_text, settings.get_value('user').unpack())
                 if jellyfin := app.jellyfin:
                     threading.Thread(target=self.set_jellyfin_details, args=(jellyfin,), daemon=True).start()
-        self.password_el.set_text('')
+        GLib.idle_add(self.password_el.set_text, '')
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:

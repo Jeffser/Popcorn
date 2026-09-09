@@ -14,8 +14,8 @@ class WelcomePage(Adw.NavigationPage):
         if root := self.get_root():
             if app := root.get_application():
                 if settings := app.get_property('settings'):
-                    self.url_entry.set_text(settings.get_value('url').unpack())
-                    self.trust_checkbutton.set_active(settings.get_value('trust-server').unpack())
+                    GLib.idle_add(self.url_entry.set_text, settings.get_value('url').unpack())
+                    GLib.idle_add(self.trust_checkbutton.set_active, settings.get_value('trust-server').unpack())
 
     def try_connect(self):
         if root := self.get_root():

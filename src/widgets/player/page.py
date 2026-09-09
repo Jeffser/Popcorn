@@ -286,9 +286,6 @@ class PlayerPage(Adw.NavigationPage):
             GLib.source_remove(self.overlay_icon_timeout_id)
         self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
 
-    def reset(self):
-        pass
-
     def update_end_time(self):
         if player := self.get_property('player'):
             if model := player.get_property('model'):
@@ -455,3 +452,9 @@ class PlayerPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def format_audio_menu_visible(self, obj, n_items:int) -> bool:
         return n_items > 1
+
+    def reset(self):
+        pass
+
+    def show_search(self):
+        pass

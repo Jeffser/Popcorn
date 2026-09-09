@@ -30,6 +30,9 @@ class WrapboxPage(Adw.NavigationPage):
         GLib.idle_add(self.list_el.remove_all)
         threading.Thread(target=self.populate, daemon=True).start()
 
+    def show_search(self):
+        pass
+
     def populate(self):
         if self.populating:
             return
