@@ -47,7 +47,6 @@ class WrapboxPage(Adw.NavigationPage):
     def populate(self):
         if self.populating:
             return
-        GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if root := self.get_root():
             if app := root.get_application():
                 if jellyfin := app.jellyfin:
@@ -81,6 +80,7 @@ class WrapboxPage(Adw.NavigationPage):
         self.list_el.remove_all()
         self.populating = False
         self.current_index = 0
+        GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         threading.Thread(target=self.populate, daemon=True).start()
 
     @Gtk.Template.Callback()

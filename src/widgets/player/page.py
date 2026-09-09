@@ -88,7 +88,7 @@ class PlayerPage(Adw.NavigationPage):
                                 else:
                                     gst.set_property('suburi', '')
                                     gst.set_property('current-text', -1)
-                                GLib.timeout_add(100, lambda: gst.seek_simple(
+                                GLib.timeout_add(200, lambda: gst.seek_simple(
                                     Gst.Format.TIME,
                                     Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
                                     position
@@ -106,8 +106,6 @@ class PlayerPage(Adw.NavigationPage):
                 model=model,
                 active=i==min(1, len(options_list))
             )
-            if check_button.get_active():
-                checkbox_changed(check_button)
             check_button.connect('toggled', checkbox_changed)
             if not first_check:
                 first_check = check_button

@@ -295,14 +295,6 @@ class Player(GObject.Object):
     def on_async_done(self, bus, message):
         if not self.async_done:
             self.async_done = True
-            if model := self.get_property('model'):
-                progress = model.get_property('Progress')
-                duration = model.get_property('Duration')
-                self.get_property('gst').seek_simple(
-                    Gst.Format.TIME,
-                    Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
-                    int(duration * progress * Gst.SECOND)
-                )
             GLib.idle_add(self.update_audio_tracks)
             threading.Thread(target=self.update_trickplay, daemon=True).start()
             threading.Thread(target=self.update_external_subtitles, daemon=True).start()
@@ -383,6 +375,30 @@ class Player(GObject.Object):
                 Title='{} ({})'.format(title, lang),
                 Index=i
             ))
+        if available_subtitles := self.get_property('available-subtitles'):
+            if available_subtitles.get_property('n-items') > 0:
+                if model := list(available_subtitles)[0]:
+                    if gst := self.get_property('gst'):
+                        gst.set_state(Gst.State.READY)
+                        if isinstance(model, models.InternalSubtitle):
+                            gst.set_property('current-text', model.get_property('Index'))
+                        elif isinstance(model, models.ExternalSubtitle):
+                            gst.set_property('suburi', model.get_property('Uri'))
+                        else:
+                            gst.set_property('suburi', '')
+                            gst.set_property('current-text', -1)
+                        gst.set_state(Gst.State.PLAYING)
+        self.resume()
+
+    def resume(self):
+        if model := self.get_property('model'):
+            progress = model.get_property('Progress')
+            duration = model.get_property('Duration')
+            GLib.timeout_add(200, lambda: self.get_property('gst').seek_simple(
+                Gst.Format.TIME,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.ACCURATE,
+                int(duration * progress * Gst.SECOND)
+            ) and False)
 
     def get_adjacent_episodes(self):
         if jellyfin := self.get_property('application').jellyfin:
