@@ -6,10 +6,15 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
 
     [top]
     Adw.HeaderBar {
-      title-widget: Gtk.SearchEntry search_entry {
-        placeholder-text: bind template.title;
-        search-changed => $search_changed();
-        visible: bind template.can-search;
+      title-widget: Adw.Clamp {
+        maximum-size: 375;
+        tightening-threshold: 400;
+        hexpand: true;
+        child: Gtk.SearchEntry search_entry {
+          placeholder-text: bind template.title;
+          search-changed => $search_changed();
+          visible: bind template.can-search;
+        };
       };
       [start]
       Gtk.MenuButton filter_menubutton {
@@ -33,7 +38,6 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
         styles [
           "p10"
         ]
-        margin-top: 40;
         maximum-size: 2000;
         tightening-threshold: 800;
         child: Gtk.Stack main_stack {
