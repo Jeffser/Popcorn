@@ -274,7 +274,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                   "toggle-with-accent"
                 ]
                 valign: center;
-                tooltip-text: _("Toggle Favorite");
+                tooltip-text: _("Toggle Favorite (Season)");
                 action-name: "app.toggle_favorite";
                 action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
                 active: bind season_dropdown.selected-item as <$PopcornSeason> .IsFavorite;
@@ -288,7 +288,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                   "toggle-with-accent"
                 ]
                 valign: center;
-                tooltip-text: _("Toggle Played");
+                tooltip-text: _("Toggle Played (Season)");
                 action-name: "app.toggle_played";
                 action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
                 active: bind season_dropdown.selected-item as <$PopcornSeason> .Played;
