@@ -6,18 +6,18 @@ from ..misc.context import ContextMenu, ContextMenuRow, show_context_menu
 
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/movie/button.ui')
-class MovieButton(Gtk.Box):
+class MovieButton(Gtk.Button):
     __gtype_name__ = 'PopcornMovieButton'
 
     model = GObject.Property(type=models.Movie)
     is_tall = GObject.Property(type=bool, default=False)
 
     @Gtk.Template.Callback()
-    def format_paintable(self, obj, is_tall: bool, wide_paintable, tall_paintable) -> Gdk.Paintable:
+    def format_paintable(self, obj, is_tall:bool, wide_paintable, tall_paintable) -> Gdk.Paintable:
         return tall_paintable if is_tall else wide_paintable
 
     @Gtk.Template.Callback()
-    def format_progressbar_visible(self, obj, progress: float) -> bool:
+    def format_progressbar_visible(self, obj, progress:float) -> bool:
         return 0 < progress < 1
 
     @Gtk.Template.Callback()
@@ -25,19 +25,19 @@ class MovieButton(Gtk.Box):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
-    def format_picture_height(self, obj, is_tall: bool) -> int:
+    def format_picture_height(self, obj, is_tall:bool) -> int:
         return 360 if is_tall else 240
 
     @Gtk.Template.Callback()
-    def format_picture_width(self, obj, is_tall: bool) -> int:
-        return 220 if is_tall else 400
+    def format_picture_width(self, obj, is_tall:bool) -> int:
+        return 210 if is_tall else 400
 
     @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite: bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 
     @Gtk.Template.Callback()
-    def format_play_button_label(self, obj, progress: float):
+    def format_play_button_label(self, obj, progress:float):
         return _("Resume Movie") if progress > 0 else _("Play Movie")
 
     def build_context_menu(self) -> ContextMenu:

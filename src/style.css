@@ -30,16 +30,8 @@ button.active_appearance_button:disabled {
   opacity: 0;
 }
 
-.watch_button overlay:hover button.osd {
+window.show-button-overlays .watch_button overlay:hover button.osd {
   opacity: 1;
-}
-
-.watch_button overlay picture {
-  transition: filter .2s;
-}
-
-.watch_button overlay:hover picture {
-  filter: brightness(75%);
 }
 
 .carousel-overlay-right {
