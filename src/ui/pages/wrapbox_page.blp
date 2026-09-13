@@ -6,16 +6,21 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
 
     [top]
     Adw.HeaderBar {
-      title-widget: Adw.Clamp {
-        maximum-size: 375;
-        tightening-threshold: 400;
-        hexpand: true;
-        child: Gtk.SearchEntry search_entry {
-          placeholder-text: bind template.title;
-          search-changed => $search_changed();
-          visible: bind template.can-search;
-        };
-      };
+      /*title-widget: Gtk.Stack {
+        Gtk.StackPage {
+          name: "search";
+          child: Adw.Clamp {
+            maximum-size: 375;
+            tightening-threshold: 400;
+            hexpand: true;
+            child: Gtk.SearchEntry search_entry {
+              placeholder-text: bind template.title;
+              search-changed => $search_changed();
+              visible: bind template.can-search;
+            };
+          };
+        }
+      }*/
       [start]
       Gtk.MenuButton filter_menubutton {
         icon-name: "filter-symbolic";
@@ -27,6 +32,25 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
           };
         };
       }
+
+      [start]
+      Gtk.ToggleButton search_toggle_button {
+        active: bind search_bar.search-mode-enabled;
+        visible: bind template.can-search;
+        icon-name: "system-search-symbolic";
+        tooltip-text: _("Search");
+      }
+    }
+
+    [top]
+    Gtk.SearchBar search_bar {
+      key-capture-widget: bind $format_search_key_capture_widget(template, template.can-search);
+      search-mode-enabled: bind $format_search_mode(search_toggle_button.active, template.can-search);
+      child: Gtk.SearchEntry search_entry {
+        placeholder-text: _("Search");
+        search-changed => $search_changed();
+        visible: bind template.can-search;
+      };
     }
 
     content: Gtk.ScrolledWindow {

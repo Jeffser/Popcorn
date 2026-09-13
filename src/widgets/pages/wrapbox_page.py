@@ -14,6 +14,7 @@ class WrapboxPage(Adw.NavigationPage):
 
     page_size = GObject.Property(type=int, default=20)
     can_search = GObject.Property(type=bool, default=True)
+    search_bar = Gtk.Template.Child()
     search_entry = Gtk.Template.Child()
     main_stack = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
@@ -41,7 +42,8 @@ class WrapboxPage(Adw.NavigationPage):
         threading.Thread(target=self.populate, daemon=True).start()
 
     def show_search(self):
-        self.search_entry.grab_focus()
+        if self.get_property('can-search'):
+            self.search_bar.set_search_mode(not self.search_bar.get_search_mode())
 
     def populate(self):
         if self.populating:
@@ -85,3 +87,11 @@ class WrapboxPage(Adw.NavigationPage):
         if position == Gtk.PositionType.BOTTOM:
             if self.bottom_stack.get_visible_child_name() == 'loading':
                 threading.Thread(target=self.populate, daemon=True).start()
+
+    @Gtk.Template.Callback()
+    def format_search_mode(self, obj, button_active:bool, can_search:bool) -> bool:
+        return button_active and can_search
+
+    @Gtk.Template.Callback()
+    def format_search_key_capture_widget(self, obj, widget:Gtk.Widget, can_search:bool) -> Gtk.Widget:
+        return widget if can_search else None
