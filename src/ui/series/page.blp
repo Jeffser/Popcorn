@@ -208,6 +208,10 @@ template $PopcornSeriesPage: Adw.NavigationPage {
             spacing: 10;
 
             Gtk.Box {
+              styles [
+                "p10",
+                "card"
+              ]
               hexpand: true;
               orientation: vertical;
               spacing: 5;
@@ -297,6 +301,8 @@ template $PopcornSeriesPage: Adw.NavigationPage {
             }
 
             $PopcornWrapbox episodes_container {}
+
+            Gtk.Separator {}
 
             $PopcornCarousel recommendations_container {
               title: _("Recommendations");
