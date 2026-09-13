@@ -9,9 +9,16 @@ class Carousel(Gtk.Box):
     title = GObject.Property(type=str)
     icon_name = GObject.Property(type=str)
 
+    scrolled_window = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
-    start_value = 0
-    has_dragged = False
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if controllers := self.scrolled_window.observe_controllers():
+            for i in range(controllers.get_n_items()):
+                if controller := controllers.get_item(i):
+                    if isinstance(controller, Gtk.GestureDrag):
+                        controller.set_touch_only(False)
 
     def remove_all(self):
         for page in list(self.list_el):
@@ -22,25 +29,6 @@ class Carousel(Gtk.Box):
         self.remove_all()
         for page in widgets:
             self.list_el.append(page)
-
-    @Gtk.Template.Callback()
-    def drag_begin(self, gesture, start_x:float, start_y:float):
-        self.start_value = gesture.get_widget().get_hadjustment().get_value()
-        self.has_dragged = False
-
-    @Gtk.Template.Callback()
-    def drag_update(self, gesture, offset_x:float, offset_y:float):
-        new_value = self.start_value - offset_x
-
-        if not self.has_dragged and abs(offset_x) > 5:
-            self.has_dragged = True
-            gesture.set_state(Gtk.EventSequenceState.CLAIMED)
-
-        if self.has_dragged:
-            hadjustment = gesture.get_widget().get_hadjustment()
-            lower = hadjustment.get_lower()
-            upper = hadjustment.get_upper() - hadjustment.get_page_size()
-            hadjustment.set_value(max(lower, min(new_value, upper)))
 
     @Gtk.Template.Callback()
     def format_header_visible(self, obj, title:str) -> bool:

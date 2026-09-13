@@ -50,14 +50,10 @@ template $PopcornCarousel: Gtk.Box {
     child: Adw.Clamp {
       orientation: vertical;
       maximum-size: 420;
-      child: Gtk.ScrolledWindow {
+      child: Gtk.ScrolledWindow scrolled_window {
         hscrollbar-policy: external;
         vscrollbar-policy: never;
         hexpand: true;
-        Gtk.GestureDrag {
-          drag-begin => $drag_begin();
-          drag-update => $drag_update();
-        }
         child: Gtk.Box list_el {
           halign: center;
           orientation: horizontal;
