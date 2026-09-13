@@ -6,21 +6,11 @@ template $PopcornWrapboxPage: Adw.NavigationPage {
 
     [top]
     Adw.HeaderBar {
-      /*title-widget: Gtk.Stack {
-        Gtk.StackPage {
-          name: "search";
-          child: Adw.Clamp {
-            maximum-size: 375;
-            tightening-threshold: 400;
-            hexpand: true;
-            child: Gtk.SearchEntry search_entry {
-              placeholder-text: bind template.title;
-              search-changed => $search_changed();
-              visible: bind template.can-search;
-            };
-          };
-        }
-      }*/
+      title-widget: Adw.WindowTitle {
+        title: bind template.title;
+        subtitle: bind template.subtitle;
+      };
+
       [start]
       Gtk.MenuButton filter_menubutton {
         icon-name: "filter-symbolic";

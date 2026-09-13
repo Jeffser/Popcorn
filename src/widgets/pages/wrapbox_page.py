@@ -12,6 +12,7 @@ import threading
 class WrapboxPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornWrapboxPage'
 
+    subtitle = GObject.Property(type=str)
     page_size = GObject.Property(type=int, default=20)
     can_search = GObject.Property(type=bool, default=True)
     search_bar = Gtk.Template.Child()
