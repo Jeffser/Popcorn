@@ -48,7 +48,8 @@ window.show-button-overlays .watch_button:hover overlay button.osd {
   );
 }
 
-.no-bold {
+.no-bold,
+.no-bold label {
   font-weight: normal;
 }
 

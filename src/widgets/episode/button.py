@@ -1,10 +1,7 @@
 # button.py
 from gi.repository import Gtk, GLib, Gdk, GObject
-from gettext import gettext as _
 from ...integrations import models
 from ...constants import format_duration_display, get_future_time
-from ..misc.context import ContextMenu, ContextMenuRow, show_context_menu
-
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/episode/button.ui')
 class EpisodeButton(Gtk.Button):
@@ -13,6 +10,7 @@ class EpisodeButton(Gtk.Button):
     model = GObject.Property(type=models.Episode)
     is_tall = GObject.Property(type=bool, default=False)
     mode = GObject.Property(type=str, default='simple')
+    context_popover = Gtk.Template.Child()
 
     @Gtk.Template.Callback()
     def format_subtitle(self, obj, season, episode, episode_name) -> str:
@@ -59,50 +57,39 @@ class EpisodeButton(Gtk.Button):
         return _("Ends at {}").format(get_future_time(duration))
 
     @Gtk.Template.Callback()
+    def format_play_label(self, obj, progress:float):
+        return _("Resume Episode") if progress > 0 else _("Play Episode")
+
+    @Gtk.Template.Callback()
+    def format_watched_label(self, obj, played:bool):
+        return _("Mark as Unwatched") if played else _("Mark as Watched")
+
+    @Gtk.Template.Callback()
+    def format_heart_label(self, obj, is_favorite:bool):
+        return _("Remove from Favorites") if is_favorite else _("Add to Favorites")
+
+    @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite: bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 
     @Gtk.Template.Callback()
-    def format_play_button_label(self, obj, progress: float):
-        return _("Resume Episode") if progress > 0 else _("Play Episode")
-
-    def build_context_menu(self) -> ContextMenu:
-        model = self.model
-        menu = ContextMenu()
-
-        play_row = ContextMenuRow(
-            title=_("Resume Episode") if model.get_property('Progress') > 0 else _("Play Episode"),
-            icon_name="media-playback-start-symbolic",
-        )
-        play_row.connect('activated', lambda *_: self.activate_action(
-            'app.play_episode', GLib.Variant('s', model.get_property('Id'))
-        ))
-        menu.add_row(play_row)
-
-        played_row = ContextMenuRow(
-            title=_("Mark as Unwatched") if model.get_property('Played') else _("Mark as Watched"),
-            icon_name="check-plain-symbolic",
-        )
-        played_row.connect('activated', lambda *_: self.activate_action(
-            'app.toggle_played', GLib.Variant('s', model.get_property('Id'))
-        ))
-        menu.add_row(played_row)
-
-        favorite_row = ContextMenuRow(
-            title=_("Remove from Favorites") if model.get_property('IsFavorite') else _("Add to Favorites"),
-            icon_name="heart-filled-symbolic" if model.get_property('IsFavorite') else "heart-outline-thick-symbolic",
-        )
-        favorite_row.connect('activated', lambda *_: self.activate_action(
-            'app.toggle_favorite', GLib.Variant('s', model.get_property('Id'))
-        ))
-        menu.add_row(favorite_row)
-
-        return menu
-
-    @Gtk.Template.Callback()
     def on_secondary_click(self, gesture, n_press, x, y):
-        show_context_menu(self, self.build_context_menu(), x, y)
+        rect = Gdk.Rectangle()
+        rect.x, rect.y = int(x), int(y)
+        if not self.context_popover.get_parent():
+            self.context_popover.set_parent(gesture.get_widget())
+        self.context_popover.set_pointing_to(rect)
+        self.context_popover.popup()
 
     @Gtk.Template.Callback()
     def on_long_press(self, gesture, x, y):
-        show_context_menu(self, self.build_context_menu(), x, y)
+        rect = Gdk.Rectangle()
+        rect.x, rect.y = int(x), int(y)
+        if not self.context_popover.get_parent():
+            self.context_popover.set_parent(gesture.get_widget())
+        self.context_popover.set_pointing_to(rect)
+        self.context_popover.popup()
+
+    @Gtk.Template.Callback()
+    def context_popdown(self, button):
+        self.context_popover.popdown()

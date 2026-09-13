@@ -1,4 +1,5 @@
 using Gtk 4.0;
+using Adw 1;
 
 template $PopcornSeriesButton: Gtk.Button {
   styles [
@@ -53,7 +54,7 @@ template $PopcornSeriesButton: Gtk.Button {
         margin-end: 10;
         margin-top: 10;
         margin-bottom: 10;
-        tooltip-text: _("Toggle Played");
+        tooltip-text: bind $format_watched_label(template.model as <$PopcornSeries> .Played);
         action-name: "app.toggle_played";
         action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
         active: bind template.model as <$PopcornSeries> .Played;
@@ -73,7 +74,7 @@ template $PopcornSeriesButton: Gtk.Button {
         margin-end: 10;
         margin-top: 10;
         margin-bottom: 10;
-        tooltip-text: _("Toggle Favorite");
+        tooltip-text: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite);
         action-name: "app.toggle_favorite";
         action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
         active: bind template.model as <$PopcornSeries> .IsFavorite;
@@ -119,6 +120,59 @@ template $PopcornSeriesButton: Gtk.Button {
       styles [
         "dimmed"
       ]
+    }
+  };
+}
+
+Gtk.Popover context_popover {
+  has-arrow: false;
+  halign: start;
+  child: Gtk.Box {
+    orientation: vertical;
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
+      tooltip-text: _("Play Series");
+      child: Adw.ButtonContent {
+        halign: start;
+        label: _("Play Series");
+        icon-name: "media-playback-start-symbolic";
+      };
+      action-name: "app.play_series";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      clicked => $context_popdown();
+    }
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
+      tooltip-text: bind $format_watched_label(template.model as <$PopcornSeries> .Played);
+      child: Adw.ButtonContent {
+        halign: start;
+        label: bind $format_watched_label(template.model as <$PopcornSeries> .Played);
+        icon-name: "check-plain-symbolic";
+      };
+      action-name: "app.toggle_played";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      clicked => $context_popdown();
+    }
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
+      tooltip-text: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite);
+      child: Adw.ButtonContent {
+        halign: start;
+        label: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite);
+        icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeries> .IsFavorite);
+      };
+      action-name: "app.toggle_favorite";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      clicked => $context_popdown();
     }
   };
 }
