@@ -36,6 +36,9 @@ SECTION_NAMES = { # For translations
     'Outro': _("Outro")
 }
 
+BUTTON_WIDE_SIZES = (420,290)
+BUTTON_TALL_SIZES = (260,420)
+
 def format_duration_display(seconds:float) -> str:
     if seconds < 60:
         return f"{round(seconds)}s"

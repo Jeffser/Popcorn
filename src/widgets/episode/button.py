@@ -1,7 +1,7 @@
 # button.py
 from gi.repository import Gtk, GLib, Gdk, GObject
 from ...integrations import models
-from ...constants import format_duration_display, get_future_time
+from ...constants import format_duration_display, get_future_time, BUTTON_WIDE_SIZES, BUTTON_TALL_SIZES
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/episode/button.ui')
 class EpisodeButton(Gtk.Button):
@@ -33,12 +33,12 @@ class EpisodeButton(Gtk.Button):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
-    def format_picture_height(self, obj, is_tall: bool) -> int:
-        return 360 if is_tall else 240
+    def format_picture_height(self, obj, is_tall:bool) -> int:
+        return BUTTON_TALL_SIZES[1] if is_tall else BUTTON_WIDE_SIZES[1]
 
     @Gtk.Template.Callback()
-    def format_picture_width(self, obj, is_tall: bool) -> int:
-        return 220 if is_tall else 400
+    def format_picture_width(self, obj, is_tall:bool) -> int:
+        return BUTTON_TALL_SIZES[0] if is_tall else BUTTON_WIDE_SIZES[0]
 
     @Gtk.Template.Callback()
     def format_name_number(self, obj, name: str, number: int) -> str:

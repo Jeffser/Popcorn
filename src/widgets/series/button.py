@@ -1,6 +1,7 @@
 # button.py
 from gi.repository import Gtk, GLib, Gdk, GObject
 from ...integrations import models
+from ...constants import BUTTON_WIDE_SIZES, BUTTON_TALL_SIZES
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/series/button.ui')
 class SeriesButton(Gtk.Button):
@@ -19,12 +20,12 @@ class SeriesButton(Gtk.Button):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
-    def format_picture_height(self, obj, is_tall: bool) -> int:
-        return 360 if is_tall else 240
+    def format_picture_height(self, obj, is_tall:bool) -> int:
+        return BUTTON_TALL_SIZES[1] if is_tall else BUTTON_WIDE_SIZES[1]
 
     @Gtk.Template.Callback()
-    def format_picture_width(self, obj, is_tall: bool) -> int:
-        return 220 if is_tall else 400
+    def format_picture_width(self, obj, is_tall:bool) -> int:
+        return BUTTON_TALL_SIZES[0] if is_tall else BUTTON_WIDE_SIZES[0]
 
     @Gtk.Template.Callback()
     def format_watched_label(self, obj, played:bool):
