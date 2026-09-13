@@ -4,7 +4,6 @@ widgets = [
   '__init__.py',
   'user_view.py',
   'overview_carousel.py',
-  'context.py',
   'filter_checkbutton.py',
 ]
 
