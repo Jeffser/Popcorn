@@ -69,6 +69,28 @@ def play_movie(app, movie_id:str):
 
 # -- Misc --
 
+def show_next_up(app):
+    if jellyfin := app.jellyfin:
+        getter_function = lambda jellyfin, limit, startIndex, searchTerm, filters: jellyfin.getNextUp(limit)
+        page = Widgets.WrapboxPage(
+            getter_cb=getter_function,
+            title=_("Next Up"),
+            can_search=False,
+            page_size=100
+        )
+        __show_page(app, page)
+
+def show_continue_watching(app):
+    if jellyfin := app.jellyfin:
+        getter_function = lambda jellyfin, limit, startIndex, searchTerm, filters: jellyfin.getResume(limit)
+        page = Widgets.WrapboxPage(
+            getter_cb=getter_function,
+            title=_("Continue Watching"),
+            can_search=False,
+            page_size=100
+        )
+        __show_page(app, page)
+
 def show_recently_added(app, user_view_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.getModel(user_view_id):

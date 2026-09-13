@@ -33,7 +33,7 @@ class HomePage(Gtk.ScrolledWindow):
         GLib.idle_add(self.overview_container.set_widgets, overview_widgets)
 
         resume_widgets = []
-        for model in jellyfin.getResume():
+        for model in jellyfin.getResume(limit=10):
             if isinstance(model, models.Episode):
                 resume_widgets.append(
                     EpisodeButton(model=model)
@@ -45,7 +45,7 @@ class HomePage(Gtk.ScrolledWindow):
         GLib.idle_add(self.continue_watching_container.set_widgets, resume_widgets)
 
         episode_widgets = []
-        for episode in jellyfin.getNextUp():
+        for episode in jellyfin.getNextUp(limit=10):
             episode_widgets.append(
                 EpisodeButton(model=episode)
             )

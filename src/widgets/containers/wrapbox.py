@@ -33,4 +33,5 @@ class Wrapbox(Gtk.Box):
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
-        return GLib.Variant(variant, value)
+        if value:
+            return GLib.Variant(variant, value)

@@ -297,13 +297,13 @@ class Jellyfin(GObject.Object):
                 series_models.append(model)
         return series_models
 
-    def getResume(self) -> list:
+    def getResume(self, limit:int) -> list:
         # Returns list of episode / movie models
         models = []
         items = self.makeRequest(
             action='Users/{userId}/Items/Resume',
             params={
-                'limit': 10,
+                'limit': limit,
                 'mediaTypes': 'Video',
                 'Types': 'Episode,Movie',
                 'fields': 'Overview'
@@ -314,13 +314,13 @@ class Jellyfin(GObject.Object):
                 models.append(model)
         return models
 
-    def getNextUp(self) -> list:
+    def getNextUp(self, limit:int) -> list:
         # Returns list of episode model
         episode_models = []
         items = self.makeRequest(
             action='Shows/NextUp',
             params={
-                'limit': 10,
+                'limit': limit,
                 'mediaTypes': 'Video',
                 'Types': 'Episode',
                 'fields': 'Overview'
@@ -836,6 +836,7 @@ class Jellyfin(GObject.Object):
                 return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
+
 
 
 

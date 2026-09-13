@@ -20,11 +20,13 @@ template $PopcornHomePage: Gtk.ScrolledWindow {
       $PopcornCarousel continue_watching_container {
         title: _("Continue Watching");
         icon-name: "playback-symbolic";
+        action-name: "app.show_continue_watching";
       }
 
       $PopcornCarousel next_up_container {
         title: _("Next Up");
         icon-name: "media-playlist-consecutive-symbolic";
+        action-name: "app.show_next_up";
       }
     };
   };
