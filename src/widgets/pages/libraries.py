@@ -28,7 +28,7 @@ class LibrariesPage(Gtk.ScrolledWindow):
                     for userView in jellyfin.getUserViews():
                         user_view_widgets.append(UserViewButton(model=userView))
                         latest_widgets = []
-                        for model in jellyfin.getLatest(userView.get_property('Id')):
+                        for model in jellyfin.getLatest(userView.get_property('Id'), limit=10):
                             if isinstance(model, models.Series):
                                 latest_widgets.append(
                                     SeriesButton(
@@ -53,7 +53,9 @@ class LibrariesPage(Gtk.ScrolledWindow):
                         if len(latest_widgets) > 0:
                             new_carousel = Carousel(
                                 title=_("Recently Added in {}").format(userView.get_property('Name').title()),
-                                icon_name=constants.USERVIEWS_ICONS.get(userView.get_property('CollectionType')) or 'folder-symbolic'
+                                icon_name=constants.USERVIEWS_ICONS.get(userView.get_property('CollectionType')) or 'folder-symbolic',
+                                action_name='app.show_recently_added',
+                                action_target=userView.get_property('Id')
                             )
                             GLib.idle_add(self.main_container.append, new_carousel)
                             GLib.idle_add(new_carousel.set_widgets, latest_widgets)

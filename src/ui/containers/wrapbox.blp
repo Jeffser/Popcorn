@@ -5,30 +5,51 @@ template $PopcornWrapbox: Gtk.Box {
   orientation: vertical;
   spacing: 10;
 
-  Gtk.Box {
-    orientation: horizontal;
-    spacing: 10;
-
-    Gtk.Box {
-      orientation: horizontal;
-      spacing: 5;
-      halign: start;
-      valign: center;
-      hexpand: true;
-      visible: bind $format_header_visible(template.title);
-      Gtk.Image {
-        icon-name: bind template.icon_name;
-      }
-      Gtk.Label {
-        xalign: 0;
-        ellipsize: middle;
-        label: bind template.title;
+  Gtk.Stack {
+    halign: start;
+    valign: center;
+    hexpand: true;
+    margin-top: 5;
+    visible: bind $format_header_visible(template.title);
+    visible-child-name: bind $format_header_stack_visible_child_name(template.action-name);
+    Gtk.StackPage {
+      name: "button";
+      child: Gtk.Button {
         styles [
-          "title-2"
+          "p0",
+          "title-2",
+          "flat"
         ]
-      }
+        halign: start;
+        tooltip-text: bind template.title;
+        action-name: bind template.action-name;
+        action-target: bind $format_action_target(template.action-target, 's');
+        child: Adw.ButtonContent {
+          label: bind template.title;
+          icon-name: bind template.icon-name;
+        };
+      };
+    }
+    Gtk.StackPage {
+      name: "label";
+      child: Gtk.Box {
+        orientation: horizontal;
+        spacing: 5;
+        Gtk.Image {
+          icon-name: bind template.icon-name;
+        }
+        Gtk.Label {
+          xalign: 0;
+          ellipsize: middle;
+          label: bind template.title;
+          styles [
+            "title-2"
+          ]
+        }
+      };
     }
   }
+
   Adw.WrapBox list_el {
     hexpand: true;
     halign: center;

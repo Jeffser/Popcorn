@@ -1,6 +1,6 @@
 # wrapbox.py
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/containers/wrapbox.ui')
 class Wrapbox(Gtk.Box):
@@ -8,6 +8,8 @@ class Wrapbox(Gtk.Box):
 
     title = GObject.Property(type=str)
     icon_name = GObject.Property(type=str)
+    action_name = GObject.Property(type=str)
+    action_target = GObject.Property(type=str)
 
     list_el = Gtk.Template.Child()
 
@@ -20,3 +22,15 @@ class Wrapbox(Gtk.Box):
     @Gtk.Template.Callback()
     def format_header_visible(self, obj, title:str) -> bool:
         return bool(title)
+
+    @Gtk.Template.Callback()
+    def format_header_stack_visible_child_name(self, obj, action_name:str) -> str:
+        return 'button' if action_name else 'label'
+
+    @Gtk.Template.Callback()
+    def format_header_visible(self, obj, title:str) -> bool:
+        return bool(title)
+
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)

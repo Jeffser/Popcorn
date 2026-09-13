@@ -8,6 +8,8 @@ class Carousel(Gtk.Box):
 
     title = GObject.Property(type=str)
     icon_name = GObject.Property(type=str)
+    action_name = GObject.Property(type=str)
+    action_target = GObject.Property(type=str)
 
     scrolled_window = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
@@ -31,5 +33,13 @@ class Carousel(Gtk.Box):
             self.list_el.append(page)
 
     @Gtk.Template.Callback()
+    def format_header_stack_visible_child_name(self, obj, action_name:str) -> str:
+        return 'button' if action_name else 'label'
+
+    @Gtk.Template.Callback()
     def format_header_visible(self, obj, title:str) -> bool:
         return bool(title)
+
+    @Gtk.Template.Callback()
+    def format_action_target(self, obj, value, variant) -> GLib.Variant:
+        return GLib.Variant(variant, value)

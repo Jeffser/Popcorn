@@ -342,13 +342,13 @@ class Jellyfin(GObject.Object):
             pass
         return None
 
-    def getLatest(self, libraryId:str) -> list:
+    def getLatest(self, libraryId:str, limit:int) -> list:
         # Returns list of different models, check types!
         result_models = []
         items = self.makeRequest(
             action='Users/{userId}/Items/Latest',
             params={
-                'limit': 10,
+                'limit': limit,
                 'mediaTypes': 'Video',
                 'parentId': libraryId,
                 'fields': 'Genres,Overview,OfficialRating,RecursiveItemCount,ChildCount'

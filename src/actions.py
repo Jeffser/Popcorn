@@ -69,6 +69,20 @@ def play_movie(app, movie_id:str):
 
 # -- Misc --
 
+def show_recently_added(app, user_view_id:str):
+    if jellyfin := app.jellyfin:
+        if model := jellyfin.getModel(user_view_id):
+            getter_function = lambda jellyfin, limit, startIndex, searchTerm, filters, uvid=user_view_id: jellyfin.getLatest(uvid, limit)
+            page = Widgets.WrapboxPage(
+                getter_cb=getter_function,
+                title=model.get_property('Name'),
+                subtitle=_("Recently Added"),
+                can_search=False,
+                page_size=100
+            )
+            __show_page(app, page)
+
+
 def show_user_view(app, user_view_id:str):
     if jellyfin := app.jellyfin:
         if model := jellyfin.getModel(user_view_id):
