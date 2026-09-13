@@ -1,12 +1,19 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PopcornEpisodeButton: Gtk.Box {
+template $PopcornEpisodeButton: Gtk.Button {
   styles [
-    "watch_button"
+    "watch_button",
+    "flat"
   ]
+  valign: center;
   halign: center;
-  orientation: vertical;
+  height-request: bind $format_picture_height(template.is_tall);
+  width-request: bind $format_picture_width(template.is_tall);
+  tooltip-text: bind template.model as <$PopcornEpisode> .Name;
+  action-name: "app.show_episode";
+  action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+  overflow: hidden;
 
   Gtk.GestureClick click_gesture {
     button: 3;
@@ -16,109 +23,102 @@ template $PopcornEpisodeButton: Gtk.Box {
     pressed => $on_long_press();
   }
 
-  Gtk.Overlay {
-    child: Gtk.Button {
-      styles [
-        "force_p0",
-        "card"
-      ]
-      margin-bottom: 5;
-      overflow: hidden;
-      tooltip-text: bind template.model as <$PopcornEpisode> .Name;
-      action-name: "app.show_episode";
-      action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+  child: Gtk.Box {
+    orientation: vertical;
+    spacing: 5;
+    Gtk.Overlay {
       child: Gtk.Picture {
-        content-fit: cover;
+        styles [
+          "card"
+        ]
         paintable: bind $format_paintable(template.is_tall, template.model as <$PopcornEpisode> .PrimaryPaintable, template.model as <$PopcornEpisode> .SeriesPrimaryPaintable, template.model as <$PopcornEpisode> .BackdropPaintable);
-        height-request: bind $format_picture_height(template.is_tall);
-        width-request: bind $format_picture_width(template.is_tall);
+        content-fit: cover;
+        valign: center;
+        halign: center;
+        vexpand: true;
+        accessibility {
+          label: _("Episode Poster");
+        }
       };
-    };
 
-    [overlay]
-    Gtk.ToggleButton {
-      styles [
-        "circular",
-        "toggle-with-accent",
-        "osd"
-      ]
-      valign: start;
-      halign: end;
-      margin-start: 10;
-      margin-end: 10;
-      margin-top: 10;
-      margin-bottom: 10;
-      tooltip-text: _("Toggle Played");
-      action-name: "app.toggle_played";
-      action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-      active: bind template.model as <$PopcornEpisode> .Played;
-      icon-name: "check-plain-symbolic";
-    }
+      [overlay]
+      Gtk.ToggleButton {
+        styles [
+          "circular",
+          "toggle-with-accent",
+          "osd"
+        ]
+        valign: start;
+        halign: end;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
+        tooltip-text: _("Toggle Played");
+        action-name: "app.toggle_played";
+        action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+        active: bind template.model as <$PopcornEpisode> .Played;
+        icon-name: "check-plain-symbolic";
+      }
 
-    [overlay]
-    Gtk.Box {
-      orientation: vertical;
-      spacing: 10;
-      margin-start: 10;
-      margin-end: 10;
-      margin-top: 10;
-      margin-bottom: 10;
-      valign: end;
-      hexpand: true;
-
+      [overlay]
       Gtk.Box {
-        Gtk.Button {
-          styles [
-            "osd",
-            "circular"
-          ]
-          tooltip-text: bind $format_play_button_label(template.model as <$PopcornEpisode> .Progress);
-          action-name: "app.play_episode";
-          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-          icon-name: "media-playback-start-symbolic";
+        orientation: vertical;
+        spacing: 10;
+        margin-start: 10;
+        margin-end: 10;
+        margin-top: 10;
+        margin-bottom: 10;
+        valign: end;
+        hexpand: true;
+
+        Gtk.Box {
+          Gtk.Button {
+            styles [
+              "osd",
+              "circular"
+            ]
+            tooltip-text: bind $format_play_button_label(template.model as <$PopcornEpisode> .Progress);
+            action-name: "app.play_episode";
+            action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+            icon-name: "media-playback-start-symbolic";
+          }
+
+          Adw.Bin {
+            hexpand: true;
+          }
+
+          Gtk.ToggleButton {
+            styles [
+              "circular",
+              "toggle-with-accent",
+              "osd"
+            ]
+            tooltip-text: _("Toggle Favorite");
+            action-name: "app.toggle_favorite";
+            action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+            active: bind template.model as <$PopcornEpisode> .IsFavorite;
+            icon-name: bind $format_heart_icon_name(template.model as <$PopcornEpisode> .IsFavorite);
+          }
         }
 
-        Adw.Bin {
-          hexpand: true;
+        Gtk.ProgressBar {
+          fraction: bind template.model as <$PopcornEpisode> .Progress;
+          visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
         }
-
-        Gtk.ToggleButton {
-          styles [
-            "circular",
-            "toggle-with-accent",
-            "osd"
-          ]
-          tooltip-text: _("Toggle Favorite");
-          action-name: "app.toggle_favorite";
-          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-          active: bind template.model as <$PopcornEpisode> .IsFavorite;
-          icon-name: bind $format_heart_icon_name(template.model as <$PopcornEpisode> .IsFavorite);
-        }
-      }
-
-      Gtk.ProgressBar {
-        fraction: bind template.model as <$PopcornEpisode> .Progress;
-        visible: bind $format_progressbar_visible(template.model as <$PopcornEpisode> .Progress);
       }
     }
-  }
 
-  Gtk.Stack {
-    visible-child-name: bind template.mode;
+    Gtk.Stack {
+      visible-child-name: bind template.mode;
 
-    Gtk.StackPage {
-      name: "simple";
-      child: Gtk.Box {
-        orientation: vertical;
-        Gtk.Button {
-          styles [
-            "flat",
-            "p0"
-          ]
-          tooltip-text: bind template.model as <$PopcornEpisode> .SeriesName;
-          action-name: "app.show_series";
-          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .SeriesId, 's');
-          child: Gtk.Label {
+      Gtk.StackPage {
+        name: "simple";
+        child: Gtk.Box {
+          orientation: vertical;
+          spacing: 5;
+
+          Gtk.Label {
             ellipsize: end;
             justify: center;
             label: bind template.model as <$PopcornEpisode> .SeriesName;
@@ -126,18 +126,9 @@ template $PopcornEpisodeButton: Gtk.Box {
             styles [
               "title-4"
             ]
-          };
-        }
+          }
 
-        Gtk.Button {
-          styles [
-            "flat",
-            "p0"
-          ]
-          tooltip-text: bind template.model as <$PopcornEpisode> .Name;
-          action-name: "app.show_episode";
-          action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
-          child: Gtk.Label {
+          Gtk.Label {
             ellipsize: end;
             justify: center;
             use-markup: true;
@@ -147,21 +138,12 @@ template $PopcornEpisodeButton: Gtk.Box {
             styles [
               "dimmed"
             ]
-          };
-        }
-      };
-    }
+          }
+        };
+      }
 
-    Gtk.StackPage {
-      name: "details";
-      child: Gtk.Button {
-        styles [
-          "flat",
-          "p0"
-        ]
-        tooltip-text: bind template.model as <$PopcornEpisode> .Name;
-        action-name: "app.show_episode";
-        action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+      Gtk.StackPage {
+        name: "details";
         child: Gtk.Box {
           orientation: vertical;
           spacing: 5;
@@ -219,7 +201,7 @@ template $PopcornEpisodeButton: Gtk.Box {
             }
           }
         };
-      };
+      }
     }
-  }
+  };
 }

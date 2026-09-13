@@ -7,7 +7,7 @@ from ..misc.context import ContextMenu, ContextMenuRow, show_context_menu
 
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/episode/button.ui')
-class EpisodeButton(Gtk.Box):
+class EpisodeButton(Gtk.Button):
     __gtype_name__ = 'PopcornEpisodeButton'
 
     model = GObject.Property(type=models.Episode)
