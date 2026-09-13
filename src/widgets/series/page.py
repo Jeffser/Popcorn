@@ -2,7 +2,6 @@
 
 from gi.repository import Gtk, Adw, Gio, GLib, GObject, Pango
 from ...integrations import models
-from ..season import SeasonButton
 from ..series import SeriesButton
 from ..movie import MovieButton
 from ..episode import EpisodeButton

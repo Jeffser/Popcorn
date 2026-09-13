@@ -29,9 +29,6 @@ blueprints = files(
   'ui/movie/button.blp',
   'ui/movie/page.blp',
 
-  'ui/season/button.blp',
-  'ui/season/page.blp',
-
   'ui/player/page.blp',
   'ui/player/window.blp',
   'ui/player/next_up_button.blp',

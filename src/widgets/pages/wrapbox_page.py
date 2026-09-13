@@ -3,7 +3,6 @@
 from gi.repository import Gtk, GObject, Adw, Gio, GLib
 from ..movie import MovieButton
 from ..series import SeriesButton
-from ..season import SeasonButton
 from ..episode import EpisodeButton
 from ..misc import FilterCheckButton
 from ...integrations import models
@@ -64,8 +63,6 @@ class WrapboxPage(Adw.NavigationPage):
                             GLib.idle_add(self.list_el.append, MovieButton(model=model))
                         elif isinstance(model, models.Series):
                             GLib.idle_add(self.list_el.append, SeriesButton(model=model))
-                        elif isinstance(model, models.Season):
-                            GLib.idle_add(self.list_el.append, SeasonButton(model=model))
                         elif isinstance(model, models.Episode):
                             GLib.idle_add(self.list_el.append, EpisodeButton(model=model))
                     if len(result_models) == 0:
