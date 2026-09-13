@@ -39,8 +39,7 @@ class LibrariesPage(Gtk.ScrolledWindow):
                             elif isinstance(model, models.Episode):
                                 latest_widgets.append(
                                     EpisodeButton(
-                                        model=model,
-                                        is_tall=True
+                                        model=model
                                     )
                                 )
                             elif isinstance(model, models.Movie):

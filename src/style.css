@@ -30,7 +30,7 @@ button.active_appearance_button:disabled {
   opacity: 0;
 }
 
-window.show-button-overlays .watch_button overlay:hover button.osd {
+window.show-button-overlays .watch_button:hover overlay button.osd {
   opacity: 1;
 }
 
@@ -105,6 +105,9 @@ label.remove-filter {
 button.toggle.toggle-with-accent:checked {
   color: var(--accent-fg-color);
   background: var(--accent-bg-color);
+}
+
+window.show-button-overlays button.toggle.toggle-with-accent:checked {
   opacity: 1;
 }
 

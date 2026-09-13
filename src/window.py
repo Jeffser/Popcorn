@@ -95,3 +95,12 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.open_uri)
         self.create_action(actions.logout, parameter_type=None)
 
+        if settings := self.get_application().get_property('settings'):
+            settings.connect('changed::show-button-overlay', self.toggle_css, 'show-button-overlays')
+            self.toggle_css(settings, 'show-button-overlay', 'show-button-overlays')
+
+    def toggle_css(self, settings, key:str, css_class:str):
+        if settings.get_value(key).unpack():
+            self.add_css_class(css_class)
+        else:
+            self.remove_css_class(css_class)

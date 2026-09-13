@@ -19,6 +19,11 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
           ]
         };
       }
+
+      Adw.SwitchRow show_overlay_el {
+        title: _("Show Overlay on Buttons");
+        subtitle: _("Actions can still be performed by right clicking / long pressing the button");
+      }
     }
 
     Adw.PreferencesGroup {
