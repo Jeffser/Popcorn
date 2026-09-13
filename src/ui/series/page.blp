@@ -1,5 +1,6 @@
 using Gtk 4.0;
 using Adw 1;
+using Gio 2.0;
 
 template $PopcornSeriesPage: Adw.NavigationPage {
   title: bind template.model as <$PopcornSeries> .Name;
@@ -246,10 +247,56 @@ template $PopcornSeriesPage: Adw.NavigationPage {
               }
             }
 
-            $PopcornWrapbox seasons_container {
-              title: _("Seasons");
-              icon-name: "playback-symbolic";
+            Gtk.Box {
+              visible: bind $format_to_bool(season_dropdown.model as <Gio.ListStore> .n-items);
+              orientation: horizontal;
+              spacing: 5;
+              Gtk.DropDown season_dropdown {
+                styles [
+                  "title-2"
+                ]
+                halign: start;
+                tooltip-text: bind season_dropdown.selected-item as <$PopcornSeason> .Name;
+                model: bind template.model as <$PopcornSeries> .Seasons;
+                notify::selected-item => $on_season_dropdown_selected_item();
+                factory: Gtk.SignalListItemFactory {
+                  bind => $on_season_dropdown_bind();
+                  setup => $on_season_dropdown_setup();
+                };
+              }
+
+              Gtk.Separator {}
+
+              Gtk.ToggleButton {
+                styles [
+                  "circular",
+                  "flat",
+                  "toggle-with-accent"
+                ]
+                valign: center;
+                tooltip-text: _("Toggle Favorite");
+                action-name: "app.toggle_favorite";
+                action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
+                active: bind season_dropdown.selected-item as <$PopcornSeason> .IsFavorite;
+                icon-name: bind $format_heart_icon_name(season_dropdown.selected-item as <$PopcornSeason> .IsFavorite);
+              }
+
+              Gtk.ToggleButton {
+                styles [
+                  "circular",
+                  "flat",
+                  "toggle-with-accent"
+                ]
+                valign: center;
+                tooltip-text: _("Toggle Played");
+                action-name: "app.toggle_played";
+                action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
+                active: bind season_dropdown.selected-item as <$PopcornSeason> .Played;
+                icon-name: "check-plain-symbolic";
+              }
             }
+
+            $PopcornWrapbox episodes_container {}
 
             $PopcornCarousel recommendations_container {
               title: _("Recommendations");

@@ -42,4 +42,6 @@ class Carousel(Gtk.Box):
             upper = hadjustment.get_upper() - hadjustment.get_page_size()
             hadjustment.set_value(max(lower, min(new_value, upper)))
 
-
+    @Gtk.Template.Callback()
+    def format_header_visible(self, obj, title:str) -> bool:
+        return bool(title)

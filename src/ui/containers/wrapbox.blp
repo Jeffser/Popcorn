@@ -15,6 +15,7 @@ template $PopcornWrapbox: Gtk.Box {
       halign: start;
       valign: center;
       hexpand: true;
+      visible: bind $format_header_visible(template.title);
       Gtk.Image {
         icon-name: bind template.icon_name;
       }

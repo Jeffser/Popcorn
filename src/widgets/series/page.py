@@ -5,13 +5,16 @@ from ...integrations import models
 from ..season import SeasonButton
 from ..series import SeriesButton
 from ..movie import MovieButton
+from ..episode import EpisodeButton
+import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/series/page.ui')
 class SeriesPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornSeriesPage'
 
     model = GObject.Property(type=models.Series)
-    seasons_container = Gtk.Template.Child()
+    season_dropdown = Gtk.Template.Child()
+    episodes_container = Gtk.Template.Child()
     recommendations_container = Gtk.Template.Child()
     top_overlay = Gtk.Template.Child()
     top_overlay_content = Gtk.Template.Child()
@@ -19,6 +22,7 @@ class SeriesPage(Adw.NavigationPage):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.top_overlay.set_measure_overlay(self.top_overlay_content, True)
+        list(self.season_dropdown)[0].add_css_class('flat')
 
     def reset(self):
         jellyfin = None
@@ -30,11 +34,6 @@ class SeriesPage(Adw.NavigationPage):
             model_id = model.get_property('Id')
         if not jellyfin or not model_id:
             return
-
-        season_widgets = []
-        for season_model in jellyfin.getSeasons(model_id):
-            season_widgets.append(SeasonButton(model=season_model))
-        GLib.idle_add(self.seasons_container.set_widgets, season_widgets)
 
         recommendation_widgets = []
         for model in jellyfin.getRecommendations(model_id):
@@ -49,6 +48,8 @@ class SeriesPage(Adw.NavigationPage):
                     is_tall=True
                 ))
         GLib.idle_add(self.recommendations_container.set_widgets, recommendation_widgets)
+
+        GLib.idle_add(self.on_season_dropdown_selected_item, self.season_dropdown)
 
     def show_search(self):
         pass
@@ -84,3 +85,56 @@ class SeriesPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
+
+    @Gtk.Template.Callback()
+    def on_season_dropdown_setup(self, factory, list_item):
+        list_item.set_child(Gtk.Label(
+            xalign=0.0,
+            halign=Gtk.Align.START
+        ))
+
+    @Gtk.Template.Callback()
+    def on_season_dropdown_bind(self, factory, list_item):
+        list_item.get_child().set_label(list_item.get_item().get_property('Name'))
+
+    def update_episodes(self, jellyfin, season_id:str):
+        GLib.idle_add(self.episodes_container.set_widgets, [Adw.Spinner(
+            hexpand=True,
+            height_request=240,
+            width_request=240
+        )])
+        episode_widgets = []
+        if jellyfin and season_id:
+            for episode_model in jellyfin.getEpisodesFromSeason(season_id):
+                episode_widgets.append(EpisodeButton(
+                    model=episode_model,
+                    mode='details'
+                ))
+        if len(episode_widgets) > 0:
+            GLib.idle_add(self.episodes_container.set_widgets, episode_widgets)
+        else:
+            GLib.idle_add(self.episodes_container.set_widgets, [Gtk.Label(
+                label=_("No Episodes Found"),
+                hexpand=True,
+                justify=Gtk.Justification.CENTER,
+                css_classes=['title-1']
+            )])
+
+    @Gtk.Template.Callback()
+    def on_season_dropdown_selected_item(self, dropdown, pspec=None):
+        if selected_item := dropdown.get_property('selected-item'):
+            if root := self.get_root():
+                if app := root.get_application():
+                    if jellyfin := app.jellyfin:
+                        threading.Thread(
+                            target=self.update_episodes,
+                            args=(jellyfin, selected_item.get_property('Id')),
+                            daemon=True
+                        ).start()
+        else:
+            threading.Thread(
+                target=self.update_episodes,
+                args=(None, None),
+                daemon=True
+            ).start()
+

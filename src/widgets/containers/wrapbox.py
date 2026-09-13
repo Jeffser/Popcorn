@@ -17,3 +17,6 @@ class Wrapbox(Gtk.Box):
         for i, page in enumerate(widgets):
             self.list_el.append(page)
 
+    @Gtk.Template.Callback()
+    def format_header_visible(self, obj, title:str) -> bool:
+        return bool(title)

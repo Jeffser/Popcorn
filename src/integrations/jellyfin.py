@@ -106,12 +106,18 @@ class Jellyfin(GObject.Object):
                 PrimaryPaintable=self.getPaintable(item.get('Id'), image_type='Primary'),
                 Played=item.get('UserData', {}).get('Played', False),
                 Genres=Gio.ListStore.new(item_type=Gtk.StringObject),
-                IsFavorite=item.get('UserData', {}).get('IsFavorite', False)
+                IsFavorite=item.get('UserData', {}).get('IsFavorite', False),
+                Seasons=Gio.ListStore.new(item_type=models.Season)
             )
             self.loaded_models.get(item.get('Id')).get_property('Genres').splice(
                 0,
                 0,
                 [Gtk.StringObject.new(genre) for genre in item.get('Genres', [])]
+            )
+            self.loaded_models.get(item.get('Id')).get_property('Seasons').splice(
+                0,
+                0,
+                self.getSeasons(item.get('Id'))
             )
         elif item.get('Type') == 'Episode':
             if item.get('Id') not in self.loaded_models:
@@ -372,9 +378,6 @@ class Jellyfin(GObject.Object):
             action='Shows/{seriesId}/Seasons',
             action_keys={
                 'seriesId': seriesId
-            },
-            params={
-                'fields': 'ChildCount'
             }
         ).get('Items', [])
         for item in items:
@@ -833,5 +836,6 @@ class Jellyfin(GObject.Object):
                 return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
+
 
 

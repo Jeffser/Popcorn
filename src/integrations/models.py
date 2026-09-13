@@ -42,6 +42,7 @@ class Series(BasicModel):
     PrimaryPaintable = GObject.Property(type=Gdk.Paintable)
     Played = GObject.Property(type=bool, default=False)
     IsFavorite = GObject.Property(type=bool, default=False)
+    Seasons = GObject.Property(type=Gio.ListStore)
 
 class Season(BasicModel):
     __gtype_name__ = 'PopcornSeason'

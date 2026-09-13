@@ -12,6 +12,7 @@ template $PopcornCarousel: Gtk.Box {
     valign: center;
     hexpand: true;
     margin-top: 5;
+    visible: bind $format_header_visible(template.title);
     Gtk.Image {
       icon-name: bind template.icon_name;
     }
