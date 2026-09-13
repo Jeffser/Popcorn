@@ -35,6 +35,7 @@ template $PopcornMovieButton: Gtk.Button {
         content-fit: cover;
         valign: center;
         halign: center;
+        vexpand: true;
         accessibility {
           label: _("Movie Poster");
         }
@@ -112,6 +113,7 @@ template $PopcornMovieButton: Gtk.Button {
         "title-4"
       ]
     }
+
     Gtk.Label {
       ellipsize: end;
       justify: center;

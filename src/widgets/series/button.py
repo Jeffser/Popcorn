@@ -4,9 +4,8 @@ from gettext import gettext as _
 from ...integrations import models
 from ..misc.context import ContextMenu, ContextMenuRow, show_context_menu
 
-
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/series/button.ui')
-class SeriesButton(Gtk.Box):
+class SeriesButton(Gtk.Button):
     __gtype_name__ = 'PopcornSeriesButton'
 
     model = GObject.Property(type=models.Series)
