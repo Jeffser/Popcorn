@@ -73,6 +73,10 @@ class EpisodeButton(Gtk.Button):
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 
     @Gtk.Template.Callback()
+    def format_tooltip_text(self, obj, series_title:str, episode_title:str) -> str:
+        return '{}\n{}'.format(series_title, episode_title)
+
+    @Gtk.Template.Callback()
     def on_secondary_click(self, gesture, n_press, x, y):
         rect = Gdk.Rectangle()
         rect.x, rect.y = int(x), int(y)

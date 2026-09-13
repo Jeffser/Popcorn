@@ -104,7 +104,7 @@ template $PopcornMoviePage: Adw.NavigationPage {
                     "toggle-with-accent"
                   ]
                   valign: center;
-                  tooltip-text: _("Toggle Favorite");
+                  tooltip-text: bind $format_heart_label(template.model as <$PopcornMovie> .IsFavorite);
                   action-name: "app.toggle_favorite";
                   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
                   active: bind template.model as <$PopcornMovie> .IsFavorite;
@@ -116,7 +116,7 @@ template $PopcornMoviePage: Adw.NavigationPage {
                     "pill",
                     "suggested-action"
                   ]
-                  tooltip-text: _("Play");
+                  tooltip-text: bind $format_play_button_label(template.model as <$PopcornMovie> .Progress);
                   action-name: "app.play_movie";
                   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
                   child: Adw.ButtonContent {
@@ -131,7 +131,7 @@ template $PopcornMoviePage: Adw.NavigationPage {
                     "toggle-with-accent"
                   ]
                   valign: center;
-                  tooltip-text: _("Toggle Played");
+                  tooltip-text: bind $format_watched_label(template.model as <$PopcornMovie> .Played);
                   action-name: "app.toggle_played";
                   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
                   active: bind template.model as <$PopcornMovie> .Played;

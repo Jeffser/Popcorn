@@ -82,6 +82,20 @@ class SeriesPage(Adw.NavigationPage):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
+    def format_watched_label(self, obj, played:bool, is_season:bool):
+        base_str = _("Mark as Unwatched") if played else _("Mark as Watched")
+        if is_season:
+            return '{} ({})'.format(base_str, _("Season"))
+        return base_str
+
+    @Gtk.Template.Callback()
+    def format_heart_label(self, obj, is_favorite:bool, is_season:bool):
+        base_str = _("Remove from Favorites") if is_favorite else _("Add to Favorites")
+        if is_season:
+            return '{} ({})'.format(base_str, _("Season"))
+        return base_str
+
+    @Gtk.Template.Callback()
     def format_heart_icon_name(self, obj, isFavorite:bool) -> str:
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 

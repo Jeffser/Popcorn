@@ -75,5 +75,13 @@ class MoviePage(Adw.NavigationPage):
         return "heart-filled-symbolic" if isFavorite else "heart-outline-thick-symbolic"
 
     @Gtk.Template.Callback()
+    def format_watched_label(self, obj, played:bool):
+        return _("Mark as Unwatched") if played else _("Mark as Watched")
+
+    @Gtk.Template.Callback()
+    def format_heart_label(self, obj, is_favorite:bool):
+        return _("Remove from Favorites") if is_favorite else _("Add to Favorites")
+
+    @Gtk.Template.Callback()
     def format_play_button_label(self, obj, progress:float):
         return _("Resume") if progress > 0 else _("Play")

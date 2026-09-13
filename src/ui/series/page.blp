@@ -106,7 +106,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                     "toggle-with-accent"
                   ]
                   valign: center;
-                  tooltip-text: _("Toggle Favorite");
+                  tooltip-text: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite, false);
                   action-name: "app.toggle_favorite";
                   action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
                   active: bind template.model as <$PopcornSeries> .IsFavorite;
@@ -134,7 +134,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                     "toggle-with-accent"
                   ]
                   valign: center;
-                  tooltip-text: _("Toggle Played");
+                  tooltip-text: bind $format_watched_label(template.model as <$PopcornSeries> .Played, false);
                   action-name: "app.toggle_played";
                   action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
                   active: bind template.model as <$PopcornSeries> .Played;
@@ -278,7 +278,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                   "toggle-with-accent"
                 ]
                 valign: center;
-                tooltip-text: _("Toggle Favorite (Season)");
+                tooltip-text: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite, true);
                 action-name: "app.toggle_favorite";
                 action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
                 active: bind season_dropdown.selected-item as <$PopcornSeason> .IsFavorite;
@@ -292,7 +292,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                   "toggle-with-accent"
                 ]
                 valign: center;
-                tooltip-text: _("Toggle Played (Season)");
+                tooltip-text: bind $format_watched_label(template.model as <$PopcornSeries> .Played, true);
                 action-name: "app.toggle_played";
                 action-target: bind $format_action_target(season_dropdown.selected-item as <$PopcornSeason> .Id, 's');
                 active: bind season_dropdown.selected-item as <$PopcornSeason> .Played;
