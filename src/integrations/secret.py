@@ -1,7 +1,7 @@
 # secret.py
 
 from gi.repository import Secret, GObject
-import hashlib, secrets, string, os, uuid
+import hashlib, secrets, string, os, uuid, sqlite3
 from ..constants import FALLBACK_PASSWORD_PATH
 from .models import BasicModel
 
@@ -44,7 +44,7 @@ class ServerUser(GObject.Object):
     quick_connect = GObject.Property(type=bool, default=False)
 
     def __init__(self, **kwargs):
-        if 'id' not in kwargs:
+        if not kwargs.get('id'):
             kwargs['id'] = str(uuid.uuid4()) # TODO maybe verify that uuid is truly unique
             #TODO verify that server-address starts with http
         super().__init__(**kwargs)
@@ -63,7 +63,7 @@ class ServerUser(GObject.Object):
         try:
             return Secret.password_lookup_sync(
                 BASE_SCHEMA,
-                self.__get_attributes(),
+                {'id': self.get_property('id')},
                 None
             ) or ''
         except:
@@ -73,9 +73,9 @@ class ServerUser(GObject.Object):
             cursor.execute(
                 """
                     SELECT password FROM accounts
-                    WHERE server_address = ? AND username = ?
+                    WHERE id=?
                 """,
-                (self.get_property('server_address'), self.get_property('username')),
+                (self.get_property('id'),)
             )
             row = cursor.fetchone()
             conn.close()
@@ -83,18 +83,19 @@ class ServerUser(GObject.Object):
                 return row[0]
         return ''
 
-    def save_password(self, password:str):
-        # creates entry in secret manager
-        # remember to set quick_connect before calling this if necessary
+    def update_changes(self, password:str=""):
+        # creates / updates entry in secret manager
+        # password is optional
+        if not password:
+            password = self.get_password()
         try:
-            attributes = self.__get_attributes()
+            self.remove_user()
             Secret.password_store_sync(
                 BASE_SCHEMA,
-                attributes,
+                self.__get_attributes(),
                 Secret.COLLECTION_DEFAULT,
-                "{} ({})".format(attributes.get('username').title(), attributes.get('server_address')),
-                password,
-                None
+                "{} ({})".format(self.get_property('username').title(), self.get_property('server-address')),
+                password
             )
         except:
             _init_db()
@@ -103,26 +104,26 @@ class ServerUser(GObject.Object):
             cursor.execute(
                 """
                     INSERT OR REPLACE INTO accounts
-                    (server_address, trust_certificates, username, quick_connect, password)
-                    VALUES (?, ?, ?, ?, ?)
+                    (id, server_address, trust_certificates, username, quick_connect, password)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (
+                    self.get_property('id'),
                     self.get_property('server_address'),
                     int(self.get_property('trust_certificates')),
                     self.get_property('username'),
                     int(self.get_property('quick_connect')),
-                    password,
+                    password
                 ),
             )
             conn.commit()
             conn.close()
 
     def remove_user(self):
-        # Should delete object after calling this to be safe
         try:
             Secret.password_clear_sync(
                 BASE_SCHEMA,
-                self.__get_attributes(),
+                {'id': self.get_property('id')},
                 None
             )
         except:

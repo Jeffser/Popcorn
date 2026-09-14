@@ -1,6 +1,6 @@
 # __init__.py
 
-from .login import LoginPage
+from .login import LoginPage, LoginDialog
 from .home import HomePage
 from .wrapbox_page import WrapboxPage
 from .search import SearchPage

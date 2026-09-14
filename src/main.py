@@ -52,8 +52,8 @@ class PopcornService:
         self.app = app
 
     def Search(self, query:str) -> dict:
-        if jellyfin := self.app.jellyfin:
-            return self.app.jellyfin.systemSearch(query)
+        if jellyfin := self.app.get_property('jellyfin'):
+            return jellyfin.systemSearch(query)
         return {}
 
 class PopcornApplication(Adw.Application):
@@ -73,7 +73,6 @@ class PopcornApplication(Adw.Application):
         self.set_property('player', Widgets.Player(application=self))
         if default_user_id := self.get_property('settings').get_value('default-user-id').unpack():
             if default_user := secret.get_user(default_user_id):
-                print(default_user.get_property('server-address'))
                 self.get_property('jellyfin').set_property('user', default_user)
         self.main_window = None
         self.pip_window = None
@@ -138,10 +137,14 @@ class PopcornApplication(Adw.Application):
         threading.Thread(target=open_preferences_dialog, daemon=True).start()
 
     def try_login(self):
-        if self.jellyfin.ping(): # Login Ok
+        # Call in different thread
+        if self.get_property('jellyfin').ping(): # Login Ok
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['main'])
             GLib.idle_add(self.main_window.root_navigationview.find_page('main').setup)
-        elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
+        else:
+            GLib.idle_add(Widgets.LoginDialog().present, self.props.active_window)
+        return
+        if self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
             toast = Adw.Toast(
                 title=_("Error logging in")
@@ -163,6 +166,4 @@ def main(version):
     print("Popcorn version", version)
     set_popcorn_version(version)
     return PopcornApplication(version).run(sys.argv)
-
-
 

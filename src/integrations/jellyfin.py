@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio
 from . import models, secret
-from ..constants import subtitle_timestamp_to_position, subtitle_text_to_pango, get_device_id, POPCORN_VERSION
+from ..constants import get_device_id, POPCORN_VERSION
 import requests, io, urllib3, platform, webvtt, platform
 
 # Just so that the logs don't get cluttered with warnings if trust-server = True
@@ -195,22 +195,21 @@ class Jellyfin(GObject.Object):
             mode='POST',
         )
 
-    def checkQuickConnect(self, secret_str:str) -> bool:
+    def checkQuickConnect(self, secret_str:str) -> str | None:
+        # Returns secret if successfull
         response = self.makeRequest(
             action='QuickConnect/Connect',
             params={'secret': secret_str}
         )
-        if response.get('Authenticated'):
-            self.get_property('user').set_property('quick-connect', True)
-            self.get_property('user').save_password(response.get('Secret'))
-            return True
-        return False
+        return response.get("Secret") if response.get('Authenticated') else None
 
     def ping(self) -> bool:
         self.loaded_models = {}
         self.set_property('accessToken', "")
         self.set_property('userId', "")
         if user := self.get_property('user'):
+            if not user.get_property('server-address'):
+                return False
             if user.get_property('quick-connect'):
                 response = self.makeRequest(
                     action='Users/AuthenticateWithQuickConnect',
@@ -221,6 +220,7 @@ class Jellyfin(GObject.Object):
                 )
                 self.set_property('accessToken', response.get('AccessToken'))
                 self.set_property('userId', response.get('User', {}).get('Id'))
+                user.set_property('username', response.get('User', {}).get('Name'))
             else:
                 response = self.makeRequest(
                     action='Users/AuthenticateByName',
@@ -232,7 +232,12 @@ class Jellyfin(GObject.Object):
                 )
                 self.set_property('accessToken', response.get('AccessToken'))
                 self.set_property('userId', response.get('User', {}).get('Id'))
-        return self.get_property('accessToken') and self.get_property('userId')
+                user.set_property('username', response.get('User', {}).get('Name'))
+
+        if self.get_property('accessToken') and self.get_property('userId'):
+            self.get_property('user').update_changes()
+            return True
+        return False
 
     def getUserViews(self) -> list:
         # Returns list of UserView models
@@ -835,7 +840,4 @@ class Jellyfin(GObject.Object):
                 return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
-
-
-
 

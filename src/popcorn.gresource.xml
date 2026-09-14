@@ -41,6 +41,7 @@
     <file alias="preferences.ui">ui/preferences.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
 
+    <file alias="pages/login_dialog.ui">ui/pages/login_dialog.ui</file>
     <file alias="pages/login.ui">ui/pages/login.ui</file>
     <file alias="pages/home.ui">ui/pages/home.ui</file>
     <file alias="pages/search.ui">ui/pages/search.ui</file>
