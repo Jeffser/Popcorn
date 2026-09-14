@@ -52,7 +52,6 @@ class ServerUser(GObject.Object):
                 address = 'http://{}'.format(address)
             kwargs['server-address'] = address
 
-        #TODO verify that server-address starts with http
         super().__init__(**kwargs)
 
     def __get_attributes(self) -> dict:
@@ -194,37 +193,4 @@ def get_user(user_id:str) -> ServerUser | None:
                 )
     except:
         pass
-
-###################################################################
-
-def store_password_OLD(password:str, schema_type:str="password"): #TODO DELETE
-    try:
-        attributes = {"type": schema_type}
-
-        Secret.password_store_sync(
-            BASE_SCHEMA,
-            attributes,
-            Secret.COLLECTION_DEFAULT,
-            "Popcorn Login",
-            password,
-            None
-        )
-    except:
-        with open(FALLBACK_PASSWORD_PATH, 'w+') as f:
-            f.write(password)
-
-def get_plain_password_OLD(schema_type:str="password") -> str:
-    # returns plain password
-    try:
-        attributes = {"type": schema_type}
-        return Secret.password_lookup_sync(
-            BASE_SCHEMA,
-            attributes,
-            None
-        )
-    except:
-        if os.path.isfile(FALLBACK_PASSWORD_PATH):
-            with open(FALLBACK_PASSWORD_PATH, 'r') as f:
-                return f.read()
-    return ""
 
