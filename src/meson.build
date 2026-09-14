@@ -10,11 +10,9 @@ blueprints = files(
   'ui/pages/user_selector.blp',
   'ui/pages/user_selector_button.blp',
   'ui/pages/login_dialog.blp',
-  'ui/pages/login.blp',
   'ui/pages/home.blp',
   'ui/pages/search.blp',
   'ui/pages/wrapbox_page.blp',
-  'ui/pages/welcome.blp',
   'ui/pages/main.blp',
   'ui/pages/libraries.blp',
 

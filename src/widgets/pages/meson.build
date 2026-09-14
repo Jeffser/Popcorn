@@ -6,7 +6,6 @@ widgets = [
   'home.py',
   'search.py',
   'wrapbox_page.py',
-  'welcome.py',
   'main.py',
   'libraries.py',
   'user_selector.py',

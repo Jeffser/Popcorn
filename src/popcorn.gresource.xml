@@ -45,11 +45,9 @@
     <file alias="pages/user_selector.ui">ui/pages/user_selector.ui</file>
     <file alias="pages/user_selector_button.ui">ui/pages/user_selector_button.ui</file>
     <file alias="pages/login_dialog.ui">ui/pages/login_dialog.ui</file>
-    <file alias="pages/login.ui">ui/pages/login.ui</file>
     <file alias="pages/home.ui">ui/pages/home.ui</file>
     <file alias="pages/search.ui">ui/pages/search.ui</file>
     <file alias="pages/wrapbox_page.ui">ui/pages/wrapbox_page.ui</file>
-    <file alias="pages/welcome.ui">ui/pages/welcome.ui</file>
     <file alias="pages/main.ui">ui/pages/main.ui</file>
     <file alias="pages/libraries.ui">ui/pages/libraries.ui</file>
 

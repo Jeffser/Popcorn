@@ -153,6 +153,7 @@ def add_user(app):
         GLib.idle_add(Widgets.LoginDialog().present, main_window)
 
 def logout(app):
+    return #TODO adapt to new user system
     app.get_property('player').stop()
 
     secret.store_password('')
