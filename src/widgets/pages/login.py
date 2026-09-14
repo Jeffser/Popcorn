@@ -59,9 +59,14 @@ class LoginDialog(Adw.Dialog):
                         jellyfin.get_property('user').set_property('quick-connect', False)
                         jellyfin.get_property('user').update_changes(password)
                         if jellyfin.ping():
-                            print('oke')
+                            GLib.idle_add(root.root_navigationview.replace_with_tags, ['user-selector'])
+                            threading.Thread(target=root.root_navigationview.find_page('user-selector').reset, daemon=True).start()
+                            GLib.idle_add(self.close)
                         else:
-                            print('ohno')
+                            toast = Adw.Toast(
+                                title=_("Error logging in")
+                            )
+                            GLib.idle_add(self.toast_overlay.add_toast, toast)
         if username := self.user_el.get_text():
             if password := self.password_el.get_text():
                 threading.Thread(target=run, args=(username, password), daemon=True).start()
@@ -85,16 +90,22 @@ class LoginDialog(Adw.Dialog):
                 time.sleep(5)
                 waited_turns += 1
 
+            jellyfin.get_property('user').set_property('username', '')
             if result_secret:
                 jellyfin.get_property('user').set_property('quick-connect', True)
                 jellyfin.get_property('user').update_changes(result_secret)
                 if jellyfin.ping():
-                    print('oke')
+                    GLib.idle_add(root.root_navigationview.replace_with_tags, ['user-selector'])
+                    threading.Thread(target=root.root_navigationview.find_page('user-selector').reset, daemon=True).start()
+                    GLib.idle_add(self.close)
                 else:
-                    print('ohno')
+                    toast = Adw.Toast(
+                        title=_("Error logging in")
+                    )
+                    GLib.idle_add(self.toast_overlay.add_toast, toast)
             else:
                 jellyfin.get_property('user').set_property('quick-connect', False)
-                jellyfin.update_changes()
+                jellyfin.get_property('user').update_changes()
                 toast = Adw.Toast(
                     title=_("Error logging in")
                 )

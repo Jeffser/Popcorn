@@ -84,7 +84,7 @@ class PopcornApplication(Adw.Application):
     def do_activate(self):
         if not self.main_window:
             self.main_window = PopcornWindow(application=self)
-            threading.Thread(target=self.try_login, daemon=True).start()
+            threading.Thread(target=self.initial_try_login, daemon=True).start()
         self.main_window.present()
         app_service = PopcornService(self)
         if 'linux' in sys.platform:
@@ -136,24 +136,14 @@ class PopcornApplication(Adw.Application):
             GLib.idle_add(dialog.present, self.props.active_window)
         threading.Thread(target=open_preferences_dialog, daemon=True).start()
 
-    def try_login(self):
+    def initial_try_login(self):
         # Call in different thread
         if self.get_property('jellyfin').ping(): # Login Ok
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['main'])
             GLib.idle_add(self.main_window.root_navigationview.find_page('main').setup)
         else:
-            GLib.idle_add(Widgets.LoginDialog().present, self.props.active_window)
-        return
-        if self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome', 'login'])
-            toast = Adw.Toast(
-                title=_("Error logging in")
-            )
-            GLib.idle_add(self.main_window.toast_overlay.add_toast, toast)
-            threading.Thread(target=self.main_window.root_navigationview.find_page('login').reset, daemon=True).start()
-        else: # First Login
-            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['welcome'])
-            threading.Thread(target=self.main_window.root_navigationview.find_page('welcome').reset, daemon=True).start()
+            GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['user-selector'])
+            threading.Thread(target=self.main_window.root_navigationview.find_page('user-selector').reset, daemon=True).start()
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         action = Gio.SimpleAction.new(name, parameter_type)

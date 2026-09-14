@@ -7,6 +7,8 @@ blueprints = files(
   'ui/preferences.blp',
   'ui/shortcuts-dialog.blp',
 
+  'ui/pages/user_selector.blp',
+  'ui/pages/user_selector_button.blp',
   'ui/pages/login_dialog.blp',
   'ui/pages/login.blp',
   'ui/pages/home.blp',

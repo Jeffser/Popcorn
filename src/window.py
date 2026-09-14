@@ -93,6 +93,7 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.reload_page, shortcuts=['<ctrl>r'], parameter_type=None)
         self.create_action(actions.toggle_favorite)
         self.create_action(actions.open_uri)
+        self.create_action(actions.add_user, parameter_type=None)
         self.create_action(actions.logout, parameter_type=None)
 
         if settings := self.get_application().get_property('settings'):

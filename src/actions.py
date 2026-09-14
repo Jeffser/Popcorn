@@ -147,6 +147,11 @@ def open_uri(app, uri:str):
         return
     Gio.AppInfo.launch_default_for_uri(uri, None)
 
+def add_user(app):
+    if main_window := app.main_window:
+        GLib.idle_add(main_window.root_navigationview.replace_with_tags, ['user-selector'])
+        GLib.idle_add(Widgets.LoginDialog().present, main_window)
+
 def logout(app):
     app.get_property('player').stop()
 

@@ -740,7 +740,8 @@ class Jellyfin(GObject.Object):
                 action="System/Info",
                 mode="GET"
             )
-            server_information["title"] = "{} {}".format(info.get("ServerName"), info.get("Version"))
+            if server_name := info.get("ServerName"):
+                server_information["title"] = server_name
         except:
             pass
 

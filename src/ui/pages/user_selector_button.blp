@@ -1,0 +1,41 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PopcornUserSelectorButton: Gtk.Button {
+  styles [
+    "flat"
+  ]
+  valign: end;
+  halign: center;
+  tooltip-text: bind template.model as <$PopcornServerUser> .username;
+  overflow: hidden;
+  clicked => $on_click();
+
+  child: Gtk.Box {
+    orientation: vertical;
+    spacing: 5;
+    Adw.Avatar {
+      size: 180;
+      margin-bottom: 5;
+      custom-image: bind template.avatar_paintable;
+    }
+
+    Gtk.Label {
+      styles [
+        "title-2"
+      ]
+      ellipsize: end;
+      justify: center;
+      label: bind template.model as <$PopcornServerUser> .username;
+    }
+
+    Gtk.Label {
+      styles [
+        "dimmed"
+      ]
+      ellipsize: end;
+      justify: center;
+      label: bind $format_subtitle(template.server-name, template.model as <$PopcornServerUser> .server-address);
+    }
+  };
+}

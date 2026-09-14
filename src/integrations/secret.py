@@ -46,7 +46,13 @@ class ServerUser(GObject.Object):
     def __init__(self, **kwargs):
         if not kwargs.get('id'):
             kwargs['id'] = str(uuid.uuid4()) # TODO maybe verify that uuid is truly unique
-            #TODO verify that server-address starts with http
+        if address := kwargs.get('server-address'):
+            address = address.strip('/')
+            if not address.startswith('http'):
+                address = 'http://{}'.format(address)
+            kwargs['server-address'] = address
+
+        #TODO verify that server-address starts with http
         super().__init__(**kwargs)
 
     def __get_attributes(self) -> dict:

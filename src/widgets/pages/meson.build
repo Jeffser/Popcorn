@@ -9,6 +9,7 @@ widgets = [
   'welcome.py',
   'main.py',
   'libraries.py',
+  'user_selector.py',
 ]
 
 install_data(widgets, install_dir: moduledir)
