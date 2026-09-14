@@ -14,13 +14,11 @@ class Jellyfin(GObject.Object):
     AUTH_HEADER = ""
 
     # Loaded when login
-    trustServer = GObject.Property(type=bool, default=False)
-    url = GObject.Property(type=str)
-    user = GObject.Property(type=str)
+    user = GObject.Property(type=secret.ServerUser, default=secret.ServerUser())
 
     # Loaded by API
     accessToken = GObject.Property(type=str)
-    userId = GObject.Property(type=str)
+    userId = GObject.Property(type=str) # not the same as the one in ServerUser
 
     loaded_models = {}
 
@@ -36,7 +34,7 @@ class Jellyfin(GObject.Object):
 
     def getUrl(self, action:str, **keys) -> str:
         action = action.format(userId=self.get_property('userId'), **keys)
-        return '{}/{}'.format(self.get_property('url').strip('/'), action)
+        return '{}/{}'.format(self.get_property('user').get_property('server-address').strip('/'), action)
 
     def getStreamUrl(self, model_id:str) -> str:
         # Can be called in main thread no problem
@@ -58,7 +56,7 @@ class Jellyfin(GObject.Object):
                     params=params,
                     json=json,
                     headers=headers,
-                    verify=not self.get_property('trustServer')
+                    verify=not self.get_property('user').get_property('trust-certificates')
                 )
             elif mode == 'POST':
                 response = requests.post(
@@ -66,7 +64,7 @@ class Jellyfin(GObject.Object):
                     params=params,
                     json=json,
                     headers=headers,
-                    verify=not self.get_property('trustServer')
+                    verify=not self.get_property('user').get_property('trust-certificates')
                 )
             elif mode == 'DELETE':
                 response = requests.delete(
@@ -74,7 +72,7 @@ class Jellyfin(GObject.Object):
                     params=params,
                     json=json,
                     headers=headers,
-                    verify=not self.get_property('trustServer')
+                    verify=not self.get_property('user').get_property('trust-certificates')
                 )
             if mode == 'RAWGET':
                 return response
@@ -203,7 +201,8 @@ class Jellyfin(GObject.Object):
             params={'secret': secret_str}
         )
         if response.get('Authenticated'):
-            secret.store_password(response.get("Secret"))
+            self.get_property('user').set_property('quick-connect', True)
+            self.get_property('user').save_password(response.get('Secret'))
             return True
         return False
 
@@ -211,28 +210,28 @@ class Jellyfin(GObject.Object):
         self.loaded_models = {}
         self.set_property('accessToken', "")
         self.set_property('userId', "")
-        response = self.makeRequest(
-            action='Users/AuthenticateWithQuickConnect',
-            json={
-                "Secret": secret.get_plain_password()
-            },
-            mode='POST'
-        )
-        self.set_property('accessToken', response.get('AccessToken'))
-        self.set_property('userId', response.get('User', {}).get('Id'))
-        if self.get_property("accessToken") and self.get_property("userId"):
-            self.set_property("user", response.get('User', {}).get('Name'))
-        else:
-            response = self.makeRequest(
-                action='Users/AuthenticateByName',
-                json={
-                    'Username': self.get_property('user'),
-                    'Pw': secret.get_plain_password()
-                },
-                mode='POST'
-            )
-            self.set_property('accessToken', response.get('AccessToken'))
-            self.set_property('userId', response.get('User', {}).get('Id'))
+        if user := self.get_property('user'):
+            if user.get_property('quick-connect'):
+                response = self.makeRequest(
+                    action='Users/AuthenticateWithQuickConnect',
+                    json={
+                        "Secret": user.get_password()
+                    },
+                    mode='POST'
+                )
+                self.set_property('accessToken', response.get('AccessToken'))
+                self.set_property('userId', response.get('User', {}).get('Id'))
+            else:
+                response = self.makeRequest(
+                    action='Users/AuthenticateByName',
+                    json={
+                        'Username': self.get_property('user').get_property('username'),
+                        'Pw': user.get_password()
+                    },
+                    mode='POST'
+                )
+                self.set_property('accessToken', response.get('AccessToken'))
+                self.set_property('userId', response.get('User', {}).get('Id'))
         return self.get_property('accessToken') and self.get_property('userId')
 
     def getUserViews(self) -> list:
@@ -258,7 +257,7 @@ class Jellyfin(GObject.Object):
     def getPaintableBytes(self, item_id:str, image_type:str="Backdrop", max_width:int=1280) -> bytes | None:
         try:
             url = self.getImageUrl(item_id, image_type, max_width)
-            response = requests.get(url, timeout=5, verify=not self.get_property('trustServer'))
+            response = requests.get(url, timeout=5, verify=not self.get_property('user').get_property('trust-certificates'))
             response.raise_for_status()
             return response.content
         except:
@@ -334,7 +333,7 @@ class Jellyfin(GObject.Object):
     def getUserAvatar(self) -> Gdk.Paintable | None:
         try:
             url = self.getUrl("Users/{userId}/Images/Primary")
-            response = requests.get(url, params={'quality': 85}, timeout=5, verify=not self.get_property('trustServer'))
+            response = requests.get(url, params={'quality': 85}, timeout=5, verify=not self.get_property('user').get_property('trust-certificates'))
             response.raise_for_status()
             gbytes = GLib.Bytes.new(response.content)
             return Gdk.Texture.new_from_bytes(gbytes)
@@ -712,8 +711,8 @@ class Jellyfin(GObject.Object):
 
     def getServerInformation(self) -> dict:
         server_information = {
-            'link': self.get_property('url').strip('/'),
-            'username': self.get_property('user').title()
+            'link': self.get_property('user').get_property('server-address').strip('/'),
+            'username': self.get_property('user').get_property('username').title()
         }
         try:
             response = self.makeRequest(
@@ -811,7 +810,7 @@ class Jellyfin(GObject.Object):
     def getLoginDisclaimer(self) -> str:
         # Does NOT need to be logged in to work
         try:
-            results = requests.get(self.getUrl("Branding/Configuration"), verify=not self.get_property('trustServer')).json()
+            results = requests.get(self.getUrl("Branding/Configuration"), verify=not self.get_property('user').get_property('trust-certificates')).json()
             return results.get('LoginDisclaimer') or ''
         except:
             pass
@@ -821,7 +820,7 @@ class Jellyfin(GObject.Object):
         # Check if server is ok
         # Does NOT need to be logged in to work
         try:
-            return requests.get(self.getUrl("health"), verify=not self.get_property('trustServer')).status_code == 200
+            return requests.get(self.getUrl("health"), verify=not self.get_property('user').get_property('trust-certificates')).status_code == 200
         except:
             return False
 
@@ -829,7 +828,7 @@ class Jellyfin(GObject.Object):
         # Does NOT need to be logged in to work
         try:
             url = self.getUrl('Branding/Splashscreen')
-            response = requests.get(url, timeout=5, verify=not self.get_property('trustServer'))
+            response = requests.get(url, timeout=5, verify=not self.get_property('user').get_property('trust-certificates'))
             response.raise_for_status()
             if raw_bytes := response.content:
                 gbytes = GLib.Bytes.new(raw_bytes)

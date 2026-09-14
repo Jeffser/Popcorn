@@ -433,7 +433,7 @@ class Player(GObject.Object):
             if GObject.type_is_a(source, Gst.ElementFactory.find("souphttpsrc").get_element_type()):
                 if app := self.get_property('application'):
                     if jellyfin := app.jellyfin:
-                        source.set_property("ssl-strict", not jellyfin.get_property('trustServer'))
+                        source.set_property("ssl-strict", not jellyfin.get_property('user').get_property('trust-certificates'))
         except:
             pass
 

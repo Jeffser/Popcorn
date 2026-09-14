@@ -30,7 +30,7 @@ from gi.repository import Gtk, GObject, Gio, Adw, GLib
 from .window import PopcornWindow
 from .preferences import PopcornPreferences
 from . import widgets as Widgets
-from .integrations import Jellyfin
+from .integrations import Jellyfin, secret
 from .constants import set_popcorn_version, TRANSLATORS, COPYRIGHT
 
 GLib.set_prgname('com.jeffser.Popcorn')
@@ -62,6 +62,7 @@ class PopcornApplication(Adw.Application):
 
     player = GObject.Property(type=Widgets.Player)
     settings = GObject.Property(type=Gio.Settings, default=Gio.Settings(schema_id="com.jeffser.Popcorn"))
+    jellyfin = GObject.Property(type=Jellyfin, default=Jellyfin())
 
     def __init__(self, version):
         super().__init__(application_id='com.jeffser.Popcorn',
@@ -70,12 +71,10 @@ class PopcornApplication(Adw.Application):
         self.version = version
         self.idle_inhibit_cookie = None
         self.set_property('player', Widgets.Player(application=self))
-        settings = self.get_property('settings')
-        self.jellyfin = Jellyfin(
-            user=settings.get_value('user').unpack(),
-            url=settings.get_value('url').unpack(),
-            trustServer=settings.get_value('trust-server').unpack()
-        )
+        if default_user_id := self.get_property('settings').get_value('default-user-id').unpack():
+            if default_user := secret.get_user(default_user_id):
+                print(default_user.get_property('server-address'))
+                self.get_property('jellyfin').set_property('user', default_user)
         self.main_window = None
         self.pip_window = None
 
@@ -140,10 +139,6 @@ class PopcornApplication(Adw.Application):
 
     def try_login(self):
         if self.jellyfin.ping(): # Login Ok
-            settings = self.get_property('settings')
-            settings.set_string('url', self.jellyfin.get_property('url'))
-            settings.set_string('user', self.jellyfin.get_property('user'))
-            settings.set_boolean('trust-server', self.jellyfin.get_property('trustServer'))
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['main'])
             GLib.idle_add(self.main_window.root_navigationview.find_page('main').setup)
         elif self.main_window.root_navigationview.get_visible_page_tag() == 'login': # Failed Login
