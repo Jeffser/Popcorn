@@ -76,6 +76,12 @@
   </screenshots>
 
   <releases>
+    <release version="0.2.1" date="2026-10-15">
+      <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.2.1</url>
+      <description translate="no">
+        <p>Fixed error when saving quick connect credentials</p>
+      </description>
+    </release>
     <release version="0.2.0" date="2026-10-15">
       <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.2.0</url>
       <description translate="no">
