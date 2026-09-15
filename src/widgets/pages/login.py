@@ -1,7 +1,7 @@
 # login.py
 
 from gi.repository import GObject, Gtk, Adw, Gio, GLib, Gdk
-from ...integrations import secret
+from ...integrations import secret, jellyfin
 import threading, time
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/login_dialog.ui')
@@ -10,6 +10,7 @@ class LoginDialog(Adw.Dialog):
 
     disclaimer = GObject.Property(type=str)
     quick_connect_code = GObject.Property(type=str)
+    temp_jellyfin = GObject.Property(type=jellyfin.Jellyfin, default=jellyfin.Jellyfin())
 
     toast_overlay = Gtk.Template.Child()
     navigation_view = Gtk.Template.Child()
@@ -26,47 +27,43 @@ class LoginDialog(Adw.Dialog):
 
     @Gtk.Template.Callback()
     def connect_requested(self, button):
-        if root := self.get_root():
-            if app := root.get_application():
-                if jellyfin := app.get_property('jellyfin'):
-                    url = self.url_entry.get_text()
-                    if not url.startswith('http'):
-                        url = 'http://{}'.format(url)
-                    jellyfin.get_property('user').set_property('server-address', url)
-                    jellyfin.get_property('user').set_property('trust-certificates', self.trust_checkbutton.get_active())
-                    threading.Thread(target=self.try_connect, daemon=True).start()
+        if jellyfin := self.get_property('temp-jellyfin'):
+            jellyfin.set_property('user', secret.ServerUser())
+            url = self.url_entry.get_text()
+            if not url.startswith('http'):
+                url = 'http://{}'.format(url)
+            jellyfin.get_property('user').set_property('server-address', url)
+            jellyfin.get_property('user').set_property('trust-certificates', self.trust_checkbutton.get_active())
+            threading.Thread(target=self.try_connect, daemon=True).start()
 
     def try_connect(self):
-        if root := self.get_root():
-            if app := root.get_application():
-                if jellyfin := app.get_property('jellyfin'):
-                    if jellyfin.checkHealth():
-                        self.set_property('disclaimer', jellyfin.getLoginDisclaimer())
-                        GLib.idle_add(self.navigation_view.push_by_tag, 'login')
-                    else:
-                        toast = Adw.Toast(
-                            title=_("Error connecting to server")
-                        )
-                        GLib.idle_add(self.toast_overlay.add_toast, toast)
+        if jellyfin := self.get_property('temp-jellyfin'):
+            if jellyfin.checkHealth():
+                self.set_property('disclaimer', jellyfin.getLoginDisclaimer())
+                GLib.idle_add(self.navigation_view.push_by_tag, 'login')
+            else:
+                toast = Adw.Toast(
+                    title=_("Error connecting to server")
+                )
+                GLib.idle_add(self.toast_overlay.add_toast, toast)
 
     @Gtk.Template.Callback()
     def login_requested(self, widget=None):
         def run(username:str, password:str):
-            if root := self.get_root():
-                if app := root.get_application():
-                    if jellyfin := app.get_property('jellyfin'):
-                        jellyfin.get_property('user').set_property('username', username)
-                        jellyfin.get_property('user').set_property('quick-connect', False)
-                        jellyfin.get_property('user').update_changes(password)
-                        if jellyfin.ping():
-                            GLib.idle_add(root.root_navigationview.replace_with_tags, ['user-selector'])
-                            threading.Thread(target=root.root_navigationview.find_page('user-selector').reset, daemon=True).start()
-                            GLib.idle_add(self.close)
-                        else:
-                            toast = Adw.Toast(
-                                title=_("Error logging in")
-                            )
-                            GLib.idle_add(self.toast_overlay.add_toast, toast)
+            if jellyfin := self.get_property('temp-jellyfin'):
+                jellyfin.get_property('user').set_property('username', username)
+                jellyfin.get_property('user').set_property('quick-connect', False)
+                jellyfin.get_property('user').update_changes(password)
+                if jellyfin.ping():
+                    GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
+                    threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
+                    GLib.idle_add(lambda: self.close() and False)
+                else:
+                    toast = Adw.Toast(
+                        title=_("Error logging in")
+                    )
+                    GLib.idle_add(self.toast_overlay.add_toast, toast)
+                    jellyfin.get_property('user').remove_user()
         if username := self.user_el.get_text():
             if password := self.password_el.get_text():
                 threading.Thread(target=run, args=(username, password), daemon=True).start()
@@ -97,28 +94,29 @@ class LoginDialog(Adw.Dialog):
                 if jellyfin.ping():
                     GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
                     threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
-                    GLib.idle_add(self.close)
+                    GLib.idle_add(lambda: self.close() and False)
                 else:
+                    jellyfin.get_property('user').set_property('quick-connect', False)
+                    self.set_property('quick-connect-code', _("Timed Out"))
                     toast = Adw.Toast(
                         title=_("Error logging in")
                     )
                     GLib.idle_add(self.toast_overlay.add_toast, toast)
+                    jellyfin.get_property('user').remove_user()
             else:
                 jellyfin.get_property('user').set_property('quick-connect', False)
-                jellyfin.get_property('user').update_changes()
                 toast = Adw.Toast(
                     title=_("Error logging in")
                 )
                 GLib.idle_add(self.toast_overlay.add_toast, toast)
+                jellyfin.get_property('user').remove_user()
 
     @Gtk.Template.Callback()
     def quick_connect_requested(self, button):
-        if root := self.get_root():
-            if app := root.get_application():
-                if jellyfin := app.get_property('jellyfin'):
-                    self.set_property('quick-connect-code', '')
-                    self.navigation_view.push_by_tag('quick-connect')
-                    threading.Thread(target=self.quick_connect_verify_loop, args=(jellyfin,), daemon=True).start()
+        if jellyfin := self.get_property('temp-jellyfin'):
+            self.set_property('quick-connect-code', '')
+            self.navigation_view.push_by_tag('quick-connect')
+            threading.Thread(target=self.quick_connect_verify_loop, args=(jellyfin,), daemon=True).start()
 
     @Gtk.Template.Callback()
     def format_quick_connect_uri(self, obj, base_url:str) -> str:

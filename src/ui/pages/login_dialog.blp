@@ -163,7 +163,7 @@ template $PopcornLoginDialog: Adw.Dialog {
 
               Gtk.LinkButton {
                 label: _("Login Page");
-                uri: bind $format_quick_connect_uri(template.root as <$PopcornWindow> .application as <$PopcornApplication> .jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address);
+                uri: bind $format_quick_connect_uri(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address);
               }
             };
           };

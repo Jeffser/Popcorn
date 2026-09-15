@@ -70,6 +70,7 @@ class UserSelectorButton(Gtk.Button):
                                 title=_("Error logging in")
                             )
                             GLib.idle_add(root.toast_overlay.add_toast, toast)
+                            jellyfin.set_property('user', secret.ServerUser())
         if model := self.get_property('model'):
             threading.Thread(target=run, args=(model,), daemon=True).start()
 

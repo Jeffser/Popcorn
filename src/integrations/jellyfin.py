@@ -236,10 +236,7 @@ class Jellyfin(GObject.Object):
                 if username := response.get('User', {}).get('Name'):
                     user.set_property('username', username)
 
-        if self.get_property('accessToken') and self.get_property('userId'):
-            self.get_property('user').update_changes()
-            return True
-        return False
+        return self.get_property('accessToken') and self.get_property('userId')
 
     def getUserViews(self) -> list:
         # Returns list of UserView models
