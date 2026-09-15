@@ -43,66 +43,30 @@ template $PopcornMovieButton: Gtk.Button {
       };
 
       [overlay]
-      Gtk.ToggleButton {
+      Gtk.Image {
         styles [
-          "circular",
-          "toggle-with-accent",
-          "osd"
+          "played-indicator"
         ]
-        valign: start;
+        visible: bind template.model as <$PopcornMovie> .Played;
+        tooltip-text: _("Played");
+        icon-name: "check-plain-symbolic";
         halign: end;
-        margin-start: 10;
-        margin-end: 10;
+        valign: start;
         margin-top: 10;
         margin-bottom: 10;
-        tooltip-text: bind $format_watched_label(template.model as <$PopcornMovie> .Played);
-        action-name: "app.toggle_played";
-        action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
-        active: bind template.model as <$PopcornMovie> .Played;
-        icon-name: "check-plain-symbolic";
+        margin-start: 10;
+        margin-end: 10;
       }
 
       [overlay]
-      Gtk.Box {
-        orientation: vertical;
-        spacing: 10;
+      Gtk.ProgressBar {
+        fraction: bind template.model as <$PopcornMovie> .Progress;
+        visible: bind $format_progressbar_visible(template.model as <$PopcornMovie> .Progress);
         margin-start: 10;
         margin-end: 10;
         margin-top: 10;
         margin-bottom: 10;
         valign: end;
-        hexpand: true;
-        Gtk.Box {
-          Gtk.Button {
-            styles [
-              "osd",
-              "circular"
-            ]
-            tooltip-text: bind $format_play_label(template.model as <$PopcornMovie> .Progress);
-            action-name: "app.play_movie";
-            action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
-            icon-name: "media-playback-start-symbolic";
-          }
-          Adw.Bin {
-            hexpand: true;
-          }
-          Gtk.ToggleButton {
-            styles [
-              "circular",
-              "toggle-with-accent",
-              "osd"
-            ]
-            tooltip-text: bind $format_heart_label(template.model as <$PopcornMovie> .IsFavorite);
-            action-name: "app.toggle_favorite";
-            action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
-            active: bind template.model as <$PopcornMovie> .IsFavorite;
-            icon-name: bind $format_heart_icon_name(template.model as <$PopcornMovie> .IsFavorite);
-          }
-        }
-        Gtk.ProgressBar {
-          fraction: bind template.model as <$PopcornMovie> .Progress;
-          visible: bind $format_progressbar_visible(template.model as <$PopcornMovie> .Progress);
-        }
       }
     }
     Gtk.Label {

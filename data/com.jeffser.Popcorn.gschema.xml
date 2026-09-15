@@ -13,9 +13,6 @@
 	  <key name="fullscreen-content-fit" type="i">
 	    <default>1</default>
 	  </key>
-	  <key name="show-button-overlay" type="b">
-	    <default>true</default>
-	  </key>
 
 	  <!-- ## Gnome Search -->
 	  <key name="gnome-search-include-movie" type="b">
@@ -29,5 +26,6 @@
 	  </key>
 	</schema>
 </schemalist>
+
 
 

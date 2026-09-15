@@ -43,61 +43,19 @@ template $PopcornSeriesButton: Gtk.Button {
       };
 
       [overlay]
-      Gtk.ToggleButton {
+      Gtk.Image {
         styles [
-          "circular",
-          "toggle-with-accent",
-          "osd"
+          "played-indicator"
         ]
-        valign: start;
-        halign: end;
-        margin-start: 10;
-        margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
-        tooltip-text: bind $format_watched_label(template.model as <$PopcornSeries> .Played);
-        action-name: "app.toggle_played";
-        action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-        active: bind template.model as <$PopcornSeries> .Played;
+        visible: bind template.model as <$PopcornSeries> .Played;
+        tooltip-text: _("Played");
         icon-name: "check-plain-symbolic";
-      }
-
-      [overlay]
-      Gtk.ToggleButton {
-        styles [
-          "circular",
-          "toggle-with-accent",
-          "osd"
-        ]
-        valign: end;
         halign: end;
-        margin-start: 10;
-        margin-end: 10;
+        valign: start;
         margin-top: 10;
         margin-bottom: 10;
-        tooltip-text: bind $format_heart_label(template.model as <$PopcornSeries> .IsFavorite);
-        action-name: "app.toggle_favorite";
-        action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-        active: bind template.model as <$PopcornSeries> .IsFavorite;
-        icon-name: bind $format_heart_icon_name(template.model as <$PopcornSeries> .IsFavorite);
-      }
-
-      [overlay]
-      Gtk.Button {
-        styles [
-          "osd",
-          "circular"
-        ]
-        tooltip-text: _("Play Series");
-        action-name: "app.play_series";
-        action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
-        icon-name: "media-playback-start-symbolic";
-        valign: end;
-        halign: start;
         margin-start: 10;
         margin-end: 10;
-        margin-top: 10;
-        margin-bottom: 10;
       }
     }
 

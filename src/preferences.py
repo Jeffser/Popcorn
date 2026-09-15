@@ -9,7 +9,6 @@ class PopcornPreferences(Adw.PreferencesDialog):
 
     # General
     content_fit_el = Gtk.Template.Child()
-    show_overlay_el = Gtk.Template.Child()
 
     # Gnome Search
     is_gnome = GObject.Property(type=bool, default="GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper())
@@ -29,12 +28,6 @@ class PopcornPreferences(Adw.PreferencesDialog):
                 "fullscreen-content-fit",
                 self.content_fit_el,
                 "selected",
-                Gio.SettingsBindFlags.DEFAULT
-            )
-            settings.bind(
-                "show-button-overlay",
-                self.show_overlay_el,
-                "active",
                 Gio.SettingsBindFlags.DEFAULT
             )
 
