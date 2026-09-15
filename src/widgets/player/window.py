@@ -44,3 +44,6 @@ class PlayerWindow(Adw.ApplicationWindow):
         elif keycode == 65: #SPACE
             self.player_page.activate_action('player.toggle-playback', None)
             return True
+        elif keycode == 41: #F
+            self.player_page.activate_action('player.toggle-fullscreen', None)
+            return True

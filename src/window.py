@@ -60,6 +60,9 @@ class PopcornWindow(Adw.ApplicationWindow):
                 elif keycode == 65: #SPACE
                     visible_page.activate_action('player.toggle-playback', None)
                     return True
+                elif keycode == 41: #F
+                    visible_page.activate_action('player.toggle-fullscreen', None)
+                    return True
 
     def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
         def call_action(cb, va):

@@ -294,13 +294,12 @@ template $PopcornPlayerPage: Adw.NavigationPage {
                   };
                 }
 
-                Gtk.ToggleButton {
+                Gtk.Button {
                   styles [
                     "flat"
                   ]
                   icon-name: "view-fullscreen-symbolic";
-                  active: bind template.root as <Gtk.Window> .fullscreened;
-                  notify::active => $fullscreen_toggled();
+                  action-name: "player.toggle-fullscreen";
                 }
               }
 

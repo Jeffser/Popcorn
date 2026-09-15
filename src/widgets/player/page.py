@@ -51,6 +51,7 @@ class PlayerPage(Adw.NavigationPage):
         self.install_action("player.seek", 'i', self.seek)
         self.install_action("player.change-volume", 'd', self.change_volume)
         self.install_action("player.toggle-playback", None, self.toggle_playback)
+        self.install_action("player.toggle-fullscreen", None, self.toggle_fullscreen)
         self.on_player_changed(self)
 
     def on_player_changed(self, widget, pspec=None):
@@ -293,13 +294,6 @@ class PlayerPage(Adw.NavigationPage):
 
     # Gestures / Controls Toggling
 
-    @Gtk.Template.Callback()
-    def fullscreen_toggled(self, button, pspec):
-        if button.get_property(pspec.name):
-            self.get_root().fullscreen()
-        else:
-            self.get_root().unfullscreen()
-
     def toggle_controls(self, visible:bool):
         if not visible and (self.get_property('scale-seeking') or self.volume_menubutton.get_active() or self.subtitle_menu_button.get_active() or self.audio_menu_button.get_active()):
             return
@@ -446,6 +440,13 @@ class PlayerPage(Adw.NavigationPage):
         if self.overlay_icon_timeout_id:
             GLib.source_remove(self.overlay_icon_timeout_id)
         self.overlay_icon_timeout_id = GLib.timeout_add(1000, self.reset_overlay_icon)
+
+    def toggle_fullscreen(self, obj, action_name, param):
+        if root := self.get_root():
+            if root.is_fullscreen():
+                root.unfullscreen()
+            else:
+                root.fullscreen()
 
     @Gtk.Template.Callback()
     def format_audio_menu_visible(self, obj, n_items:int) -> bool:
