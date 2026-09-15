@@ -10,28 +10,38 @@ template $PopcornUserSelectorPage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {
       show-title: false;
-
-      [start]
-      Gtk.Button {
-        icon-name: "list-add-symbolic";
-        tooltip-text: _("Add User");
-        clicked => $add_user_requested();
-      }
     }
 
     content: Adw.StatusPage {
       icon-name: "com.jeffser.Popcorn";
-      title: _("Welcome to Popcorn");
-      description: _("Select a user");
-      child: Adw.WrapBox wrapbox {
-        styles [
-          "p10"
-        ]
-        line-spacing: 10;
-        child-spacing: 10;
-        hexpand: true;
-        vexpand: true;
-        halign: center;
+      title: _("Select a User");
+      child: Gtk.Box {
+        orientation: vertical;
+        spacing: 20;
+        Gtk.Button {
+          styles [
+            "pill",
+            "suggested-action"
+          ]
+          tooltip-text: _("Add User");
+          halign: center;
+          child: Adw.ButtonContent {
+            icon-name: "list-add-symbolic";
+            label: _("Add User");
+          };
+          clicked => $add_user_requested();
+        }
+
+        Adw.WrapBox wrapbox {
+          styles [
+            "p10"
+          ]
+          line-spacing: 10;
+          child-spacing: 10;
+          hexpand: true;
+          vexpand: true;
+          halign: center;
+        }
       };
     };
   };

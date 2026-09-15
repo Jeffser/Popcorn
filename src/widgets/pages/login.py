@@ -95,8 +95,8 @@ class LoginDialog(Adw.Dialog):
                 jellyfin.get_property('user').set_property('quick-connect', True)
                 jellyfin.get_property('user').update_changes(result_secret)
                 if jellyfin.ping():
-                    GLib.idle_add(root.root_navigationview.replace_with_tags, ['user-selector'])
-                    threading.Thread(target=root.root_navigationview.find_page('user-selector').reset, daemon=True).start()
+                    GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
+                    threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
                     GLib.idle_add(self.close)
                 else:
                     toast = Adw.Toast(

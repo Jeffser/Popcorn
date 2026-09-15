@@ -162,4 +162,3 @@ def change_user(app):
         if pip_window.get_visible():
             pip_window.close()
 
-

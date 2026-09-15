@@ -12,6 +12,25 @@ class UserSelectorButton(Gtk.Button):
     model = GObject.Property(type=secret.ServerUser)
     avatar_paintable = GObject.Property(type=Gdk.Paintable)
     server_name = GObject.Property(type=str)
+    context_popover = Gtk.Template.Child()
+
+    @Gtk.Template.Callback()
+    def on_secondary_click(self, gesture, n_press, x, y):
+        rect = Gdk.Rectangle()
+        rect.x, rect.y = int(x), int(y)
+        if not self.context_popover.get_parent():
+            self.context_popover.set_parent(gesture.get_widget())
+        self.context_popover.set_pointing_to(rect)
+        self.context_popover.popup()
+
+    @Gtk.Template.Callback()
+    def on_long_press(self, gesture, x, y):
+        rect = Gdk.Rectangle()
+        rect.x, rect.y = int(x), int(y)
+        if not self.context_popover.get_parent():
+            self.context_popover.set_parent(gesture.get_widget())
+        self.context_popover.set_pointing_to(rect)
+        self.context_popover.popup()
 
     def update_information(self):
         self.set_property('avatar-paintable', None)
@@ -48,6 +67,26 @@ class UserSelectorButton(Gtk.Button):
         if model := self.get_property('model'):
             threading.Thread(target=run, args=(model,), daemon=True).start()
 
+    @Gtk.Template.Callback()
+    def remove_user_requested(self, button):
+        self.context_popover.popdown()
+        def on_response(task, result):
+            if task.choose_finish(result) == 'delete':
+                self.get_property('model').remove_user()
+                self.unparent()
+
+        username = self.get_property('model').get_property('username')
+        dialog = Adw.AlertDialog(
+            heading=_("Delete User"),
+            body=_("Are you sure you want to delete '{}'?").format(username) if username else _("Are you sure you want to delete this user?")
+        )
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("delete", _("Delete"))
+        dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+        dialog.set_default_response("delete")
+        dialog.set_close_response("cancel")
+        dialog.choose(self.get_root(), None, on_response)
+
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/user_selector.ui')
 class UserSelectorPage(Adw.NavigationPage):
     __gtype_name__ = 'PopcornUserSelectorPage'
@@ -63,15 +102,6 @@ class UserSelectorPage(Adw.NavigationPage):
                 GLib.idle_add(self.wrapbox.append, button)
                 threading.Thread(target=button.update_information, daemon=True).start()
         else:
-            GLib.idle_add(self.wrapbox.append, Gtk.Button(
-                tooltip_text=_("Add User"),
-                child=Adw.ButtonContent(
-                    icon_name="list-add-symbolic",
-                    label=_("Add User")
-                ),
-                css_classes=['pill', 'suggested-action'],
-                halign=Gtk.Align.CENTER
-            ))
             if root := self.get_root():
                 GLib.idle_add(LoginDialog().present, root)
 

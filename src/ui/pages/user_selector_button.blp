@@ -11,6 +11,14 @@ template $PopcornUserSelectorButton: Gtk.Button {
   overflow: hidden;
   clicked => $on_click();
 
+  Gtk.GestureClick click_gesture {
+    button: 3;
+    pressed => $on_secondary_click();
+  }
+  Gtk.GestureLongPress long_press_gesture {
+    pressed => $on_long_press();
+  }
+
   child: Gtk.Box {
     orientation: vertical;
     spacing: 5;
@@ -36,6 +44,28 @@ template $PopcornUserSelectorButton: Gtk.Button {
       ellipsize: end;
       justify: center;
       label: bind $format_subtitle(template.server-name, template.model as <$PopcornServerUser> .server-address);
+    }
+  };
+}
+
+Gtk.Popover context_popover {
+  has-arrow: false;
+  halign: start;
+  child: Gtk.Box {
+    orientation: vertical;
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold",
+        "error"
+      ]
+      tooltip-text: _("Remove User");
+      child: Adw.ButtonContent {
+        halign: start;
+        label: _("Remove User");
+        icon-name: "user-trash-symbolic";
+      };
+      clicked => $remove_user_requested();
     }
   };
 }
