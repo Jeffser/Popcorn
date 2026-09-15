@@ -147,23 +147,14 @@ def open_uri(app, uri:str):
         return
     Gio.AppInfo.launch_default_for_uri(uri, None)
 
-def add_user(app):
-    if main_window := app.main_window:
-        GLib.idle_add(main_window.root_navigationview.replace_with_tags, ['user-selector'])
-        GLib.idle_add(Widgets.LoginDialog().present, main_window)
-
-def logout(app):
-    return #TODO adapt to new user system
+def change_user(app):
     app.get_property('player').stop()
-
-    secret.store_password('')
-
     if settings := app.get_property('settings'):
-        settings.set_string('user', '')
+        settings.set_string('default-user-id', '')
 
     if main_window := app.main_window:
-        main_window.root_navigationview.replace_with_tags(['welcome'])
-        main_window.root_navigationview.find_page('welcome').reset()
+        main_window.root_navigationview.replace_with_tags(['user-selector'])
+        main_window.root_navigationview.find_page('user-selector').reset()
         for dialog in main_window.get_dialogs():
             dialog.close()
 
