@@ -78,7 +78,7 @@ class LoginDialog(Adw.Dialog):
         return user_text and password_text
 
     def quick_connect_verify_loop(self, jellyfin):
-        waited_turns = 10
+        waited_turns = 30
         result_secret = False
         data = jellyfin.initiateQuickConnect()
         self.set_property('quick-connect-code', data.get("Code") or _("Error getting code"))
@@ -99,7 +99,7 @@ class LoginDialog(Adw.Dialog):
             # Wait for response
             while waited_turns > 0 and not result_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
                 result_secret = jellyfin.checkQuickConnect(data.get('Secret'))
-                time.sleep(5)
+                time.sleep(2)
                 waited_turns -= 1
 
             jellyfin.get_property('user').set_property('username', '')
