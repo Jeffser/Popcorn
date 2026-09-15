@@ -138,7 +138,7 @@ class PopcornApplication(Adw.Application):
 
     def initial_try_login(self):
         # Call in different thread
-        if self.get_property('jellyfin').ping(): # Login Ok
+        if self.get_property('jellyfin').check_login():
             GLib.idle_add(self.main_window.root_navigationview.replace_with_tags, ['main'])
             GLib.idle_add(self.main_window.root_navigationview.find_page('main').setup)
         else:

@@ -54,8 +54,7 @@ class LoginDialog(Adw.Dialog):
             if jellyfin := self.get_property('temp-jellyfin'):
                 jellyfin.get_property('user').set_property('username', username)
                 jellyfin.get_property('user').set_property('quick-connect', False)
-                jellyfin.get_property('user').update_changes(password)
-                if jellyfin.ping():
+                if jellyfin.try_login(password, False):
                     GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
                     threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
                     GLib.idle_add(lambda: self.close() and False)
@@ -79,43 +78,36 @@ class LoginDialog(Adw.Dialog):
 
     def quick_connect_verify_loop(self, jellyfin):
         waited_turns = 30
-        result_secret = ""
+        quick_connect_secret = False
         data = jellyfin.initiateQuickConnect()
         self.set_property('quick-connect-code', data.get("Code") or _("Error getting code"))
         self.set_property('quick-connect-code-valid', bool(data.get('Code')))
         if data.get('Code'):
-            while waited_turns > 0 and not result_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
-                result_secret = jellyfin.checkQuickConnect(data.get('Secret'))
+            while waited_turns > 0 and not quick_connect_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
+                quick_connect_secret = jellyfin.checkQuickConnect(data.get('Secret'))
                 time.sleep(2)
                 waited_turns -= 1
 
             jellyfin.get_property('user').set_property('username', '')
-            if result_secret:
-                jellyfin.get_property('user').set_property('quick-connect', True)
-                jellyfin.get_property('user').update_changes(result_secret)
-                if jellyfin.ping():
-                    jellyfin.get_property('user').update_changes(result_secret) # Saves username
+            if quick_connect_secret:
+                if jellyfin.try_login(quick_connect_secret, True):
                     GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
                     threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
                     GLib.idle_add(lambda: self.close() and False)
                 else:
-                    jellyfin.get_property('user').set_property('quick-connect', False)
                     self.set_property('quick-connect-code', _("Timed Out") if waited_turns == 0 else _("Error"))
                     self.set_property('quick-connect-code-valid', False)
                     toast = Adw.Toast(
                         title=_("Error logging in")
                     )
                     GLib.idle_add(self.toast_overlay.add_toast, toast)
-                    jellyfin.get_property('user').remove_user()
             else:
-                jellyfin.get_property('user').set_property('quick-connect', False)
                 self.set_property('quick-connect-code', _("Timed Out") if waited_turns == 0 else _("Error"))
                 self.set_property('quick-connect-code-valid', False)
                 toast = Adw.Toast(
                     title=_("Error logging in")
                 )
                 GLib.idle_add(self.toast_overlay.add_toast, toast)
-                jellyfin.get_property('user').remove_user()
 
     @Gtk.Template.Callback()
     def quick_connect_requested(self, button):

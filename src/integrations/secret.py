@@ -9,8 +9,7 @@ BASE_ATTRIBUTES = {
     "id": Secret.SchemaAttributeType.STRING,
     "server_address": Secret.SchemaAttributeType.STRING,
     "trust_certificates": Secret.SchemaAttributeType.BOOLEAN,
-    "username": Secret.SchemaAttributeType.STRING,
-    "quick_connect": Secret.SchemaAttributeType.BOOLEAN,
+    "username": Secret.SchemaAttributeType.STRING
 }
 BASE_SCHEMA = Secret.Schema.new(
     "com.jeffser.Popcorn.Account",
@@ -27,7 +26,6 @@ def _init_db():
             server_address TEXT,
             trust_certificates INTEGER,
             username TEXT,
-            quick_connect INTEGER,
             password TEXT
         )
     """)
@@ -41,7 +39,6 @@ class ServerUser(GObject.Object):
     server_address = GObject.Property(type=str)
     trust_certificates = GObject.Property(type=bool, default=False)
     username = GObject.Property(type=str)
-    quick_connect = GObject.Property(type=bool, default=False)
 
     def __init__(self, **kwargs):
         if not kwargs.get('id'):
@@ -73,7 +70,7 @@ class ServerUser(GObject.Object):
             ) or ''
         except:
             _init_db()
-            conn = sqlite3.connect(DB_NAME)
+            conn = sqlite3.connect(FALLBACK_PASSWORD_PATH)
             cursor = conn.cursor()
             cursor.execute(
                 """
@@ -109,15 +106,14 @@ class ServerUser(GObject.Object):
             cursor.execute(
                 """
                     INSERT OR REPLACE INTO accounts
-                    (id, server_address, trust_certificates, username, quick_connect, password)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    (id, server_address, trust_certificates, username, password)
+                    VALUES (?, ?, ?, ?, ?)
                 """,
                 (
                     self.get_property('id'),
                     self.get_property('server_address'),
                     int(self.get_property('trust_certificates')),
                     self.get_property('username'),
-                    int(self.get_property('quick_connect')),
                     password
                 ),
             )
@@ -133,7 +129,7 @@ class ServerUser(GObject.Object):
             )
         except:
             _init_db()
-            conn = sqlite3.connect(DB_NAME)
+            conn = sqlite3.connect(FALLBACK_PASSWORD_PATH)
             cursor = conn.cursor()
             cursor.execute(
                 'DELETE FROM accounts WHERE id=?',
@@ -155,23 +151,21 @@ def list_users() -> list:
         for result in results:
             if attributes := result.get_attributes():
                 attributes['trust_certificates'] = attributes.get('trust_certificates') == 'true'
-                attributes['quick_connect'] = attributes.get('quick_connect') == 'true'
                 result_list.append(ServerUser(**attributes))
     except:
         result_list = []
         _init_db()
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(FALLBACK_PASSWORD_PATH)
         cursor = conn.cursor()
         cursor.execute(
-            'SELECT id, server_address, trust_certificates, username, quick_connect FROM accounts'
+            'SELECT id, server_address, trust_certificates, username FROM accounts'
         )
         for row in cursor.fetchall():
             result_list.append(ServerUser(
                 id=row[0],
                 server_address=row[1],
                 trust_certificates=bool(row[2]),
-                username=row[3],
-                quick_connect=bool(row[4])
+                username=row[3]
             ))
         conn.close()
     return result_list
@@ -187,7 +181,6 @@ def get_user(user_id:str) -> ServerUser | None:
         if len(results) > 0:
             if attributes := results[0].get_attributes():
                 attributes['trust_certificates'] = attributes.get('trust_certificates') == 'true'
-                attributes['quick_connect'] = attributes.get('quick_connect') == 'true'
                 return ServerUser(
                     **attributes
                 )

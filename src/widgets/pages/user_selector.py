@@ -37,7 +37,7 @@ class UserSelectorButton(Gtk.Button):
         self.set_property('avatar-paintable', None)
         self.set_property('server-name', '')
         if temp_jellyfin := jellyfin.Jellyfin(user=self.get_property('model')):
-            if temp_jellyfin.ping():
+            if temp_jellyfin.check_login():
                 self.set_property('icon-name', 'person-symbolic')
                 if server_info := temp_jellyfin.getServerInformation():
                     self.set_property('avatar-paintable', server_info.get('picture'))
@@ -59,7 +59,7 @@ class UserSelectorButton(Gtk.Button):
                 if app := root.get_application():
                     if jellyfin := app.get_property('jellyfin'):
                         jellyfin.set_property('user', model)
-                        if jellyfin.ping():
+                        if jellyfin.check_login():
                             app.get_property('settings').set_string('default-user-id', model.get_property('id'))
                             GLib.idle_add(root.root_navigationview.replace_with_tags, ['main'])
                             GLib.idle_add(root.root_navigationview.find_page('main').setup)

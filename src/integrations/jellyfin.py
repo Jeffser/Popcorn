@@ -203,40 +203,49 @@ class Jellyfin(GObject.Object):
         )
         return response.get("Secret") if response.get('Authenticated') else None
 
-    def ping(self) -> bool:
+    def check_login(self) -> bool:
+        self.set_property('accessToken', self.get_property('user').get_password())
+        if not self.get_property('accessToken'):
+            return False
+        response = self.makeRequest(action='Users/Me')
+        self.set_property('userId', response.get('Id'))
+        if self.get_property('userId'):
+            self.get_property('user').set_property('username', response.get('Name'))
+            self.get_property('user').update_changes()
+            return True
+        return False
+
+    def try_login(self, secret:str, is_quick_connect:bool) -> bool:
         self.loaded_models = {}
         self.set_property('accessToken', "")
         self.set_property('userId', "")
         if user := self.get_property('user'):
             if not user.get_property('server-address'):
                 return False
-            if user.get_property('quick-connect'):
+            if is_quick_connect:
                 response = self.makeRequest(
                     action='Users/AuthenticateWithQuickConnect',
                     json={
-                        "Secret": user.get_password()
+                        "Secret": secret
                     },
                     mode='POST'
                 )
-                self.set_property('accessToken', response.get('AccessToken'))
-                self.set_property('userId', response.get('User', {}).get('Id'))
-                if username := response.get('User', {}).get('Name'):
-                    user.set_property('username', username)
+                if access_token := response.get('AccessToken'):
+                    self.get_property('user').update_changes(response.get('AccessToken'))
+                return self.check_login()
             else:
                 response = self.makeRequest(
                     action='Users/AuthenticateByName',
                     json={
                         'Username': self.get_property('user').get_property('username'),
-                        'Pw': user.get_password()
+                        'Pw': secret
                     },
                     mode='POST'
                 )
-                self.set_property('accessToken', response.get('AccessToken'))
-                self.set_property('userId', response.get('User', {}).get('Id'))
-                if username := response.get('User', {}).get('Name'):
-                    user.set_property('username', username)
-
-        return self.get_property('accessToken') and self.get_property('userId')
+                if access_token := response.get('AccessToken'):
+                    self.get_property('user').update_changes(response.get('AccessToken'))
+                return self.check_login()
+        return False
 
     def getUserViews(self) -> list:
         # Returns list of UserView models
