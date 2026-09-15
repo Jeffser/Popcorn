@@ -141,7 +141,7 @@ template $PopcornLoginDialog: Adw.Dialog {
           }
 
           content: Adw.StatusPage {
-            paintable: bind template.quick-connect-qr-paintable;
+            paintable: bind $format_quick_connect_qr(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address, template.quick-connect-code);
             title: _("Quick Connect");
             description: _("Use an existing session to log in");
             child: Gtk.Box {
