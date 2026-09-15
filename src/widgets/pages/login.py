@@ -119,6 +119,6 @@ class LoginDialog(Adw.Dialog):
             threading.Thread(target=self.quick_connect_verify_loop, args=(jellyfin,), daemon=True).start()
 
     @Gtk.Template.Callback()
-    def format_quick_connect_uri(self, obj, base_url:str) -> str:
-        return "{}/web/#/quickconnect".format(base_url.strip('/'))
+    def format_quick_connect_uri(self, obj, base_url:str, quick_connect_code:str) -> str:
+        return "{}/web/#/quickconnect?code={}".format(base_url.strip('/'), quick_connect_code)
 
