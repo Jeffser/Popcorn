@@ -261,6 +261,21 @@ Gtk.Popover context_popover {
         "flat",
         "no-bold"
       ]
+      tooltip-text: _("Show Episode");
+      child: Adw.ButtonContent {
+        halign: start;
+        label: _("Show Episode");
+        icon-name: "tv-symbolic";
+      };
+      action-name: "app.show_episode";
+      action-target: bind $format_action_target(template.model as <$PopcornEpisode> .Id, 's');
+      clicked => $context_popdown();
+    }
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
       tooltip-text: _("Show Series");
       child: Adw.ButtonContent {
         halign: start;

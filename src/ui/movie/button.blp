@@ -178,5 +178,20 @@ Gtk.Popover context_popover {
       action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
       clicked => $context_popdown();
     }
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
+      tooltip-text: _("Show Movie");
+      child: Adw.ButtonContent {
+        halign: start;
+        label: _("Show Movie");
+        icon-name: "video-clip-symbolic";
+      };
+      action-name: "app.show_movie";
+      action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
+      clicked => $context_popdown();
+    }
   };
 }

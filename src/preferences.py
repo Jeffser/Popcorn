@@ -10,6 +10,7 @@ class PopcornPreferences(Adw.PreferencesDialog):
     # General
     content_fit_el = Gtk.Template.Child()
     show_overlay_el = Gtk.Template.Child()
+    button_mode_el = Gtk.Template.Child()
 
     # Gnome Search
     is_gnome = GObject.Property(type=bool, default="GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper())

@@ -174,5 +174,20 @@ Gtk.Popover context_popover {
       action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
       clicked => $context_popdown();
     }
+    Gtk.Button {
+      styles [
+        "flat",
+        "no-bold"
+      ]
+      tooltip-text: _("Show Series");
+      child: Adw.ButtonContent {
+        halign: start;
+        label: _("Show Series");
+        icon-name: "tv-symbolic";
+      };
+      action-name: "app.show_series";
+      action-target: bind $format_action_target(template.model as <$PopcornSeries> .Id, 's');
+      clicked => $context_popdown();
+    }
   };
 }
