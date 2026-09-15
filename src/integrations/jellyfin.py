@@ -3,7 +3,7 @@
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio
 from . import models, secret
 from ..constants import get_device_id, POPCORN_VERSION
-import requests, io, urllib3, platform, webvtt, platform
+import requests, io, urllib3, platform, platform
 
 # Just so that the logs don't get cluttered with warnings if trust-server = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
