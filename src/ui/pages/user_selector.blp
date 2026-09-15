@@ -10,6 +10,12 @@ template $PopcornUserSelectorPage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {
       show-title: false;
+      [start]
+      Gtk.Button {
+        icon-name: "view-refresh-symbolic";
+        tooltip-text: _("Refresh Page");
+        action-name: "app.reload_page";
+      }
     }
 
     content: Adw.StatusPage {

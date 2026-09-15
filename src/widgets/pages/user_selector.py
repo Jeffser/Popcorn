@@ -11,6 +11,7 @@ class UserSelectorButton(Gtk.Button):
 
     model = GObject.Property(type=secret.ServerUser)
     avatar_paintable = GObject.Property(type=Gdk.Paintable)
+    icon_name = GObject.Property(type=str, default='person-symbolic')
     server_name = GObject.Property(type=str)
     context_popover = Gtk.Template.Child()
 
@@ -33,13 +34,18 @@ class UserSelectorButton(Gtk.Button):
         self.context_popover.popup()
 
     def update_information(self):
-        self.set_property('avatar-paintable', None)
+        self.set_property('avatar-paintable', Adw.SpinnerPaintable(widget=self))
         self.set_property('server-name', '')
         if temp_jellyfin := jellyfin.Jellyfin(user=self.get_property('model')):
             if temp_jellyfin.ping():
+                self.set_sensitive(True)
+                self.set_property('icon-name', 'person-symbolic')
                 if server_info := temp_jellyfin.getServerInformation():
                     self.set_property('avatar-paintable', server_info.get('picture'))
                     self.set_property('server-name', server_info.get('title'))
+            else:
+                self.set_sensitive(False)
+                self.set_property('icon-name', 'network-wired-disconnected-symbolic')
 
     @Gtk.Template.Callback()
     def format_subtitle(self, obj, server_name:str, server_address:str) -> str:

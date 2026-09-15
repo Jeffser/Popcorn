@@ -220,7 +220,8 @@ class Jellyfin(GObject.Object):
                 )
                 self.set_property('accessToken', response.get('AccessToken'))
                 self.set_property('userId', response.get('User', {}).get('Id'))
-                user.set_property('username', response.get('User', {}).get('Name'))
+                if username := response.get('User', {}).get('Name'):
+                    user.set_property('username', username)
             else:
                 response = self.makeRequest(
                     action='Users/AuthenticateByName',
@@ -232,7 +233,8 @@ class Jellyfin(GObject.Object):
                 )
                 self.set_property('accessToken', response.get('AccessToken'))
                 self.set_property('userId', response.get('User', {}).get('Id'))
-                user.set_property('username', response.get('User', {}).get('Name'))
+                if username := response.get('User', {}).get('Name'):
+                    user.set_property('username', username)
 
         if self.get_property('accessToken') and self.get_property('userId'):
             self.get_property('user').update_changes()
@@ -841,4 +843,5 @@ class Jellyfin(GObject.Object):
                 return Gdk.Texture.new_from_bytes(gbytes)
         except:
             pass
+
 

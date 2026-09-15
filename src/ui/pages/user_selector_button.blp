@@ -25,7 +25,8 @@ template $PopcornUserSelectorButton: Gtk.Button {
     Adw.Avatar {
       size: 180;
       margin-bottom: 5;
-      custom-image: bind template.avatar_paintable;
+      custom-image: bind template.avatar-paintable;
+      icon-name: bind template.icon-name;
     }
 
     Gtk.Label {
