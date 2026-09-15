@@ -79,7 +79,7 @@ class LoginDialog(Adw.Dialog):
 
     def quick_connect_verify_loop(self, jellyfin):
         waited_turns = 30
-        result_secret = False
+        result_secret = ""
         data = jellyfin.initiateQuickConnect()
         self.set_property('quick-connect-code', data.get("Code") or _("Error getting code"))
         self.set_property('quick-connect-code-valid', bool(data.get('Code')))

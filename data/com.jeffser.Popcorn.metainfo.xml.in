@@ -71,11 +71,30 @@
     </screenshot>
     <screenshot>
       <image>https://jeffser.com/images/popcorn/screenie4.png</image>
-      <caption>A stream playing</caption>
+      <caption>An episode playing</caption>
     </screenshot>
   </screenshots>
 
   <releases>
+    <release version="0.2.0" date="2026-10-15">
+      <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.2.0</url>
+      <description translate="no">
+        <p>New</p>
+        <ul>
+          <li>General redesign of most pages</li>
+          <li>Support for user switching</li>
+          <li>Redesigned player</li>
+          <li>Added support for selecting subtitles</li>
+          <li>Added option to change default action of media buttons</li>
+          <li>Added QR code to quick connect login</li>
+          <li>Added audio switcher option to player</li>
+          <li>Removed season pages and buttons, seasons are now shown inside the series page</li>
+          <li>Redesigned buttons</li>
+          <li>Added context menus to buttons</li>
+          <li>Added search and library subsections to main page</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-09-29">
       <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.1.0</url>
       <description translate="no">
