@@ -3,7 +3,6 @@ using Adw 1;
 
 template $PopcornMovieButton: Gtk.Button {
   styles [
-    "watch_button",
     "flat"
   ]
   valign: end;
@@ -11,7 +10,7 @@ template $PopcornMovieButton: Gtk.Button {
   height-request: bind $format_picture_height(template.is_tall);
   width-request: bind $format_picture_width(template.is_tall);
   tooltip-text: bind template.model as <$PopcornMovie> .Name;
-  action-name: "app.show_movie";
+  action-name: "app.default_model_action";
   action-target: bind $format_action_target(template.model as <$PopcornMovie> .Id, 's');
   overflow: hidden;
 

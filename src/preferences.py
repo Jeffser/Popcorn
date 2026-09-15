@@ -9,6 +9,7 @@ class PopcornPreferences(Adw.PreferencesDialog):
 
     # General
     content_fit_el = Gtk.Template.Child()
+    default_button_action_el = Gtk.Template.Child()
 
     # Gnome Search
     is_gnome = GObject.Property(type=bool, default="GNOME" in os.environ.get("XDG_CURRENT_DESKTOP", "").upper())
@@ -28,6 +29,12 @@ class PopcornPreferences(Adw.PreferencesDialog):
                 "fullscreen-content-fit",
                 self.content_fit_el,
                 "selected",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            settings.bind(
+                "default-model-action",
+                self.default_button_action_el,
+                "active-name",
                 Gio.SettingsBindFlags.DEFAULT
             )
 

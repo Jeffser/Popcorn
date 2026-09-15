@@ -94,4 +94,5 @@ class PopcornWindow(Adw.ApplicationWindow):
         self.create_action(actions.toggle_favorite)
         self.create_action(actions.open_uri)
         self.create_action(actions.change_user, parameter_type=None)
+        self.create_action(actions.default_model_action)
 

@@ -162,3 +162,22 @@ def change_user(app):
         if pip_window.get_visible():
             pip_window.close()
 
+def default_model_action(app, model_id:str):
+    if jellyfin := app.get_property('jellyfin'):
+        if model := jellyfin.getModel(model_id):
+            default_model_action = app.get_property('settings').get_value('default-model-action').unpack()
+            if isinstance(model, models.Movie):
+                if default_model_action == 'open':
+                    show_movie(app, model_id)
+                elif default_model_action == 'play':
+                    play_movie(app, model_id)
+            elif isinstance(model, models.Series):
+                if default_model_action == 'open':
+                    show_series(app, model_id)
+                elif default_model_action == 'play':
+                    play_series(app, model_id)
+            elif isinstance(model, models.Episode):
+                if default_model_action == 'open':
+                    show_episode(app, model_id)
+                elif default_model_action == 'play':
+                    play_episode(app, model_id)

@@ -19,6 +19,25 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
           ]
         };
       }
+
+      Adw.ActionRow {
+        title: _("Default Button Action");
+        subtitle: _("Action to perform when clicking a media button");
+        [suffix]
+        Adw.ToggleGroup default_button_action_el {
+          valign: center;
+          Adw.Toggle {
+            name: "open";
+            label: _("Open");
+            tooltip: _("Open");
+          }
+          Adw.Toggle {
+            name: "play";
+            label: _("Play");
+            tooltip: _("Play");
+          }
+        }
+      }
     }
 
     Adw.PreferencesGroup {

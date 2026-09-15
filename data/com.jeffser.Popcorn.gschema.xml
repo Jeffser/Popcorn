@@ -13,6 +13,9 @@
 	  <key name="fullscreen-content-fit" type="i">
 	    <default>1</default>
 	  </key>
+	  <key name="default-model-action" type="s">
+	    <default>'open'</default>
+	  </key>
 
 	  <!-- ## Gnome Search -->
 	  <key name="gnome-search-include-movie" type="b">
