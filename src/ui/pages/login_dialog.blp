@@ -141,7 +141,9 @@ template $PopcornLoginDialog: Adw.Dialog {
           }
 
           content: Adw.StatusPage {
+            paintable: bind template.quick-connect-qr-paintable;
             title: _("Quick Connect");
+            description: _("Use an existing session to log in");
             child: Gtk.Box {
               spacing: 10;
               orientation: vertical;

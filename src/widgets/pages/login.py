@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Adw, Gio, GLib, Gdk
 from ...integrations import secret, jellyfin
-import threading, time
+import threading, time, io, segno
 
 @Gtk.Template(resource_path='/com/jeffser/Popcorn/pages/login_dialog.ui')
 class LoginDialog(Adw.Dialog):
@@ -11,6 +11,7 @@ class LoginDialog(Adw.Dialog):
     disclaimer = GObject.Property(type=str)
     quick_connect_code = GObject.Property(type=str)
     temp_jellyfin = GObject.Property(type=jellyfin.Jellyfin, default=jellyfin.Jellyfin())
+    quick_connect_qr_paintable = GObject.Property(type=Gdk.Paintable)
 
     toast_overlay = Gtk.Template.Child()
     navigation_view = Gtk.Template.Child()
@@ -77,27 +78,42 @@ class LoginDialog(Adw.Dialog):
         return user_text and password_text
 
     def quick_connect_verify_loop(self, jellyfin):
-        waited_turns = 0
+        waited_turns = 10
         result_secret = False
         data = jellyfin.initiateQuickConnect()
         self.set_property('quick-connect-code', data.get("Code") or _("Error getting code"))
         if data.get('Code'):
-            while waited_turns < 5 and not result_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
+            self.set_property('quick-connect-qr-paintable', None)
+            try:
+                url = self.format_quick_connect_uri(None, jellyfin.get_property('user').get_property('server-address'), data.get('Code'))
+                qr = segno.make_qr(url)
+                buffer = io.BytesIO()
+                qr.save(buffer, kind="png", scale=10)
+                buffer.seek(0)
+                raw_bytes = buffer.getvalue()
+                self.set_property('quick-connect-qr-paintable', Gdk.Texture.new_from_bytes(GLib.Bytes.new(raw_bytes)))
+            except Exception as e:
+                print(e)
+                pass
+
+            # Wait for response
+            while waited_turns > 0 and not result_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
                 result_secret = jellyfin.checkQuickConnect(data.get('Secret'))
                 time.sleep(5)
-                waited_turns += 1
+                waited_turns -= 1
 
             jellyfin.get_property('user').set_property('username', '')
             if result_secret:
                 jellyfin.get_property('user').set_property('quick-connect', True)
                 jellyfin.get_property('user').update_changes(result_secret)
                 if jellyfin.ping():
+                    jellyfin.get_property('user').update_changes() # Saves username
                     GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
                     threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
                     GLib.idle_add(lambda: self.close() and False)
                 else:
                     jellyfin.get_property('user').set_property('quick-connect', False)
-                    self.set_property('quick-connect-code', _("Timed Out"))
+                    self.set_property('quick-connect-code', _("Timed Out") if waited_turns == 0 else _("Error"))
                     toast = Adw.Toast(
                         title=_("Error logging in")
                     )
@@ -121,4 +137,5 @@ class LoginDialog(Adw.Dialog):
     @Gtk.Template.Callback()
     def format_quick_connect_uri(self, obj, base_url:str, quick_connect_code:str) -> str:
         return "{}/web/#/quickconnect?code={}".format(base_url.strip('/'), quick_connect_code)
+
 
