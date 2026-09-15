@@ -63,6 +63,12 @@ class MoviePage(Adw.NavigationPage):
         return Pango.EllipsizeMode.NONE if active else Pango.EllipsizeMode.END
 
     @Gtk.Template.Callback()
+    def format_overview_label(self, obj, text:str, expanded:bool) -> str:
+        if expanded:
+            return text
+        return text.split('\n')[0]
+
+    @Gtk.Template.Callback()
     def format_overview_button_icon_name(self, obj, active:bool) -> str:
         return "pan-up-symbolic" if active else "pan-down-symbolic"
 

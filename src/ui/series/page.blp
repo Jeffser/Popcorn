@@ -247,7 +247,7 @@ template $PopcornSeriesPage: Adw.NavigationPage {
                 lines: 1;
                 ellipsize: bind $format_overview_ellipsize(overview_toggle_button.active);
                 xalign: 0;
-                label: bind template.model as <$PopcornSeries> .Overview;
+                label: bind $format_overview_label(template.model as <$PopcornSeries> .Overview, overview_toggle_button.active);
               }
             }
 
