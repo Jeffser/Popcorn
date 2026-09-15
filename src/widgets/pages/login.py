@@ -10,6 +10,7 @@ class LoginDialog(Adw.Dialog):
 
     disclaimer = GObject.Property(type=str)
     quick_connect_code = GObject.Property(type=str)
+    quick_connect_code_valid = GObject.Property(type=bool, default=False)
     temp_jellyfin = GObject.Property(type=jellyfin.Jellyfin, default=jellyfin.Jellyfin())
 
     toast_overlay = Gtk.Template.Child()
@@ -81,6 +82,7 @@ class LoginDialog(Adw.Dialog):
         result_secret = False
         data = jellyfin.initiateQuickConnect()
         self.set_property('quick-connect-code', data.get("Code") or _("Error getting code"))
+        self.set_property('quick-connect-code-valid', bool(data.get('Code')))
         if data.get('Code'):
             while waited_turns > 0 and not result_secret and self.navigation_view.get_visible_page_tag() == 'quick-connect' and self.get_root():
                 result_secret = jellyfin.checkQuickConnect(data.get('Secret'))
@@ -99,6 +101,7 @@ class LoginDialog(Adw.Dialog):
                 else:
                     jellyfin.get_property('user').set_property('quick-connect', False)
                     self.set_property('quick-connect-code', _("Timed Out") if waited_turns == 0 else _("Error"))
+                    self.set_property('quick-connect-code-valid', False)
                     toast = Adw.Toast(
                         title=_("Error logging in")
                     )
@@ -107,6 +110,7 @@ class LoginDialog(Adw.Dialog):
             else:
                 jellyfin.get_property('user').set_property('quick-connect', False)
                 self.set_property('quick-connect-code', _("Timed Out") if waited_turns == 0 else _("Error"))
+                self.set_property('quick-connect-code-valid', False)
                 toast = Adw.Toast(
                     title=_("Error logging in")
                 )
@@ -117,20 +121,21 @@ class LoginDialog(Adw.Dialog):
     def quick_connect_requested(self, button):
         if jellyfin := self.get_property('temp-jellyfin'):
             self.set_property('quick-connect-code', '')
+            self.set_property('quick-connect-code-valid', False)
             self.navigation_view.push_by_tag('quick-connect')
             threading.Thread(target=self.quick_connect_verify_loop, args=(jellyfin,), daemon=True).start()
 
     @Gtk.Template.Callback()
-    def format_quick_connect_uri(self, obj, base_url:str, quick_connect_code:str) -> str:
-        if quick_connect_code:
+    def format_quick_connect_uri(self, obj, base_url:str, quick_connect_code:str, quick_connect_valid:bool) -> str:
+        if quick_connect_valid:
             return "{}/web/#/quickconnect?code={}".format(base_url.strip('/'), quick_connect_code)
         return ''
 
     @Gtk.Template.Callback()
-    def format_quick_connect_qr(self, obj, base_url:str, quick_connect_code:str) -> Gdk.Paintable | None:
-        if quick_connect_code:
+    def format_quick_connect_qr(self, obj, base_url:str, quick_connect_code:str, quick_connect_valid:bool) -> Gdk.Paintable | None:
+        if quick_connect_valid:
             try:
-                if url := self.format_quick_connect_uri(obj, base_url, quick_connect_code):
+                if url := self.format_quick_connect_uri(obj, base_url, quick_connect_code, quick_connect_valid):
                     qr = segno.make_qr(url)
                     buffer = io.BytesIO()
                     qr.save(buffer, kind="png", scale=10)

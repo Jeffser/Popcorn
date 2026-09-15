@@ -141,7 +141,7 @@ template $PopcornLoginDialog: Adw.Dialog {
           }
 
           content: Adw.StatusPage {
-            paintable: bind $format_quick_connect_qr(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address, template.quick-connect-code);
+            paintable: bind $format_quick_connect_qr(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address, template.quick-connect-code, template.quick-connect-code-valid);
             title: _("Quick Connect");
             description: _("Use an existing session to log in");
             child: Gtk.Box {
@@ -163,9 +163,10 @@ template $PopcornLoginDialog: Adw.Dialog {
                 visible: bind $format_to_bool(template.quick-connect-code);
               }
 
-              Gtk.LinkButton {
+              Gtk.LinkButton quick_connect_link_button {
                 label: _("Server Login Page");
-                uri: bind $format_quick_connect_uri(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address, template.quick-connect-code);
+                uri: bind $format_quick_connect_uri(template.temp-jellyfin as <$PopcornIntegrationJellyfin> .user as <$PopcornServerUser> .server-address, template.quick-connect-code, template.quick-connect-code-valid);
+                sensitive: bind template.quick-connect-code-valid;
               }
             };
           };
