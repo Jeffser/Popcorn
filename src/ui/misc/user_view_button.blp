@@ -5,6 +5,14 @@ template $PopcornUserViewButton: Gtk.Button {
     "flat"
   ]
   valign: center;
+  halign: center;
+  width-request: 380;
+  height-request: 240;
+  tooltip-text: bind template.model as <$PopcornUserView> .Name;
+  action-name: "app.show_user_view";
+  action-target: bind $format_action_target(template.model as <$PopcornUserView> .Id);
+  overflow: hidden;
+
   child: Gtk.Box {
     orientation: vertical;
     spacing: 5;
@@ -12,20 +20,23 @@ template $PopcornUserViewButton: Gtk.Button {
       styles [
         "card"
       ]
+      paintable: bind template.model as <$PopcornUserView> .PrimaryPaintable;
+      content-fit: cover;
+      valign: center;
       halign: center;
       vexpand: true;
-      width-request: 240;
-      paintable: bind template.model as <$PopcornUserView> .PrimaryPaintable;
+      accessibility {
+        label: _("Library Poster");
+      }
     }
     Gtk.Label {
       styles [
         "title-4"
       ]
-      label: bind template.model as <$PopcornUserView> .Name;
       ellipsize: end;
+      justify: center;
+      label: bind template.model as <$PopcornUserView> .Name;
+      max-width-chars: 12;
     }
   };
-  tooltip-text: bind template.model as <$PopcornUserView> .Name;
-  action-name: "app.show_user_view";
-  action-target: bind $format_action_target(template.model as <$PopcornUserView> .Id);
 }
