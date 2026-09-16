@@ -30,6 +30,7 @@ class SearchPage(Gtk.Box):
             GLib.idle_add(self.main_stack.set_visible_child_name, 'empty')
             return
         self.searching = True
+        GLib.idle_add(self.set_cursor_from_name, 'progress')
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if root := self.get_root():
             if app := root.get_application():
@@ -54,6 +55,7 @@ class SearchPage(Gtk.Box):
                     else:
                         GLib.idle_add(self.main_stack.set_visible_child_name, 'no-results')
         self.searching = False
+        GLib.idle_add(self.set_cursor_from_name, 'default')
         if query != self.search_entry.get_text():
             threading.Thread(target=self.search, args=(self.search_entry.get_text(),), daemon=True).start()
 

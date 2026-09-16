@@ -27,10 +27,12 @@ class Carousel(Gtk.Box):
             self.list_el.remove(page)
 
     def set_widgets(self, widgets:list):
+        self.set_cursor_from_name('progress')
         self.set_visible(len(widgets) > 0)
         self.remove_all()
         for page in widgets:
             self.list_el.append(page)
+        self.set_cursor_from_name('default')
 
     @Gtk.Template.Callback()
     def format_header_stack_visible_child_name(self, obj, action_name:str) -> str:

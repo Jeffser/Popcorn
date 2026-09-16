@@ -40,7 +40,11 @@ class WrapboxPage(Adw.NavigationPage):
 
     def reset(self):
         GLib.idle_add(self.list_el.remove_all)
-        threading.Thread(target=self.populate, daemon=True).start()
+        def run():
+            GLib.idle_add(self.set_cursor_from_name, 'progress')
+            self.populate()
+            GLib.idle_add(self.set_cursor_from_name, 'default')
+        threading.Thread(target=run, daemon=True).start()
 
     def show_search(self):
         if self.get_property('can-search'):

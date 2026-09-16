@@ -18,6 +18,7 @@ class HomePage(Gtk.ScrolledWindow):
     next_up_container = Gtk.Template.Child()
 
     def reset(self):
+        GLib.idle_add(self.set_cursor_from_name, 'progress')
         jellyfin = None
         if root := self.get_root():
             if app := root.get_application():
@@ -50,4 +51,4 @@ class HomePage(Gtk.ScrolledWindow):
                 EpisodeButton(model=episode)
             )
         GLib.idle_add(self.next_up_container.set_widgets, episode_widgets)
-
+        GLib.idle_add(self.set_cursor_from_name, 'default')

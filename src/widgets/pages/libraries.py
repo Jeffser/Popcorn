@@ -18,6 +18,7 @@ class LibrariesPage(Gtk.ScrolledWindow):
     main_container = Gtk.Template.Child()
 
     def reset(self):
+        GLib.idle_add(self.set_cursor_from_name, 'progress')
         GLib.idle_add(self.main_stack.set_visible_child_name, "loading")
         for widget in list(self.main_container):
             GLib.idle_add(self.main_container.remove, widget)
@@ -59,4 +60,5 @@ class LibrariesPage(Gtk.ScrolledWindow):
                             GLib.idle_add(self.main_container.append, new_carousel)
                             GLib.idle_add(new_carousel.set_widgets, latest_widgets)
                     GLib.idle_add(self.main_carousel.set_widgets, user_view_widgets)
+        GLib.idle_add(self.set_cursor_from_name, 'default')
         GLib.idle_add(self.main_stack.set_visible_child_name, "content")

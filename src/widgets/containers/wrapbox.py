@@ -14,10 +14,12 @@ class Wrapbox(Gtk.Box):
     list_el = Gtk.Template.Child()
 
     def set_widgets(self, widgets:list):
+        self.set_cursor_from_name('progress')
         self.set_visible(len(widgets) > 0)
         self.list_el.remove_all()
         for i, page in enumerate(widgets):
             self.list_el.append(page)
+        self.set_cursor_from_name('default')
 
     @Gtk.Template.Callback()
     def format_header_visible(self, obj, title:str) -> bool:

@@ -20,12 +20,14 @@ class OverviewCarousel(Gtk.Overlay):
             self.list_el.remove(page)
 
     def set_widgets(self, widgets:list):
+        self.set_cursor_from_name('progress')
         self.list_el.set_visible(len(widgets) > 0)
         self.set_margin_top(0 if len(widgets) > 0 else 25)
         if self.list_el.get_n_pages() > 0:
             self.remove_all()
         for i, page in enumerate(widgets):
             self.list_el.append(page)
+        self.set_cursor_from_name('default')
 
     def auto_scroll_overview(self):
         if self.list_el.get_n_pages() == 0 or not self.get_property('auto-scroll'):

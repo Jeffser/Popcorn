@@ -99,6 +99,7 @@ class UserSelectorPage(Adw.NavigationPage):
     wrapbox = Gtk.Template.Child()
 
     def reset(self):
+        GLib.idle_add(self.set_cursor_from_name, 'progress')
         GLib.idle_add(self.wrapbox.remove_all)
         user_models = secret.list_users()
         if len(user_models) > 0:
@@ -109,6 +110,7 @@ class UserSelectorPage(Adw.NavigationPage):
         else:
             if root := self.get_root():
                 GLib.idle_add(LoginDialog().present, root)
+        GLib.idle_add(self.set_cursor_from_name, 'default')
 
     @Gtk.Template.Callback()
     def add_user_requested(self, button):
