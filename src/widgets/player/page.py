@@ -299,8 +299,7 @@ class PlayerPage(Adw.NavigationPage):
             return
         self.toolbarview.set_reveal_top_bars(visible)
         self.controls_revealer.set_reveal_child(visible)
-        if root := self.get_root():
-            root.set_cursor_from_name(None if visible else "none")
+        self.set_cursor_from_name(None if visible else "none")
         if not visible and self.hide_timeout_id:
             self.hide_timeout_id = None
 
