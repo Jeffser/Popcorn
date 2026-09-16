@@ -66,12 +66,22 @@ class WrapboxPage(Adw.NavigationPage):
                     result_models = self.getter_cb(jellyfin, size, self.current_index, self.search_entry.get_text() if self.get_property('can-search') else '', filters)
                     self.current_index += size
                     for model in result_models:
+                        button = None
                         if isinstance(model, models.Movie):
-                            GLib.idle_add(self.list_el.append, MovieButton(model=model))
+                            button = MovieButton(model=model)
                         elif isinstance(model, models.Series):
-                            GLib.idle_add(self.list_el.append, SeriesButton(model=model))
+                            button = SeriesButton(model=model)
                         elif isinstance(model, models.Episode):
-                            GLib.idle_add(self.list_el.append, EpisodeButton(model=model))
+                            button = EpisodeButton(model=model)
+
+                        if button:
+                            app.get_property('settings').bind(
+                                'library-buttons-is-tall',
+                                button,
+                                'is-tall',
+                                Gio.SettingsBindFlags.GET
+                            )
+                            GLib.idle_add(self.list_el.append, button)
                     if len(result_models) == 0:
                         GLib.idle_add(self.main_stack.set_visible_child_name, 'no-results' if self.search_entry.get_text() else 'empty')
                     else:

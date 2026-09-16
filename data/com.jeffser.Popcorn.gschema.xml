@@ -13,6 +13,9 @@
 	  <key name="fullscreen-content-fit" type="i">
 	    <default>1</default>
 	  </key>
+	  <key name="library-buttons-is-tall" type="b">
+	    <default>false</default>
+	  </key>
 	  <key name="default-model-action" type="s">
 	    <default>'open'</default>
 	  </key>

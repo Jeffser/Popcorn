@@ -9,6 +9,7 @@ class PopcornPreferences(Adw.PreferencesDialog):
 
     # General
     content_fit_el = Gtk.Template.Child()
+    library_button_is_tall = Gtk.Template.Child()
     default_button_action_el = Gtk.Template.Child()
 
     # Gnome Search
@@ -29,6 +30,12 @@ class PopcornPreferences(Adw.PreferencesDialog):
                 "fullscreen-content-fit",
                 self.content_fit_el,
                 "selected",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            settings.bind(
+                "library-buttons-is-tall",
+                self.library_button_is_tall,
+                "active",
                 Gio.SettingsBindFlags.DEFAULT
             )
             settings.bind(

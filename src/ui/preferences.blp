@@ -20,12 +20,18 @@ template $PopcornPreferencesDialog: Adw.PreferencesDialog {
         };
       }
 
+      Adw.SwitchRow library_button_is_tall {
+        title: _("Use Posters in Library Pages");
+        subtitle: _("Use posters for movies and series in a library page");
+      }
+
       Adw.ActionRow {
         title: _("Default Button Action");
         subtitle: _("Action to perform when clicking a media button");
         [suffix]
         Adw.ToggleGroup default_button_action_el {
           valign: center;
+          can-shrink: false;
           Adw.Toggle {
             name: "open";
             label: _("Open");
