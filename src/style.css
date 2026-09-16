@@ -17,10 +17,6 @@ button.p0, menubutton.p0 > button, label.ph5 {
   border-bottom-right-radius: 9px;
 }
 
-.translucent-picture {
-  opacity: 0.5;
-}
-
 button.active_appearance_button:disabled {
   filter: none;
 }
@@ -57,10 +53,6 @@ headerbar.player-headerbar image,
 headerbar.player-headerbar label {
   filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
   color: rgba(255, 255, 255, 0.9);
-}
-
-.translucent-background {
-  background: alpha(var(--window-bg-color), 0.8);
 }
 
 .gradient-background {

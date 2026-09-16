@@ -9,13 +9,7 @@ template $PopcornEpisodePage: Adw.NavigationPage {
 
     [top]
     Adw.HeaderBar {
-      styles [
-        "translucent-background"
-      ]
-      title-widget: Adw.WindowTitle {
-        title: bind template.series-model as <$PopcornSeries> .Name;
-        subtitle: bind template.model as <$PopcornEpisode> .Name;
-      };
+      show-title: false;
     }
 
     content: Gtk.ScrolledWindow {
