@@ -53,7 +53,6 @@ class LoginDialog(Adw.Dialog):
         def run(username:str, password:str):
             if jellyfin := self.get_property('temp-jellyfin'):
                 jellyfin.get_property('user').set_property('username', username)
-                jellyfin.get_property('user').set_property('quick-connect', False)
                 if jellyfin.try_login(password, False):
                     GLib.idle_add(self.get_root().root_navigationview.replace_with_tags, ['user-selector'])
                     threading.Thread(target=self.get_root().root_navigationview.find_page('user-selector').reset, daemon=True).start()
