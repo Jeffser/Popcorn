@@ -16,15 +16,15 @@ msgstr "Un cliente moderno de Jellyfin"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:11
 msgid "Features"
-msgstr "Características"
+msgstr "Caractersticas"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:13
 msgid "Dedicated pages for all types of elements"
-msgstr "Páginas dedicadas a todo tipo de elemento"
+msgstr "Pginas dedicadas a todo tipo de elemento"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:14
 msgid "VTT subtitle support"
-msgstr "Compatibilidad con subtítulos VTT"
+msgstr "Compatibilidad con subttulos VTT"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:15
 msgid "Player gestures"
@@ -32,7 +32,7 @@ msgstr "Gestos del reproductor de video"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:16
 msgid "Picture-in-Picture playback"
-msgstr "Reproducción de imagen-en-imagen"
+msgstr "Reproduccin de imagen-en-imagen"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:17
 msgid "Trickplay (scrobbing thumbnails)"
@@ -48,31 +48,31 @@ msgstr "Interfaz potente"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:62
 msgid "Main homepage"
-msgstr "Página Principal"
+msgstr "Pgina Principal"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:66
 msgid "A series page"
-msgstr "Página de una serie"
+msgstr "Pgina de una serie"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:70
 msgid "A movie page"
-msgstr "Página de una película"
+msgstr "Pgina de una pelcula"
 
 #: data/com.jeffser.Popcorn.metainfo.xml.in:74
 msgid "An episode playing"
-msgstr "Un episodio en reproducción"
+msgstr "Un episodio en reproduccin"
 
 #: data/com.jeffser.Popcorn.SearchProvider.desktop.in:3
 msgid "Popcorn Search Provider"
-msgstr "Proveedor de Búsqueda de Popcorn"
+msgstr "Proveedor de Bsqueda de Popcorn"
 
 #: src/actions.py:77 src/ui/pages/home.blp:27
 msgid "Next Up"
-msgstr "A Continuación"
+msgstr "A Continuacin"
 
 #: src/actions.py:88 src/ui/pages/home.blp:21
 msgid "Continue Watching"
-msgstr "Continúa Viendo"
+msgstr "Contina Viendo"
 
 #: src/actions.py:101
 msgid "Recently Added"
@@ -114,8 +114,8 @@ msgstr "Mostrar Episodio"
 msgid "Show Series"
 msgstr "Mostrar Series"
 
-#: src/ui/episode/page.blp:254 src/ui/movie/page.blp:217
-#: src/ui/series/page.blp:229
+#: src/ui/episode/page.blp:248 src/ui/movie/page.blp:215
+#: src/ui/series/page.blp:227
 msgid "Overview"
 msgstr "Overview"
 
@@ -123,28 +123,32 @@ msgstr "Overview"
 msgid "Pan"
 msgstr "Desplazarse"
 
+#: src/ui/misc/user_view_button.blp:29
+msgid "Library Poster"
+msgstr "Poster de Librería"
+
 #: src/ui/movie/button.blp:40
 msgid "Movie Poster"
-msgstr "Poster de Película"
+msgstr "Poster de Pelcula"
 
 #: src/ui/movie/button.blp:150 src/ui/movie/button.blp:153
 msgid "Show Movie"
-msgstr "Mostrar Película"
+msgstr "Mostrar Pelcula"
 
-#: src/ui/movie/page.blp:243 src/ui/series/page.blp:306
+#: src/ui/movie/page.blp:241 src/ui/series/page.blp:304
 msgid "Recommendations"
 msgstr "Recomendaciones"
 
 #: src/ui/pages/libraries.blp:28
 msgid "All Libraries"
-msgstr "Todas las Librerías"
+msgstr "Todas las Libreras"
 
 #. Welcome Ends
 #. Login Begins
 #: src/ui/pages/login_dialog.blp:5 src/ui/pages/login_dialog.blp:61
 #: src/ui/pages/login_dialog.blp:99 src/ui/pages/login_dialog.blp:100
 msgid "Login"
-msgstr "Iniciar Sesión"
+msgstr "Iniciar Sesin"
 
 #. Welcome Begins
 #: src/ui/pages/login_dialog.blp:11
@@ -157,7 +161,7 @@ msgstr "Bienvenido a Popcorn"
 
 #: src/ui/pages/login_dialog.blp:24
 msgid "Connect to your Jellyfin server"
-msgstr "Conéctate a tu servidor Jellyfin"
+msgstr "Conctate a tu servidor Jellyfin"
 
 #: src/ui/pages/login_dialog.blp:35
 msgid "Url"
@@ -173,7 +177,7 @@ msgstr "Conectar"
 
 #: src/ui/pages/login_dialog.blp:72
 msgid "Sign in to Continue"
-msgstr "Inicia Sesión para Continuar"
+msgstr "Inicia Sesin para Continuar"
 
 #: src/ui/pages/login_dialog.blp:86
 msgid "User"
@@ -181,7 +185,7 @@ msgstr "Usuario"
 
 #: src/ui/pages/login_dialog.blp:89
 msgid "Password"
-msgstr "Contraseña"
+msgstr "Contrasea"
 
 #: src/ui/pages/login_dialog.blp:110 src/ui/pages/login_dialog.blp:111
 msgid "Use Quick Connect"
@@ -193,15 +197,15 @@ msgstr "Quick Connect"
 
 #: src/ui/pages/login_dialog.blp:146
 msgid "Use an existing session to log in"
-msgstr "Utilice una sesión existente para iniciar sesión"
+msgstr "Utilice una sesin existente para iniciar sesin"
 
 #: src/ui/pages/login_dialog.blp:167
 msgid "Server Login Page"
-msgstr "Página de Inicio de Sesión del Servidor"
+msgstr "Pgina de Inicio de Sesin del Servidor"
 
 #: src/ui/pages/main.blp:5
 msgid "Main Page"
-msgstr "Página Principal"
+msgstr "Pgina Principal"
 
 #: src/ui/pages/main.blp:43
 msgid "Home"
@@ -209,7 +213,7 @@ msgstr "Inicio"
 
 #: src/ui/pages/main.blp:49
 msgid "Libraries"
-msgstr "Librerías"
+msgstr "Libreras"
 
 #: src/ui/pages/main.blp:55 src/ui/pages/search.blp:17
 #: src/ui/pages/search.blp:26 src/ui/pages/wrapbox_page.blp:31
@@ -243,7 +247,7 @@ msgstr "Series"
 
 #: src/ui/pages/search.blp:66
 msgid "Movies"
-msgstr "Películas"
+msgstr "Pelculas"
 
 #: src/ui/pages/search.blp:71
 msgid "Episodes"
@@ -255,7 +259,7 @@ msgstr "Selector de Usuarios"
 
 #: src/ui/pages/user_selector.blp:16
 msgid "Refresh Page"
-msgstr "Refrescar Página"
+msgstr "Refrescar Pgina"
 
 #: src/ui/pages/user_selector.blp:23
 msgid "Select a User"
@@ -280,11 +284,11 @@ msgstr "No se ha Encontrado Contenido"
 
 #: src/ui/pages/wrapbox_page.blp:114
 msgid "Bottom Reached"
-msgstr "Se ha llegado al final de la página"
+msgstr "Se ha llegado al final de la pgina"
 
 #: src/ui/player/next_up_button.blp:39
 msgid "Playing Next"
-msgstr "A Continuación"
+msgstr "A Continuacin"
 
 #: src/ui/player/page.blp:9 src/ui/shortcuts-dialog.blp:19
 msgid "Player"
@@ -302,9 +306,9 @@ msgstr "Previo"
 msgid "Pause"
 msgstr "Pausa"
 
-#: src/ui/player/page.blp:192 src/ui/preferences.blp:36
-#: src/ui/preferences.blp:37 src/ui/series/overview.blp:152
-#: src/ui/series/page.blp:121 src/ui/series/page.blp:126
+#: src/ui/player/page.blp:192 src/ui/preferences.blp:42
+#: src/ui/preferences.blp:43 src/ui/series/overview.blp:152
+#: src/ui/series/page.blp:119 src/ui/series/page.blp:124
 #: src/widgets/episode/page.py:83 src/widgets/movie/page.py:93
 msgid "Play"
 msgstr "Reproducir"
@@ -358,47 +362,55 @@ msgid "Scale Down"
 msgstr "Escalar"
 
 #: src/ui/preferences.blp:24
-msgid "Default Button Action"
-msgstr "Acción de Botón Predeterminada"
+msgid "Use Posters in Library Pages"
+msgstr "Usar Posters en Páginas de Librerías"
 
 #: src/ui/preferences.blp:25
-msgid "Action to perform when clicking a media button"
-msgstr "Acción que se realizará al hacer clic en un botón multimedia"
+msgid "Use posters for movies and series in a library page"
+msgstr "Usar poster para películas y series en una página de librería"
 
-#: src/ui/preferences.blp:31 src/ui/preferences.blp:32
+#: src/ui/preferences.blp:29
+msgid "Default Button Action"
+msgstr "Accin de Botn Predeterminada"
+
+#: src/ui/preferences.blp:30
+msgid "Action to perform when clicking a media button"
+msgstr "Accin que se realizar al hacer clic en un botn multimedia"
+
+#: src/ui/preferences.blp:37 src/ui/preferences.blp:38
 msgid "Open"
 msgstr "Abrir"
 
-#: src/ui/preferences.blp:44
+#: src/ui/preferences.blp:50
 msgid "Gnome Search"
-msgstr "Búsqueda de Gnome"
+msgstr "Bsqueda de Gnome"
 
-#: src/ui/preferences.blp:45
+#: src/ui/preferences.blp:51
 msgid ""
 "Search for your media directly from the system search bar while Popcorn is "
 "running. You can enable or disable this feature completely in System Settings"
 msgstr ""
-"Busca tus archivos multimedia directamente desde la barra de búsqueda del "
-"sistema mientras Popcorn está en ejecución. Puedes activar o desactivar "
-"esta función por completo en la configuración del sistema"
+"Busca tus archivos multimedia directamente desde la barra de bsqueda del "
+"sistema mientras Popcorn est en ejecucin. Puedes activar o desactivar esta "
+"funcin por completo en la configuracin del sistema"
 
-#: src/ui/preferences.blp:49
+#: src/ui/preferences.blp:55
 msgid "Include Movies"
-msgstr "Incluir Películas"
+msgstr "Incluir Pelculas"
 
-#: src/ui/preferences.blp:52
+#: src/ui/preferences.blp:58
 msgid "Include Series"
 msgstr "Incluir Series"
 
-#: src/ui/preferences.blp:55
+#: src/ui/preferences.blp:61
 msgid "Include Episodes"
 msgstr "Incluir Episodios"
 
-#: src/ui/preferences.blp:60
+#: src/ui/preferences.blp:66
 msgid "Session"
-msgstr "Sesión"
+msgstr "Sesin"
 
-#: src/ui/preferences.blp:85
+#: src/ui/preferences.blp:91
 msgid "Change User"
 msgstr "Cambiar Usuario"
 
@@ -412,19 +424,19 @@ msgstr "Reproducir Serie"
 
 #: src/ui/shortcuts-dialog.blp:9
 msgid "Not available in certain pages"
-msgstr "No disponible en algunas páginas"
+msgstr "No disponible en algunas pginas"
 
 #: src/ui/shortcuts-dialog.blp:13
 msgid "Reload Page"
-msgstr "Recargar Página"
+msgstr "Recargar Pgina"
 
 #: src/ui/shortcuts-dialog.blp:14
 msgid "The video player page cannot be reloaded"
-msgstr "No se puede recargar la página del reproductor de vídeo"
+msgstr "No se puede recargar la pgina del reproductor de vdeo"
 
 #: src/ui/shortcuts-dialog.blp:21
 msgid "Toggle Playback"
-msgstr "Alternar Reproducción"
+msgstr "Alternar Reproduccin"
 
 #: src/ui/shortcuts-dialog.blp:25
 msgid "Seek Forward"
@@ -432,7 +444,7 @@ msgstr "Saltar Hacia Adelante"
 
 #: src/ui/shortcuts-dialog.blp:29
 msgid "Seek Backward"
-msgstr "Saltar Hacia Atrás"
+msgstr "Saltar Hacia Atrs"
 
 #: src/ui/shortcuts-dialog.blp:33
 msgid "Raise Volume"
@@ -499,13 +511,13 @@ msgstr "Reanudar"
 
 #: src/widgets/movie/button.py:36
 msgid "Resume Movie"
-msgstr "Reanudar Película"
+msgstr "Reanudar Pelcula"
 
 #: src/widgets/movie/button.py:36
 msgid "Play Movie"
-msgstr "Reproducir Película"
+msgstr "Reproducir Pelcula"
 
-#: src/widgets/pages/libraries.py:54
+#: src/widgets/pages/libraries.py:55
 #, python-brace-format
 msgid "Recently Added in {}"
 msgstr "Agregado recientemente en {}"
@@ -514,20 +526,20 @@ msgstr "Agregado recientemente en {}"
 msgid "Error connecting to server"
 msgstr "Error al conectar con el servidor"
 
-#: src/widgets/pages/login.py:64 src/widgets/pages/login.py:106
-#: src/widgets/pages/login.py:115 src/widgets/pages/user_selector.py:68
+#: src/widgets/pages/login.py:62 src/widgets/pages/login.py:100
+#: src/widgets/pages/login.py:107 src/widgets/pages/user_selector.py:68
 msgid "Error logging in"
-msgstr "Error al iniciar sesión"
+msgstr "Error al iniciar sesin"
 
-#: src/widgets/pages/login.py:84
+#: src/widgets/pages/login.py:82
 msgid "Error getting code"
-msgstr "Error al obtener código"
+msgstr "Error al obtener cdigo"
 
-#: src/widgets/pages/login.py:103 src/widgets/pages/login.py:112
+#: src/widgets/pages/login.py:97 src/widgets/pages/login.py:104
 msgid "Timed Out"
 msgstr "Tiempo Agotado"
 
-#: src/widgets/pages/login.py:103 src/widgets/pages/login.py:112
+#: src/widgets/pages/login.py:97 src/widgets/pages/login.py:104
 msgid "Error"
 msgstr "Error"
 
@@ -538,11 +550,11 @@ msgstr "Remover Usuario"
 #: src/widgets/pages/user_selector.py:86
 #, python-brace-format
 msgid "Are you sure you want to delete '{}'?"
-msgstr "¿Estás seguro de que quieres eliminar '{}'?"
+msgstr "Estas seguro de que quieres eliminar '{}'?"
 
 #: src/widgets/pages/user_selector.py:86
 msgid "Are you sure you want to delete this user?"
-msgstr "¿Estás seguro de que quieres eliminar este usuario?"
+msgstr "Estas seguro de que quieres eliminar este usuario?"
 
 #: src/widgets/pages/user_selector.py:88
 msgid "Cancel"

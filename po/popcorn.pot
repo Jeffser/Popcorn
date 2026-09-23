@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 14:08-0600\n"
+"POT-Creation-Date: 2026-09-22 18:15-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,13 +134,17 @@ msgstr ""
 msgid "Show Series"
 msgstr ""
 
-#: src/ui/episode/page.blp:254 src/ui/movie/page.blp:217
-#: src/ui/series/page.blp:229
+#: src/ui/episode/page.blp:248 src/ui/movie/page.blp:215
+#: src/ui/series/page.blp:227
 msgid "Overview"
 msgstr ""
 
 #: src/ui/misc/overview_carousel.blp:27 src/ui/misc/overview_carousel.blp:42
 msgid "Pan"
+msgstr ""
+
+#: src/ui/misc/user_view_button.blp:29
+msgid "Library Poster"
 msgstr ""
 
 #: src/ui/movie/button.blp:40
@@ -151,7 +155,7 @@ msgstr ""
 msgid "Show Movie"
 msgstr ""
 
-#: src/ui/movie/page.blp:243 src/ui/series/page.blp:306
+#: src/ui/movie/page.blp:241 src/ui/series/page.blp:304
 msgid "Recommendations"
 msgstr ""
 
@@ -322,9 +326,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: src/ui/player/page.blp:192 src/ui/preferences.blp:36
-#: src/ui/preferences.blp:37 src/ui/series/overview.blp:152
-#: src/ui/series/page.blp:121 src/ui/series/page.blp:126
+#: src/ui/player/page.blp:192 src/ui/preferences.blp:42
+#: src/ui/preferences.blp:43 src/ui/series/overview.blp:152
+#: src/ui/series/page.blp:119 src/ui/series/page.blp:124
 #: src/widgets/episode/page.py:83 src/widgets/movie/page.py:93
 msgid "Play"
 msgstr ""
@@ -378,44 +382,52 @@ msgid "Scale Down"
 msgstr ""
 
 #: src/ui/preferences.blp:24
-msgid "Default Button Action"
+msgid "Use Posters in Library Pages"
 msgstr ""
 
 #: src/ui/preferences.blp:25
+msgid "Use posters for movies and series in a library page"
+msgstr ""
+
+#: src/ui/preferences.blp:29
+msgid "Default Button Action"
+msgstr ""
+
+#: src/ui/preferences.blp:30
 msgid "Action to perform when clicking a media button"
 msgstr ""
 
-#: src/ui/preferences.blp:31 src/ui/preferences.blp:32
+#: src/ui/preferences.blp:37 src/ui/preferences.blp:38
 msgid "Open"
 msgstr ""
 
-#: src/ui/preferences.blp:44
+#: src/ui/preferences.blp:50
 msgid "Gnome Search"
 msgstr ""
 
-#: src/ui/preferences.blp:45
+#: src/ui/preferences.blp:51
 msgid ""
 "Search for your media directly from the system search bar while Popcorn is "
 "running. You can enable or disable this feature completely in System Settings"
 msgstr ""
 
-#: src/ui/preferences.blp:49
+#: src/ui/preferences.blp:55
 msgid "Include Movies"
 msgstr ""
 
-#: src/ui/preferences.blp:52
+#: src/ui/preferences.blp:58
 msgid "Include Series"
 msgstr ""
 
-#: src/ui/preferences.blp:55
+#: src/ui/preferences.blp:61
 msgid "Include Episodes"
 msgstr ""
 
-#: src/ui/preferences.blp:60
+#: src/ui/preferences.blp:66
 msgid "Session"
 msgstr ""
 
-#: src/ui/preferences.blp:85
+#: src/ui/preferences.blp:91
 msgid "Change User"
 msgstr ""
 
@@ -522,7 +534,7 @@ msgstr ""
 msgid "Play Movie"
 msgstr ""
 
-#: src/widgets/pages/libraries.py:54
+#: src/widgets/pages/libraries.py:55
 #, python-brace-format
 msgid "Recently Added in {}"
 msgstr ""
@@ -531,20 +543,20 @@ msgstr ""
 msgid "Error connecting to server"
 msgstr ""
 
-#: src/widgets/pages/login.py:64 src/widgets/pages/login.py:106
-#: src/widgets/pages/login.py:115 src/widgets/pages/user_selector.py:68
+#: src/widgets/pages/login.py:62 src/widgets/pages/login.py:100
+#: src/widgets/pages/login.py:107 src/widgets/pages/user_selector.py:68
 msgid "Error logging in"
 msgstr ""
 
-#: src/widgets/pages/login.py:84
+#: src/widgets/pages/login.py:82
 msgid "Error getting code"
 msgstr ""
 
-#: src/widgets/pages/login.py:103 src/widgets/pages/login.py:112
+#: src/widgets/pages/login.py:97 src/widgets/pages/login.py:104
 msgid "Timed Out"
 msgstr ""
 
-#: src/widgets/pages/login.py:103 src/widgets/pages/login.py:112
+#: src/widgets/pages/login.py:97 src/widgets/pages/login.py:104
 msgid "Error"
 msgstr ""
 
