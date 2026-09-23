@@ -76,6 +76,23 @@
   </screenshots>
 
   <releases>
+    <release version="0.2.2" date="2026-10-22">
+      <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.2.2</url>
+      <description translate="no">
+        <p>New</p>
+        <ul>
+          <li>Added option to use vertical posters in library pages</li>
+          <li>Redesigned library buttons</li>
+          <li>Cursor is now modified when hovering a widget that is loading</li>
+        </ul>
+        <p>Fixes</p>
+        <ul>
+          <li>Removed unused library</li>
+          <li>Cursor is now not hidden when opening a dialog in the player</li>
+          <li>Fixed problem with username login</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.2.1" date="2026-10-15">
       <url type="details">https://github.com/Jeffser/Popcorn/releases/tag/0.2.1</url>
       <description translate="no">
